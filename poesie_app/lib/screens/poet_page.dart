@@ -1,6 +1,9 @@
+// ignore_for_file: prefer_const_constructors, use_key_in_widget_constructors
+
 import 'package:flutter/material.dart';
+import 'package:poesie_app/screens/PoemDetailsPage.dart';
 import '../data/mongo_database.dart';
-import 'PoetDetailsPage.dart'; // Importez la page des détails de l'auteur
+// import 'deewan_page.dart';
 
 class PoetPage extends StatelessWidget {
   @override
@@ -27,29 +30,63 @@ class PoetPage extends StatelessWidget {
               itemCount: poets!.length,
               itemBuilder: (context, index) {
                 return Padding(
-                  padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
-                  child: ElevatedButton(
-                    onPressed: () {
-                      // Navigation vers la page des détails de l'auteur
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => PoetDetailsPage(poetName: poets[index]),
-                        ),
-                      );
-                    },
-                    child: Text(
-                      poets[index],
-                      style: TextStyle(fontFamily: 'Amiri', fontSize: 20.0),
-                    ),
-                    style: ElevatedButton.styleFrom(
-                      foregroundColor: Colors.black,
-                      backgroundColor: Color.fromARGB(255, 237, 237, 182),
-                      padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 30.0),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20.0),
+                  padding:
+                      EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        children: [
+                          CircleAvatar(
+                            
+                            backgroundImage: AssetImage(
+                                'images/profile.jpg'), // Replace with actual image path
+                          ),
+                          SizedBox(width: 10),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                poets[index], // Display nom + prenom
+                                style: TextStyle(
+                                    fontFamily: 'Amiri',
+                                    fontSize: 20.0,
+                                    color: Colors.black),
+                              ),
+                              Text(
+                                poets[index], // Display lieu_naissance
+                                style: TextStyle(
+                                    fontFamily: 'Amiri',
+                                    fontSize: 16.0,
+                                    color: Colors.black),
+                              ),
+                            ],
+                          ),
+                        ],
                       ),
-                    ),
+                      Row(
+                        children: [
+                          IconButton(
+                            onPressed: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => PoemDetailsPage(
+                                          poetName: poets[index])));
+                            },
+                            icon: Icon(Icons.info), // Info icon
+                            color: Colors.black,
+                          ),
+                          IconButton(
+                            onPressed: () {
+                              // Handle save icon press
+                            },
+                            icon: Icon(size: 30.0, Icons.save), // Save icon
+                            color: Colors.black,
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
                 );
               },

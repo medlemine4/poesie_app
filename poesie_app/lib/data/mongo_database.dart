@@ -1,5 +1,7 @@
 // File: lib/data/mongo_database.dart
 
+// ignore_for_file: constant_identifier_names
+
 import 'package:mongo_dart/mongo_dart.dart' as mongo;
 
 const MONGO_URL =
@@ -30,5 +32,15 @@ class MongoDataBase {
     return result.map((deewan) => deewan['nom'] as String).toList();
   }
 
-  static getPoetDetails(String poetName) {}
+ static Future<Map<String, dynamic>> getPoetDetails(String poetName) async {
+  var db = await mongo.Db.create(MONGO_URL);
+  await db.open();
+  var collection = db.collection(COLLECTION_NAME);
+  var query = mongo.where.eq('nom', poetName);
+  var result = await collection.findOne(query);
+  await db.close();
+  return result ?? {}; // Return an empty map if result is null
 }
+
+  }
+
