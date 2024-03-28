@@ -1,0 +1,34 @@
+// File: lib/data/mongo_database.dart
+
+import 'package:mongo_dart/mongo_dart.dart' as mongo;
+
+const MONGO_URL =
+    "mongodb+srv://medleminehaj:22482188@maincluster.g7p5xjc.mongodb.net/poesie_DB?retryWrites=true&w=majority&appName=mainCluster";
+const COLLECTION_NAME = "Auteur";
+const COLLECTION_NAME2 = "Deewan";
+const COLLECTION_NAME3 = "Poeme";
+
+class MongoDataBase {
+  static Future<List<String>> getPoetNames() async {
+    var db = await mongo.Db.create(MONGO_URL);
+    await db.open();
+    var collection = db.collection(COLLECTION_NAME);
+    var result = await collection.find().toList();
+    await db.close();
+    // Récupérer seulement les noms des auteurs
+    return result.map((poet) => poet['nom'] as String).toList();
+  }
+
+  static Future<List<String>> getDeewanNames([int? authorId]) async {
+    var db = await mongo.Db.create(MONGO_URL);
+    await db.open();
+    var collection = db.collection(COLLECTION_NAME2);
+    var query = authorId != null ? mongo.where.eq('ID_Auteur', authorId) : {};
+    var result = await collection.find(query).toList();
+    await db.close();
+    // Récupérer seulement les noms des Deewan de l'auteur spécifié
+    return result.map((deewan) => deewan['nom'] as String).toList();
+  }
+
+  static getPoetDetails(String poetName) {}
+}
