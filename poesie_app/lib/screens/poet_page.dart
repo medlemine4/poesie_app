@@ -56,7 +56,7 @@ class PoetPage extends StatelessWidget {
                         Row(
                           children: [
                             CircleAvatar(
-                              backgroundImage: NetworkImage("$imageUrl"),
+                              backgroundImage: NetworkImage(imageUrl),
                             ),
                             SizedBox(width: 10),
                             Column(
