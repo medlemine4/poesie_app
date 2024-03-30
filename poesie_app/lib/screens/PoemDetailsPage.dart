@@ -1,6 +1,5 @@
-// ignore_for_file: use_key_in_widget_constructors, prefer_const_constructors, prefer_const_constructors_in_immutables
-
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart'; // Importez le package intl pour formater les dates
 import '../data/mongo_database.dart';
 
 class PoemDetailsPage extends StatelessWidget {
@@ -28,6 +27,14 @@ class PoemDetailsPage extends StatelessWidget {
             return Center(child: Text('Error: ${snapshot.error}'));
           } else {
             Map<String, dynamic>? poetDetails = snapshot.data;
+            // Format date_naissance and date_deces if they are DateTime objects
+            String dateNaissance = poetDetails!['date_naissance'] != null
+                ? DateFormat('yyyy-MM-dd').format(poetDetails['date_naissance'])
+                : 'N/A';
+            String dateDeces = poetDetails['date_deces'] != null
+                ? DateFormat('yyyy-MM-dd').format(poetDetails['date_deces'])
+                : 'N/A';
+
             return Padding(
               padding: EdgeInsets.all(20.0),
               child: Column(
@@ -39,7 +46,7 @@ class PoemDetailsPage extends StatelessWidget {
                   ),
                   SizedBox(height: 10),
                   Text(
-                    poetDetails!['description'] ?? 'N/A',
+                    poetDetails['description'] ?? 'N/A',
                     style: TextStyle(fontFamily: 'Amiri', fontSize: 18.0),
                   ),
                   SizedBox(height: 20),
@@ -59,7 +66,7 @@ class PoemDetailsPage extends StatelessWidget {
                   ),
                   SizedBox(height: 10),
                   Text(
-                    poetDetails['date_naissance'] ?? 'N/A',
+                    dateNaissance,
                     style: TextStyle(fontFamily: 'Amiri', fontSize: 18.0),
                   ),
                   SizedBox(height: 20),
@@ -69,7 +76,7 @@ class PoemDetailsPage extends StatelessWidget {
                   ),
                   SizedBox(height: 10),
                   Text(
-                    poetDetails['date_deces'] ?? 'N/A',
+                    dateDeces,
                     style: TextStyle(fontFamily: 'Amiri', fontSize: 18.0),
                   ),
                 ],

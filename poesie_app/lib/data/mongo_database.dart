@@ -42,5 +42,25 @@ class MongoDataBase {
   return result ?? {}; // Return an empty map if result is null
 }
 
+static Future<List<Map<String, dynamic>>> getPoetDetailsList() async {
+    var db = await mongo.Db.create(MONGO_URL);
+    await db.open();
+    var collection = db.collection(COLLECTION_NAME);
+    var result = await collection.find().toList();
+    await db.close();
+
+    // Map each document to a Map<String, dynamic> containing poet details
+    List<Map<String, dynamic>> poetsList = result.map((poet) {
+      return {
+        'nom': poet['nom'],
+        'prenom': poet['prenom'],
+        'lieu_naissance': poet['lieu_naissance'],
+        'image': poet['image'],
+      };
+    }).toList();
+
+    return poetsList;
+  }
+
   }
 
