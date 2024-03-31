@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:poesie_app/screens/DeewanParAuteurPage.dart';
 import 'package:poesie_app/screens/PoemDetailsPage.dart';
 import '../data/mongo_database.dart';
 
@@ -27,19 +28,22 @@ class PoetPage extends StatelessWidget {
               itemCount: poetsList!.length,
               itemBuilder: (context, index) {
                 Map<String, dynamic> poet = poetsList[index];
+                String ID_Auteur = poet['ID_Auteur'];
                 String nom = poet['nom'];
                 String prenom = poet['prenom'];
                 String lieuNaissance = poet['lieu_naissance'];
                 String imageUrl = poet['image'];
 
                 return Padding(
-                  padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
+                  padding:
+                      EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
                   child: ElevatedButton(
                     onPressed: () {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => PoemDetailsPage(poetName: nom),
+                          builder: (context) =>
+                              DeewanParAuteurPage(authorId: poet['ID_Auteur']),
                         ),
                       );
                     },
@@ -89,7 +93,8 @@ class PoetPage extends StatelessWidget {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) => PoemDetailsPage(poetName: nom),
+                                    builder: (context) =>
+                                        PoemDetailsPage(poetName: nom),
                                   ),
                                 );
                               },

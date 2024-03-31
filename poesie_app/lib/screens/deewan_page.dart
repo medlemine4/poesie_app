@@ -20,7 +20,7 @@ class DeewanPage extends StatelessWidget {
         backgroundColor: Color.fromARGB(255, 230, 230, 145),
       ),
       body: FutureBuilder<List<String>>(
-        future: MongoDataBase.getDeewanNames(authorId),
+        future: MongoDataBase.getDeewanNames(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(child: CircularProgressIndicator());

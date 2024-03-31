@@ -21,12 +21,11 @@ class MongoDataBase {
     return result.map((poet) => poet['nom'] as String).toList();
   }
 
-  static Future<List<String>> getDeewanNames([int? authorId]) async {
+  static Future<List<String>> getDeewanNames() async {
     var db = await mongo.Db.create(MONGO_URL);
     await db.open();
     var collection = db.collection(COLLECTION_NAME2);
-    var query = authorId != null ? mongo.where.eq('ID_Auteur', authorId) : {};
-    var result = await collection.find(query).toList();
+    var result = await collection.find().toList();
     await db.close();
     // Récupérer seulement les noms des Deewan de l'auteur spécifié
     return result.map((deewan) => deewan['nom'] as String).toList();
@@ -51,16 +50,31 @@ static Future<List<Map<String, dynamic>>> getPoetDetailsList() async {
 
     // Map each document to a Map<String, dynamic> containing poet details
     List<Map<String, dynamic>> poetsList = result.map((poet) {
-      return {
-        'nom': poet['nom'],
-        'prenom': poet['prenom'],
-        'lieu_naissance': poet['lieu_naissance'],
-        'image': poet['image'],
-      };
-    }).toList();
+    return {
+      'ID_Auteur': poet['ID_Auteur'].toString(), // Include the ID
+      'nom': poet['nom'],
+      'prenom': poet['prenom'],
+      'lieu_naissance': poet['lieu_naissance'],
+      'image': poet['image'],
+    };
+  }).toList();
 
     return poetsList;
   }
+
+  static Future<List<Map<String, dynamic>>> getDeewanByAuthorId(String authorId) async {
+  var db = await mongo.Db.create(MONGO_URL);
+  await db.open();
+
+  var collection = db.collection(COLLECTION_NAME2); // Utiliser la collection des deewans
+  var result = await collection.find(mongo.where.eq("ID_Auteur", int.parse(authorId))).toList();
+
+  await db.close();
+
+  // Renvoyer la liste des détails des deewans
+  return result.map((deewan) => deewan as Map<String, dynamic>).toList();
+}
+
 
   }
 
