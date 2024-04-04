@@ -1,6 +1,4 @@
-// File: lib/data/mongo_database.dart
-
-// ignore_for_file: constant_identifier_names
+// ignore_for_file: unnecessary_cast, constant_identifier_names
 
 import 'package:mongo_dart/mongo_dart.dart' as mongo;
 
@@ -17,7 +15,6 @@ class MongoDataBase {
     var collection = db.collection(COLLECTION_NAME);
     var result = await collection.find().toList();
     await db.close();
-    // Récupérer seulement les noms des auteurs
     return result.map((poet) => poet['nom'] as String).toList();
   }
 
@@ -27,54 +24,64 @@ class MongoDataBase {
     var collection = db.collection(COLLECTION_NAME2);
     var result = await collection.find().toList();
     await db.close();
-    // Récupérer seulement les noms des Deewan de l'auteur spécifié
     return result.map((deewan) => deewan['nom'] as String).toList();
   }
 
- static Future<Map<String, dynamic>> getPoetDetails(String poetName) async {
-  var db = await mongo.Db.create(MONGO_URL);
-  await db.open();
-  var collection = db.collection(COLLECTION_NAME);
-  var query = mongo.where.eq('nom', poetName);
-  var result = await collection.findOne(query);
-  await db.close();
-  return result ?? {}; // Return an empty map if result is null
-}
+  static Future<Map<String, dynamic>> getPoetDetails(String poetName) async {
+    var db = await mongo.Db.create(MONGO_URL);
+    await db.open();
+    var collection = db.collection(COLLECTION_NAME);
+    var query = mongo.where.eq('nom', poetName);
+    var result = await collection.findOne(query);
+    await db.close();
+    return result ?? {};
+  }
 
-static Future<List<Map<String, dynamic>>> getPoetDetailsList() async {
+  static Future<List<Map<String, dynamic>>> getPoetDetailsList() async {
     var db = await mongo.Db.create(MONGO_URL);
     await db.open();
     var collection = db.collection(COLLECTION_NAME);
     var result = await collection.find().toList();
     await db.close();
 
-    // Map each document to a Map<String, dynamic> containing poet details
     List<Map<String, dynamic>> poetsList = result.map((poet) {
-    return {
-      'ID_Auteur': poet['ID_Auteur'].toString(), // Include the ID
-      'nom': poet['nom'],
-      'prenom': poet['prenom'],
-      'lieu_naissance': poet['lieu_naissance'],
-      'image': poet['image'],
-    };
-  }).toList();
+      return {
+        'ID_Auteur': poet['ID_Auteur'].toString(),
+        'nom': poet['nom'],
+        'prenom': poet['prenom'],
+        'lieu_naissance': poet['lieu_naissance'],
+        'image': poet['image'],
+      };
+    }).toList();
 
     return poetsList;
   }
 
   static Future<List<Map<String, dynamic>>> getDeewanByAuthorId(String authorId) async {
-  var db = await mongo.Db.create(MONGO_URL);
-  await db.open();
-
-  var collection = db.collection(COLLECTION_NAME2); // Utiliser la collection des deewans
-  var result = await collection.find(mongo.where.eq("ID_Auteur", int.parse(authorId))).toList();
-
-  await db.close();
-
-  // Renvoyer la liste des détails des deewans
-  return result.map((deewan) => deewan as Map<String, dynamic>).toList();
-}
-
-
+    var db = await mongo.Db.create(MONGO_URL);
+    await db.open();
+    var collection = db.collection(COLLECTION_NAME2);
+    var result = await collection.find(mongo.where.eq("ID_Auteur", int.parse(authorId))).toList();
+    await db.close();
+    return result.map((deewan) => deewan as Map<String, dynamic>).toList();
   }
 
+  static Future<List<Map<String, dynamic>>> getPoemsByDeewanId(String deewanId) async {
+    var db = await mongo.Db.create(MONGO_URL);
+    await db.open();
+    var collection = db.collection(COLLECTION_NAME3);
+    var result = await collection.find(mongo.where.eq("ID_Deewan", int.parse(deewanId))).toList();
+    await db.close();
+    return result.map((poem) => poem as Map<String, dynamic>).toList();
+  }
+
+  static Future<Map<String, dynamic>> getPoemDetails(String poemeName) async {
+    var db = await mongo.Db.create(MONGO_URL);
+    await db.open();
+    var collection = db.collection(COLLECTION_NAME3);
+    var query = mongo.where.eq('Titre', poemeName);
+    var result = await collection.findOne(query);
+    await db.close();
+    return result ?? {};
+  }
+}

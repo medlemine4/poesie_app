@@ -1,6 +1,8 @@
+// ignore_for_file: prefer_const_constructors
+
 import 'package:flutter/material.dart';
 import 'package:poesie_app/screens/DeewanParAuteurPage.dart';
-import 'package:poesie_app/screens/PoemDetailsPage.dart';
+import 'package:poesie_app/screens/PoetDetails.dart';
 import '../data/mongo_database.dart';
 
 class PoetPage extends StatelessWidget {
@@ -32,7 +34,6 @@ class PoetPage extends StatelessWidget {
                 String nom = poet['nom'];
                 String prenom = poet['prenom'];
                 String lieuNaissance = poet['lieu_naissance'];
-                String imageUrl = poet['image'];
 
                 return Padding(
                   padding:
@@ -42,13 +43,16 @@ class PoetPage extends StatelessWidget {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) =>
-                              DeewanParAuteurPage(authorId: poet['ID_Auteur']),
+                          builder: (context) => DeewanParAuteurPage(
+                            authorId: ID_Auteur,
+                            poetFirstname: nom,
+                            poetLastname: prenom,
+                          ),
                         ),
                       );
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Color.fromARGB(255, 237, 237, 182),
+                      backgroundColor: Colors.white,
                       padding: EdgeInsets.all(10),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(20.0),
@@ -58,13 +62,41 @@ class PoetPage extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Row(
+                          mainAxisAlignment: MainAxisAlignment
+                              .end, // Align content from right to left
                           children: [
-                            CircleAvatar(
-                              backgroundImage: NetworkImage(imageUrl),
+                            IconButton(
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        PoetDetails(poetName: nom),
+                                  ),
+                                );
+                              },
+                              icon: Icon(
+                                Icons.info,
+                                color: Colors.black,
+                              ),
                             ),
                             SizedBox(width: 10),
+                            IconButton(
+                              onPressed: () {
+                                // Handle save icon press
+                              },
+                              icon: Icon(Icons.favorite,
+                              color: Colors.black,
+                              ),
+                            ),
+                          ],
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment
+                              .start, // Align content from right to left
+                          children: [
                             Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.end,
                               children: [
                                 Text(
                                   '$nom $prenom',
@@ -84,30 +116,10 @@ class PoetPage extends StatelessWidget {
                                 ),
                               ],
                             ),
-                          ],
-                        ),
-                        Row(
-                          children: [
-                            IconButton(
-                              onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) =>
-                                        PoemDetailsPage(poetName: nom),
-                                  ),
-                                );
-                              },
-                              icon: Icon(Icons.info),
-                              color: Colors.black,
-                            ),
                             SizedBox(width: 10),
-                            IconButton(
-                              onPressed: () {
-                                // Handle save icon press
-                              },
-                              icon: Icon(Icons.favorite),
-                              color: Colors.black,
+                            CircleAvatar(
+                              backgroundImage: AssetImage('images/$nom.jpg'),
+                              radius: 30,
                             ),
                           ],
                         ),

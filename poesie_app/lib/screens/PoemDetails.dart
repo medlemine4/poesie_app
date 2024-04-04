@@ -1,39 +1,34 @@
+// ignore_for_file: prefer_const_constructors, use_key_in_widget_constructors, prefer_const_constructors_in_immutables
+
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart'; // Importez le package intl pour formater les dates
 import '../data/mongo_database.dart';
+import 'package:intl/intl.dart'; // Import the intl package to format dates
 
-class PoemDetailsPage extends StatelessWidget {
-  final String poetName;
+class PoemDetails extends StatelessWidget {
+  final String poemeName;
 
-  PoemDetailsPage({required this.poetName});
+  PoemDetails({required this.poemeName});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'تفاصيل الشاعر',
+          'تفاصيل القصيدة',
           style: TextStyle(fontFamily: 'Amiri', fontSize: 24.0),
         ),
         centerTitle: true,
         backgroundColor: Color.fromARGB(255, 230, 230, 145),
       ),
       body: FutureBuilder<Map<String, dynamic>>(
-        future: MongoDataBase.getPoetDetails(poetName),
+        future: MongoDataBase.getPoemDetails(poemeName),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
             return Center(child: Text('Error: ${snapshot.error}'));
           } else {
-            Map<String, dynamic>? poetDetails = snapshot.data;
-            // Format date_naissance and date_deces if they are DateTime objects
-            String dateNaissance = poetDetails!['date_naissance'] != null
-                ? DateFormat('yyyy-MM-dd').format(poetDetails['date_naissance'])
-                : 'N/A';
-            String dateDeces = poetDetails['date_deces'] != null
-                ? DateFormat('yyyy-MM-dd').format(poetDetails['date_deces'])
-                : 'N/A';
+            Map<String, dynamic>? poemDetails = snapshot.data;
 
             return Padding(
               padding: EdgeInsets.all(20.0),
@@ -41,42 +36,54 @@ class PoemDetailsPage extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'الوصف:',
+                    ': الوصف',
                     style: TextStyle(fontFamily: 'Amiri', fontSize: 20.0, fontWeight: FontWeight.bold),
                   ),
                   SizedBox(height: 10),
                   Text(
-                    poetDetails['description'] ?? 'N/A',
+                    poemDetails!['description'] ?? 'N/A',
                     style: TextStyle(fontFamily: 'Amiri', fontSize: 18.0),
                   ),
                   SizedBox(height: 20),
                   Text(
-                    'مكان الولادة:',
+                    ': البحر',
                     style: TextStyle(fontFamily: 'Amiri', fontSize: 20.0, fontWeight: FontWeight.bold),
                   ),
                   SizedBox(height: 10),
                   Text(
-                    poetDetails['lieu_naissance'] ?? 'N/A',
+                    poemDetails['AlBaher'] ?? 'N/A',
                     style: TextStyle(fontFamily: 'Amiri', fontSize: 18.0),
                   ),
                   SizedBox(height: 20),
                   Text(
-                    'تاريخ الولادة:',
+                    ': الروي',
                     style: TextStyle(fontFamily: 'Amiri', fontSize: 20.0, fontWeight: FontWeight.bold),
                   ),
                   SizedBox(height: 10),
                   Text(
-                    dateNaissance,
+                    poemDetails['Rawy'] ?? 'N/A',
                     style: TextStyle(fontFamily: 'Amiri', fontSize: 18.0),
                   ),
                   SizedBox(height: 20),
                   Text(
-                    'تاريخ الوفاة:',
+                    ': غرض القصيدة',
                     style: TextStyle(fontFamily: 'Amiri', fontSize: 20.0, fontWeight: FontWeight.bold),
                   ),
                   SizedBox(height: 10),
                   Text(
-                    dateDeces,
+                    poemDetails['Categorie'] ?? 'N/A',
+                    style: TextStyle(fontFamily: 'Amiri', fontSize: 18.0),
+                  ),
+                  SizedBox(height: 20),
+                  Text(
+                    ': تاريخ النشر',
+                    style: TextStyle(fontFamily: 'Amiri', fontSize: 20.0, fontWeight: FontWeight.bold),
+                  ),
+                  SizedBox(height: 10),
+                  Text(
+                    poemDetails['Date_Publication'] != null
+                        ? DateFormat('yyyy-MM-dd').format(DateTime.fromMillisecondsSinceEpoch(poemDetails['Date_Publication']))
+                        : 'N/A',
                     style: TextStyle(fontFamily: 'Amiri', fontSize: 18.0),
                   ),
                 ],
