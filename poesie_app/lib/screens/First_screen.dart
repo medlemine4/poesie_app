@@ -1,11 +1,11 @@
 // File: lib/screens/poet_list_page.dart
 
-// ignore_for_file: prefer_const_constructors, sort_child_properties_last, use_key_in_widget_constructors
+// ignore_for_file: prefer_const_constructors, sort_child_properties_last, use_key_in_widget_constructors, file_names
 
 import 'package:flutter/material.dart';
 import '../widgets/custom_button.dart';
 
-class PoetListPage extends StatelessWidget {
+class First_screen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(

@@ -5,12 +5,12 @@ import 'package:poesie_app/screens/PoetDetails.dart';
 import '../data/mongo_database.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class PoetPage extends StatefulWidget {
+class FavoriteAuthorsPage extends StatefulWidget {
   @override
-  _PoetPageState createState() => _PoetPageState();
+  _FavoriteAuthorsPageState createState() => _FavoriteAuthorsPageState();
 }
 
-class _PoetPageState extends State<PoetPage> {
+class _FavoriteAuthorsPageState extends State<FavoriteAuthorsPage> {
   List<FavoriteAuthor> favoriteAuthors = [];
 
   @override
@@ -51,7 +51,7 @@ class _PoetPageState extends State<PoetPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'الشعراء',
+          'الشعراء المفضلين',
           style: TextStyle(fontFamily: 'Amiri', fontSize: 24.0),
         ),
         centerTitle: true,
@@ -66,16 +66,18 @@ class _PoetPageState extends State<PoetPage> {
             return Center(child: Text('Error: ${snapshot.error}'));
           } else {
             List<Map<String, dynamic>>? poetsList = snapshot.data;
+            List<Map<String, dynamic>> favoritePoets = poetsList!.where((poet) {
+              String authorId = poet['ID_Auteur'];
+              return favoriteAuthors.any((author) => author.authorId == authorId);
+            }).toList();
             return ListView.builder(
-              itemCount: poetsList!.length,
+              itemCount: favoritePoets.length,
               itemBuilder: (context, index) {
-                Map<String, dynamic> poet = poetsList[index];
+                Map<String, dynamic> poet = favoritePoets[index];
                 String nom = poet['nom'];
                 String prenom = poet['prenom'];
                 String lieuNaissance = poet['lieu_naissance'];
                 String authorId = poet['ID_Auteur'];
-
-                bool isFavorite = favoriteAuthors.any((author) => author.authorId == authorId);
 
                 return Padding(
                   padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
@@ -125,7 +127,7 @@ class _PoetPageState extends State<PoetPage> {
                                 toggleFavorite(authorId);
                               },
                               icon: Icon(
-                                isFavorite ? Icons.favorite : Icons.favorite_border,
+                                Icons.favorite,
                                 color: Colors.red,
                               ),
                             ),

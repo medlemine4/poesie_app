@@ -1,10 +1,7 @@
-// File: lib/widgets/custom_button.dart
-
-// ignore_for_file: prefer_const_constructors, use_key_in_widget_constructors, prefer_const_constructors_in_immutables
-
 import 'package:flutter/material.dart';
+import 'package:poesie_app/screens/PoemListPage.dart';
 import 'package:poesie_app/screens/poet_page.dart';
-
+import '../screens/favorite_authors_page.dart';
 import '../screens/deewan_page.dart';
 
 class CustomButton extends StatelessWidget {
@@ -29,8 +26,21 @@ class CustomButton extends StatelessWidget {
               context,
               MaterialPageRoute(builder: (context) => DeewanPage()),
             );
+          } else if (title == 'مفضلة الشعراء') {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => FavoriteAuthorsPage()),
+            );
           } else {
-            // Traiter les autres boutons ici
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => PoemListScreen(
+                        deewanId: '1',
+                        poetFirstname: '',
+                        poetLastname: '',
+                      )),
+            );
           }
         },
         style: ElevatedButton.styleFrom(
