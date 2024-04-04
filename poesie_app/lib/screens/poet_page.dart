@@ -28,11 +28,10 @@ class PoetPage extends StatelessWidget {
               itemCount: poetsList!.length,
               itemBuilder: (context, index) {
                 Map<String, dynamic> poet = poetsList[index];
-                String ID_Auteur = poet['ID_Auteur'];
                 String nom = poet['nom'];
                 String prenom = poet['prenom'];
                 String lieuNaissance = poet['lieu_naissance'];
-                String imageUrl = poet['image'];
+                // String imageUrl = poet['image'];
 
                 return Padding(
                   padding:
@@ -60,7 +59,7 @@ class PoetPage extends StatelessWidget {
                         Row(
                           children: [
                             CircleAvatar(
-                              backgroundImage: NetworkImage(imageUrl),
+                              backgroundImage: AssetImage('images/image1.jpg'),
                             ),
                             SizedBox(width: 10),
                             Column(
