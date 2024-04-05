@@ -9,7 +9,10 @@ class DeewanParAuteurPage extends StatelessWidget {
   final String poetFirstname;
   final String poetLastname;
 
-  DeewanParAuteurPage({required this.authorId, required this.poetFirstname, required this.poetLastname});
+  DeewanParAuteurPage(
+      {required this.authorId,
+      required this.poetFirstname,
+      required this.poetLastname});
 
   @override
   Widget build(BuildContext context) {
@@ -44,14 +47,17 @@ class DeewanParAuteurPage extends StatelessWidget {
                       context,
                       MaterialPageRoute(
                         builder: (context) => PoemListScreen(
-                          deewanId: deewan['Id_Deewan'].toString(), poetLastname: poetLastname, poetFirstname: poetFirstname,
+                          deewanId: deewan['Id_Deewan'].toString(),
+                          poetLastname: deewan['nom'].toString(),
+                          poetFirstname: '',
                         ),
                       ),
                     );
                   },
                   child: Card(
                     elevation: 2.0,
-                    margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                    margin:
+                        EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12.0),
                     ),
