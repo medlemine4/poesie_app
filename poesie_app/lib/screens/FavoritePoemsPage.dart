@@ -1,26 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:poesie_app/models/favorite_author.dart';
+import 'package:poesie_app/models/favorite_author.dart'; // Importez le modèle de poème favori
 import '../data/mongo_database.dart';
-import 'PoemContent.dart';
-import 'PoemDetails.dart';
+import 'PoemContent.dart'; // Importez la page du contenu du poème
+import 'PoemDetails.dart'; // Importez la page de détails du poème
 
-class PoemListScreen extends StatefulWidget {
-  final String deewanId;
-  final String poetFirstname;
-  final String poetLastname;
-
-  PoemListScreen({
-    required this.deewanId,
-    required this.poetFirstname,
-    required this.poetLastname,
-  });
-
+class FavoritePoemsPage extends StatefulWidget {
   @override
-  _PoemListScreenState createState() => _PoemListScreenState();
+  _FavoritePoemsPageState createState() => _FavoritePoemsPageState();
 }
 
-class _PoemListScreenState extends State<PoemListScreen> {
+class _FavoritePoemsPageState extends State<FavoritePoemsPage> {
   List<FavoritePoem> favoritePoems = [];
 
   @override
@@ -34,16 +24,14 @@ class _PoemListScreenState extends State<PoemListScreen> {
     List<String>? favoritePoemIds = prefs.getStringList('favoritePoems');
     if (favoritePoemIds != null) {
       setState(() {
-        favoritePoems =
-            favoritePoemIds.map((id) => FavoritePoem(poemId: id)).toList();
+        favoritePoems = favoritePoemIds.map((id) => FavoritePoem(poemId: id)).toList();
       });
     }
   }
 
   void saveFavoritePoems() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    List<String> favoritePoemIds =
-        favoritePoems.map((poem) => poem.poemId).toList();
+    List<String> favoritePoemIds = favoritePoems.map((poem) => poem.poemId).toList();
     await prefs.setStringList('favoritePoems', favoritePoemIds);
   }
 
@@ -63,36 +51,35 @@ class _PoemListScreenState extends State<PoemListScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'قصائد ${widget.poetFirstname} ${widget.poetLastname}',
+          'القصائد المفضلة',
           style: TextStyle(fontFamily: 'Amiri', fontSize: 24.0),
         ),
         centerTitle: true,
         backgroundColor: Color.fromARGB(255, 230, 230, 145),
       ),
       body: FutureBuilder(
-        future: MongoDataBase.getPoemsByDeewanId(widget.deewanId),
+        future: MongoDataBase.getAllPoems(), // Utilisez la méthode appropriée pour obtenir tous les poèmes
         builder: (context, AsyncSnapshot<List<Map<String, dynamic>>> snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(
-              child: CircularProgressIndicator(),
-            );
+            return Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
-            return Center(
-              child: Text('Error: ${snapshot.error}'),
-            );
-          } else if (snapshot.hasData && snapshot.data!.isNotEmpty) {
-            List<Map<String, dynamic>>? poemsList = snapshot.data;
+            return Center(child: Text('Error: ${snapshot.error}'));
+          } else {
+            List<Map<String, dynamic>>? allPoems = snapshot.data;
+            List<Map<String, dynamic>> favoritePoemsData = allPoems!.where((poem) {
+              String poemId = poem['ID_Poeme'];
+              return favoritePoems.any((favorite) => favorite.poemId == poemId);
+            }).toList();
             return ListView.builder(
-              itemCount: poemsList!.length,
+              itemCount: favoritePoemsData.length,
               itemBuilder: (context, index) {
-                Map<String, dynamic> poem = poemsList[index];
+                Map<String, dynamic> poem = favoritePoemsData[index];
                 String poemId = poem['ID_Poeme'] ?? '';
                 String titre = poem['Titre'] ?? '';
                 String contenu = poem['Contenue'] ?? '';
                 String alBaher = poem['AlBaher'] ?? '';
                 String rawy = poem['Rawy'] ?? '';
-                bool isFavorite =
-                    favoritePoems.any((poem) => poem.poemId == poemId);
+                bool isFavorite = favoritePoems.any((poem) => poem.poemId == poemId);
                 return Padding(
                   padding: EdgeInsets.all(8.0),
                   child: GestureDetector(
@@ -121,9 +108,7 @@ class _PoemListScreenState extends State<PoemListScreen> {
                                   children: [
                                     IconButton(
                                       icon: Icon(
-                                        isFavorite
-                                            ? Icons.favorite
-                                            : Icons.favorite_border,
+                                        isFavorite ? Icons.favorite : Icons.favorite_border,
                                         color: Colors.red,
                                       ),
                                       onPressed: () {
@@ -131,8 +116,7 @@ class _PoemListScreenState extends State<PoemListScreen> {
                                       },
                                     ),
                                     IconButton(
-                                      icon:
-                                          Icon(Icons.info, color: Colors.black),
+                                      icon: Icon(Icons.info, color: Colors.black),
                                       onPressed: () {
                                         Navigator.push(
                                           context,
@@ -175,10 +159,6 @@ class _PoemListScreenState extends State<PoemListScreen> {
                   ),
                 );
               },
-            );
-          } else {
-            return Center(
-              child: Text('No poems available.'),
             );
           }
         },

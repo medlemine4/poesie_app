@@ -84,4 +84,13 @@ class MongoDataBase {
     await db.close();
     return result ?? {};
   }
+
+  static Future<List<Map<String, dynamic>>> getAllPoems() async {
+    var db = await mongo.Db.create(MONGO_URL);
+    await db.open();
+    var collection = db.collection(COLLECTION_NAME3);
+    var result = await collection.find().toList();
+    await db.close();
+    return result.map((poem) => poem as Map<String, dynamic>).toList();
+  }
 }

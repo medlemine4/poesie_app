@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:poesie_app/screens/FavoritePoemsPage.dart';
 import 'package:poesie_app/screens/PoemListPage.dart';
 import 'package:poesie_app/screens/poet_page.dart';
 import '../screens/favorite_authors_page.dart';
@@ -34,12 +35,7 @@ class CustomButton extends StatelessWidget {
           } else {
             Navigator.push(
               context,
-              MaterialPageRoute(
-                  builder: (context) => PoemListScreen(
-                        deewanId: '1',
-                        poetFirstname: '',
-                        poetLastname: '',
-                      )),
+              MaterialPageRoute(builder: (context) => FavoritePoemsPage()),
             );
           }
         },
