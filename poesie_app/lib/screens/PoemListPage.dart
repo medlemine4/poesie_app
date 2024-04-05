@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors
+// ignore_for_file: prefer_const_constructors, library_private_types_in_public_api
 
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -122,17 +122,6 @@ class _PoemListScreenState extends State<PoemListScreen> {
                                 Row(
                                   children: [
                                     IconButton(
-                                      icon: Icon(
-                                        isFavorite
-                                            ? Icons.favorite
-                                            : Icons.favorite_border,
-                                        color: Colors.red,
-                                      ),
-                                      onPressed: () {
-                                        toggleFavorite(poemId);
-                                      },
-                                    ),
-                                    IconButton(
                                       icon:
                                           Icon(Icons.info, color: Colors.black),
                                       onPressed: () {
@@ -144,6 +133,17 @@ class _PoemListScreenState extends State<PoemListScreen> {
                                             ),
                                           ),
                                         );
+                                      },
+                                    ),
+                                    IconButton(
+                                      icon: Icon(
+                                        isFavorite
+                                            ? Icons.favorite
+                                            : Icons.favorite_border,
+                                        color: Colors.red,
+                                      ),
+                                      onPressed: () {
+                                        toggleFavorite(poemId);
                                       },
                                     ),
                                   ],
