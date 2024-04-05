@@ -18,14 +18,15 @@ class MongoDataBase {
     return result.map((poet) => poet['nom'] as String).toList();
   }
 
-  static Future<List<String>> getDeewanNames() async {
-    var db = await mongo.Db.create(MONGO_URL);
-    await db.open();
-    var collection = db.collection(COLLECTION_NAME2);
-    var result = await collection.find().toList();
-    await db.close();
-    return result.map((deewan) => deewan['nom'] as String).toList();
-  }
+  static Future<List<Map<String, dynamic>>> getDeewanNames() async {
+  var db = await mongo.Db.create(MONGO_URL);
+  await db.open();
+  var collection = db.collection(COLLECTION_NAME2);
+  var result = await collection.find().toList();
+  await db.close();
+  return result;
+}
+
 
   static Future<Map<String, dynamic>> getPoetDetails(String poetName) async {
     var db = await mongo.Db.create(MONGO_URL);
