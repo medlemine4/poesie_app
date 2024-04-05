@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_const_constructors
+
 import 'package:flutter/material.dart';
 import 'package:poesie_app/models/favorite_author.dart';
 import '../data/mongo_database.dart';
@@ -84,8 +86,11 @@ class _PoemListScreenState extends State<PoemListScreen> {
               itemCount: poemsList!.length,
               itemBuilder: (context, index) {
                 Map<String, dynamic> poem = poemsList[index];
-                String poemId = poem['ID_Poeme'];
-                String titre = poem['Titre'];
+                String poemId = poem['ID_Poeme'] ?? '';
+                String titre = poem['Titre'] ?? '';
+                String contenu = poem['Contenue'] ?? '';
+                String alBaher = poem['AlBaher'] ?? '';
+                String rawy = poem['Rawy'] ?? '';
                 bool isFavorite = favoritePoems.any((poem) => poem.poemId == poemId);
                 return Padding(
                   padding: EdgeInsets.all(8.0),
@@ -95,8 +100,8 @@ class _PoemListScreenState extends State<PoemListScreen> {
                         context,
                         MaterialPageRoute(
                           builder: (context) => PoemContent(
-                            poemContent: poem['Contenue'],
-                            poemTitle: poem['Titre'],
+                            poemContent: contenu,
+                            poemTitle: titre,
                           ),
                         ),
                       );
@@ -141,18 +146,18 @@ class _PoemListScreenState extends State<PoemListScreen> {
                                   crossAxisAlignment: CrossAxisAlignment.end,
                                   children: [
                                     Text(
-                                      titre ?? '',
+                                      titre,
                                       style: TextStyle(
                                         fontSize: 18,
                                         fontWeight: FontWeight.bold,
                                       ),
                                     ),
                                     Text(
-                                      'البحر: ${poem['AlBaher'] ?? ''}',
+                                      'البحر: $alBaher',
                                       style: TextStyle(fontSize: 16),
                                     ),
                                     Text(
-                                      'الروي : ${poem['Rawy'] ?? ''}',
+                                      'الروي : $rawy',
                                       style: TextStyle(fontSize: 16),
                                     ),
                                   ],

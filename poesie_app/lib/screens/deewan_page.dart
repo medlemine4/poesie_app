@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors, sort_child_properties_last, use_key_in_widget_constructors, prefer_const_constructors_in_immutables
+// ignore_for_file: prefer_const_constructors
 
 import 'package:flutter/material.dart';
 import '../data/mongo_database.dart';
@@ -28,30 +28,42 @@ class DeewanPage extends StatelessWidget {
             return Center(child: Text('Error: ${snapshot.error}'));
           } else {
             List<String>? deewans = snapshot.data;
-            return ListView.builder(
-              itemCount: deewans!.length,
-              itemBuilder: (context, index) {
-                return Padding(
-                  padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
-                  child: ElevatedButton(
-                    onPressed: () {
-                      // Navigate to the poems page for this ديوان
-                    },
-                    child: Text(
-                      deewans[index],
-                      style: TextStyle(fontFamily: 'Amiri', fontSize: 20.0),
-                    ),
-                    style: ElevatedButton.styleFrom(
-                      foregroundColor: Colors.black,
-                      backgroundColor: Color.fromARGB(255, 237, 237, 182),
-                      padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 30.0),
+            return Directionality(
+              textDirection: TextDirection.rtl,
+              child: ListView.builder(
+                itemCount: deewans!.length,
+                itemBuilder: (context, index) {
+                  return Padding(
+                    padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
+                    child: Card(
+                      elevation: 2.0,
+                      margin: EdgeInsets.zero,
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20.0),
+                        borderRadius: BorderRadius.circular(12.0),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              children: [
+                                Icon(Icons.book, color: Colors.blue),
+                                SizedBox(width: 40.0),
+                                Text(
+                                  deewans[index],
+                                  style: TextStyle(fontFamily: 'Amiri', fontSize: 20.0),
+                                ),
+                              ],
+                            ),
+                            Icon(Icons.info),
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                );
-              },
+                  );
+                },
+              ),
             );
           }
         },

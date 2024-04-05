@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_const_constructors
+
 import 'package:flutter/material.dart';
 import 'package:poesie_app/models/favorite_author.dart';
 import 'package:poesie_app/screens/DeewanParAuteurPage.dart';
