@@ -16,7 +16,7 @@ class PoetryApp extends StatelessWidget {
         primaryColor: Colors.yellow[800],
         fontFamily: 'Amiri',
       ),
-      home: First_screen(),
+      home: FirstScreen(),
     );
   }
 }

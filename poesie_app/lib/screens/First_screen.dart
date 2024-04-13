@@ -1,11 +1,8 @@
-// File: lib/screens/poet_list_page.dart
-
-// ignore_for_file: prefer_const_constructors, sort_child_properties_last, use_key_in_widget_constructors, file_names
-
 import 'package:flutter/material.dart';
+import 'package:poesie_app/screens/SearchPage.dart';
 import '../widgets/custom_button.dart';
 
-class First_screen extends StatelessWidget {
+class FirstScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -46,8 +43,13 @@ class First_screen extends StatelessWidget {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
-        child: Icon(Icons.add),
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => SearchPage()),
+          );
+        },
+        child: Icon(Icons.search),
         backgroundColor: Color.fromARGB(255, 237, 237, 182),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,

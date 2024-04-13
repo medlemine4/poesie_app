@@ -14,3 +14,11 @@ class FavoritePoem {
     required this.poemId,
   });
 }
+
+class historical {
+  final String historic;
+
+  historical({
+    required this.historic,
+  });
+}
