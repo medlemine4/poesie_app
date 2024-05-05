@@ -1,9 +1,8 @@
-// ignore_for_file: prefer_const_constructors
-
 import 'package:flutter/material.dart';
 import 'package:poesie_app/models/favorite_author.dart';
 import 'package:poesie_app/screens/DeewanParAuteurPage.dart';
 import 'package:poesie_app/screens/PoetDetails.dart';
+import 'package:poesie_app/screens/SearchPage.dart';
 import '../data/mongo_database.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -172,6 +171,18 @@ class _PoetPageState extends State<PoetPage> {
             );
           }
         },
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => SearchPage(), // Aller vers la page de recherche
+            ),
+          );
+        },
+        backgroundColor: Color.fromARGB(255, 230, 230, 145), // Couleur du bouton flottant
+        child: Icon(Icons.search), // Icône de recherche
       ),
     );
   }

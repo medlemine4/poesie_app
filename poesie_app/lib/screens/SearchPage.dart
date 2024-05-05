@@ -51,32 +51,49 @@ class _SearchPageState extends State<SearchPage> {
     );
   }
 
+  void _clearSearchHistory() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.remove('searchHistory');
+    setState(() {
+      _searchHistory.clear();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Row(
+        title: Text(
+          'البحث',
+          style: TextStyle(fontSize: 20.0),
+        ),
+        backgroundColor: Color.fromARGB(255, 230, 230, 145), // Couleur de l'app bar
+      ),
+      body: Container(
+        padding: EdgeInsets.all(20.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Expanded(
-              child: TextField(
-                controller: _searchController,
-                onChanged: (value) {
-                  setState(() {
-                    // Met à jour le texte de recherche à chaque modification.
-                  });
-                },
-                decoration: InputDecoration(
-                  hintText: 'ابحث هنا...',
+            TextField(
+              controller: _searchController,
+              decoration: InputDecoration(
+                hintText: 'أدخل بحثك هنا',
+                filled: true,
+                fillColor: Colors.white,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                  borderSide: BorderSide.none,
                 ),
               ),
+              textAlign: TextAlign.right,
             ),
-            IconButton(
-              icon: Icon(Icons.search),
+            SizedBox(height: 20.0),
+            ElevatedButton(
               onPressed: () {
                 String searchText = _searchController.text.trim();
                 if (searchText.isNotEmpty) {
                   setState(() {
-                    // Ajoute le mot dans l'historique s'il n'existe pas déjà.
+                    // Ajouter le terme à l'historique s'il n'existe pas déjà.
                     if (!_searchHistory.any((item) => item.historic == searchText)) {
                       _searchHistory.add(historical(historic: searchText));
                       _saveSearchHistory();
@@ -85,26 +102,57 @@ class _SearchPageState extends State<SearchPage> {
                   _performSearch(searchText);
                 }
               },
+              child: Text(
+                'ابحث',
+                style: TextStyle(fontSize: 18.0),
+              ),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.blue, // Couleur du bouton
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+              ),
+            ),
+            SizedBox(height: 20.0),
+            Text(
+              'سجل البحث',
+              style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
+              textAlign: TextAlign.right,
+            ),
+            Expanded(
+              child: ListView.builder(
+                itemCount: _searchHistory.length,
+                itemBuilder: (context, index) {
+                  return GestureDetector(
+                    onTap: () {
+                      _performSearch(_searchHistory[index].historic);
+                    },
+                    child: Card(
+                      elevation: 3.0,
+                      margin: EdgeInsets.symmetric(vertical: 10.0),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
+                      child: Padding(
+                        padding: EdgeInsets.all(10.0),
+                        child: Text(
+                          _searchHistory[index].historic,
+                          style: TextStyle(fontSize: 16.0),
+                          textAlign: TextAlign.right,
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+            IconButton(
+              icon: Icon(Icons.delete),
+              onPressed: _clearSearchHistory,
+              color: Colors.red, // Couleur de l'icône
             ),
           ],
         ),
-      ),
-      body: Column(
-        children: [
-          Expanded(
-            child: ListView.builder(
-              itemCount: _searchHistory.length,
-              itemBuilder: (context, index) {
-                return ListTile(
-                  title: Text(_searchHistory[index].historic),
-                  onTap: () {
-                    _performSearch(_searchHistory[index].historic);
-                  },
-                );
-              },
-            ),
-          ),
-        ],
       ),
     );
   }

@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_constructors, library_private_types_in_public_api
 
 import 'package:flutter/material.dart';
+import 'package:poesie_app/screens/SearchPage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:poesie_app/models/favorite_author.dart';
 import '../data/mongo_database.dart';
@@ -184,6 +185,18 @@ class _PoemListScreenState extends State<PoemListScreen> {
             );
           }
         },
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => SearchPage(), // Aller vers la page de recherche
+            ),
+          );
+        },
+        backgroundColor: Color.fromARGB(255, 230, 230, 145), // Couleur du bouton flottant
+        child: Icon(Icons.search), // Icône de recherche
       ),
     );
   }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:poesie_app/screens/SearchPage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:poesie_app/models/favorite_author.dart'; // Importez le modèle de poème favori
 import '../data/mongo_database.dart';
@@ -162,6 +163,18 @@ class _FavoritePoemsPageState extends State<FavoritePoemsPage> {
             );
           }
         },
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => SearchPage(), // Aller vers la page de recherche
+            ),
+          );
+        },
+        backgroundColor: Color.fromARGB(255, 230, 230, 145), // Couleur du bouton flottant
+        child: Icon(Icons.search), // Icône de recherche
       ),
     );
   }

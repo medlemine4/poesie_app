@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_constructors, use_key_in_widget_constructors, prefer_const_constructors_in_immutables
 
 import 'package:flutter/material.dart';
+import 'package:poesie_app/screens/SearchPage.dart';
 import '../data/mongo_database.dart';
 import 'package:intl/intl.dart'; // Import the intl package to format dates
 
@@ -91,6 +92,18 @@ class PoemDetails extends StatelessWidget {
             );
           }
         },
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => SearchPage(), // Aller vers la page de recherche
+            ),
+          );
+        },
+        backgroundColor: Color.fromARGB(255, 230, 230, 145), // Couleur du bouton flottant
+        child: Icon(Icons.search), // Icône de recherche
       ),
     );
   }
