@@ -180,7 +180,7 @@ class _PoemListScreenState extends State<PoemListScreen> {
             );
           } else {
             return Center(
-              child: Text('No poems available.'),
+              child: Text('.لا توجد قصائد متوفرة في هذا الديوان'),
             );
           }
         },
