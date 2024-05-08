@@ -111,58 +111,92 @@ class _SearchResultPageState extends State<SearchResultPage> {
             return Center(child: CircularProgressIndicator());
           }
 
-          if (snapshot.hasError || snapshot.data == null) {
-            return Center(child: Text('Error loading data'));
+          if (snapshot.hasError ||
+              snapshot.data == null ||
+              snapshot.data!.isEmpty) {
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.warning,
+                    size: 50,
+                    color: Colors.red,
+                  ),
+                  Text(
+                    'Aucune donnée trouvée',
+                    style: TextStyle(fontSize: 18),
+                  ),
+                ],
+              ),
+            );
           }
 
           List<Map<String, dynamic>> allResults = snapshot.data!;
 
-          return ListView.builder(
-            itemCount: allResults.length,
-            itemBuilder: (context, index) {
-              var result = allResults[index];
-              if (displayedResults.contains(result.toString())) {
-                return SizedBox(); // Si l'élément est déjà affiché, ne rien afficher
-              }
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              if (widget.searchText
+                  .isNotEmpty) // Afficher uniquement si la recherche a été effectuée
+                Container(
+                  padding: EdgeInsets.all(16),
+                  child: Text(
+                    'نتائج البحث عن: ${widget.searchText}',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                ),
+              Expanded(
+                child: ListView.builder(
+                  itemCount: allResults.length,
+                  itemBuilder: (context, index) {
+                    var result = allResults[index];
+                    if (displayedResults.contains(result.toString())) {
+                      return SizedBox(); // Si l'élément est déjà affiché, ne rien afficher
+                    }
 
-              displayedResults.add(result
-                  .toString()); // Ajouter l'élément à l'ensemble des éléments déjà affichés
+                    displayedResults.add(result
+                        .toString()); // Ajouter l'élément à l'ensemble des éléments déjà affichés
 
-              if (result.containsKey('nom') && result.containsKey('prenom')) {
-                // C'est un auteur
-                String nom = result['nom'];
-                String prenom = result['prenom'];
-                String lieuNaissance = result['lieu_naissance'] ?? '';
-                String authorId = result['ID_Auteur'];
+                    if (result.containsKey('nom') &&
+                        result.containsKey('prenom')) {
+                      // C'est un auteur
+                      String nom = result['nom'];
+                      String prenom = result['prenom'];
+                      String lieuNaissance = result['lieu_naissance'] ?? '';
+                      String authorId = result['ID_Auteur'];
 
-                bool isFavorite = favoriteAuthors
-                    .any((author) => author.authorId == authorId);
+                      bool isFavorite = favoriteAuthors
+                          .any((author) => author.authorId == authorId);
 
-                return _buildAuthorCard(
-                    nom, prenom, lieuNaissance, authorId, isFavorite);
-              } else if (result.containsKey('Id_Deewan')) {
-                // C'est un deewan
-                String deewanId = result['Id_Deewan'].toString();
-                String nom = result['nom'].toString();
+                      return _buildAuthorCard(
+                          nom, prenom, lieuNaissance, authorId, isFavorite);
+                    } else if (result.containsKey('Id_Deewan')) {
+                      // C'est un deewan
+                      String deewanId = result['Id_Deewan'].toString();
+                      String nom = result['nom'].toString();
 
-                return _buildDeewanCard(deewanId, nom);
-              } else if (result.containsKey('Titre')) {
-                // C'est un poème
-                String titre = result['Titre'] ?? '';
-                String contenu = result['Contenue'] ?? '';
-                String alBaher = result['AlBaher'] ?? '';
-                String rawy = result['Rawy'] ?? '';
-                String poemId = result['ID_Poeme'] ?? '';
+                      return _buildDeewanCard(deewanId, nom);
+                    } else if (result.containsKey('Titre')) {
+                      // C'est un poème
+                      String titre = result['Titre'] ?? '';
+                      String contenu = result['Contenue'] ?? '';
+                      String alBaher = result['AlBaher'] ?? '';
+                      String rawy = result['Rawy'] ?? '';
+                      String poemId = result['ID_Poeme'] ?? '';
 
-                bool isFavorite =
-                    favoritePoems.any((poem) => poem.poemId == poemId);
+                      bool isFavorite =
+                          favoritePoems.any((poem) => poem.poemId == poemId);
 
-                return _buildPoemCard(
-                    titre, contenu, alBaher, rawy, poemId, isFavorite);
-              } else {
-                return SizedBox(); // Gérer d'autres types d'éléments si nécessaire
-              }
-            },
+                      return _buildPoemCard(
+                          titre, contenu, alBaher, rawy, poemId, isFavorite);
+                    } else {
+                      return SizedBox(); // Gérer d'autres types d'éléments si nécessaire
+                    }
+                  },
+                ),
+              ),
+            ],
           );
         },
       ),
@@ -362,9 +396,7 @@ class _SearchResultPageState extends State<SearchResultPage> {
                         ),
                         IconButton(
                           icon: Icon(
-                            isFavorite
-                                ? Icons.favorite
-                                : Icons.favorite_border,
+                            isFavorite ? Icons.favorite : Icons.favorite_border,
                             color: isFavorite ? Colors.red : Colors.black,
                           ),
                           onPressed: () {

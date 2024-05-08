@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart'; // Importez le package intl pour formater les dates
+import 'package:poesie_app/screens/SearchPage.dart';
 import '../data/mongo_database.dart';
 
 class PoemDetailsPage extends StatelessWidget {
@@ -84,6 +85,18 @@ class PoemDetailsPage extends StatelessWidget {
             );
           }
         },
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => SearchPage(), // Aller vers la page de recherche
+            ),
+          );
+        },
+        backgroundColor: Color.fromARGB(255, 230, 230, 145), // Couleur du bouton flottant
+        child: Icon(Icons.search), // Icône de recherche
       ),
     );
   }
