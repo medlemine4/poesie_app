@@ -1,5 +1,3 @@
-// ignore_for_file: prefer_const_constructors, library_private_types_in_public_api
-
 import 'package:flutter/material.dart';
 import 'package:poesie_app/screens/SearchPage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -24,6 +22,8 @@ class PoemListScreen extends StatefulWidget {
 }
 
 class _PoemListScreenState extends State<PoemListScreen> {
+  late TextEditingController _searchController = TextEditingController();
+  String _searchText = '';
   List<FavoritePoem> favoritePoems = [];
 
   @override
@@ -71,120 +71,162 @@ class _PoemListScreenState extends State<PoemListScreen> {
         ),
         centerTitle: true,
         backgroundColor: Color.fromARGB(255, 230, 230, 145),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+        ),
       ),
-      body: FutureBuilder(
-        future: MongoDataBase.getPoemsByDeewanId(widget.deewanId),
-        builder: (context, AsyncSnapshot<List<Map<String, dynamic>>> snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(
-              child: CircularProgressIndicator(),
-            );
-          } else if (snapshot.hasError) {
-            return Center(
-              child: Text('Error: ${snapshot.error}'),
-            );
-          } else if (snapshot.hasData && snapshot.data!.isNotEmpty) {
-            List<Map<String, dynamic>>? poemsList = snapshot.data;
-            return ListView.builder(
-              itemCount: poemsList!.length,
-              itemBuilder: (context, index) {
-                Map<String, dynamic> poem = poemsList[index];
-                String poemId = poem['ID_Poeme'] ?? '';
-                String titre = poem['Titre'] ?? '';
-                String contenu = poem['Contenue'] ?? '';
-                String alBaher = poem['AlBaher'] ?? '';
-                String rawy = poem['Rawy'] ?? '';
-                bool isFavorite =
-                    favoritePoems.any((poem) => poem.poemId == poemId);
-                return Padding(
-                  padding: EdgeInsets.all(8.0),
-                  child: GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => PoemContent(
-                            poemContent: contenu,
-                            poemTitle: titre,
+      body: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            child: Row(
+              children: [
+                Expanded(
+                  child: TextField(
+                    controller: _searchController,
+                    decoration: InputDecoration(
+                      hintText: 'ابحث في القصائد',
+                      border: InputBorder.none,
+                    ),
+                    onChanged: (value) {
+                      setState(() {
+                        _searchText = value;
+                      });
+                    },
+                  ),
+                ),
+                IconButton(
+                  onPressed: () {
+                    _searchController.clear();
+                    setState(() {
+                      _searchText = '';
+                    });
+                  },
+                  icon: Icon(Icons.clear),
+                ),
+              ],
+            ),
+          ),
+          Expanded(
+            child: FutureBuilder<List<Map<String, dynamic>>>(
+              future: MongoDataBase.getPoemsByDeewanId(widget.deewanId),
+              builder: (context, AsyncSnapshot<List<Map<String, dynamic>>> snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Center(
+                    child: CircularProgressIndicator(),
+                  );
+                } else if (snapshot.hasError) {
+                  return Center(
+                    child: Text('Error: ${snapshot.error}'),
+                  );
+                } else if (snapshot.hasData && snapshot.data!.isNotEmpty) {
+                  List<Map<String, dynamic>>? poemsList = snapshot.data;
+                  return ListView.builder(
+                    itemCount: poemsList!.length,
+                    itemBuilder: (context, index) {
+                      Map<String, dynamic> poem = poemsList[index];
+                      String poemId = poem['ID_Poeme'] ?? '';
+                      String titre = poem['Titre'] ?? '';
+                      String contenu = poem['Contenue'] ?? '';
+                      String alBaher = poem['AlBaher'] ?? '';
+                      String rawy = poem['Rawy'] ?? '';
+                      bool isFavorite =
+                          favoritePoems.any((poem) => poem.poemId == poemId);
+                      return Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => PoemContent(
+                                  poemContent: contenu,
+                                  poemTitle: titre,
+                                ),
+                              ),
+                            );
+                          },
+                          child: Card(
+                            elevation: 4,
+                            child: Padding(
+                              padding: EdgeInsets.all(16.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Row(
+                                        children: [
+                                          IconButton(
+                                            icon:
+                                                Icon(Icons.info, color: Colors.black),
+                                            onPressed: () {
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) => PoemDetails(
+                                                    poemeName: titre,
+                                                  ),
+                                                ),
+                                              );
+                                            },
+                                          ),
+                                          IconButton(
+                                            icon: Icon(
+                                              isFavorite
+                                                  ? Icons.favorite
+                                                  : Icons.favorite_border,
+                                              color: Colors.red,
+                                            ),
+                                            onPressed: () {
+                                              toggleFavorite(poemId);
+                                            },
+                                          ),
+                                        ],
+                                      ),
+                                      Column(
+                                        crossAxisAlignment: CrossAxisAlignment.end,
+                                        children: [
+                                          Text(
+                                            titre,
+                                            style: TextStyle(
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                          Text(
+                                            'البحر: $alBaher',
+                                            style: TextStyle(fontSize: 16),
+                                          ),
+                                          Text(
+                                            'الروي : $rawy',
+                                            style: TextStyle(fontSize: 16),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
                           ),
                         ),
                       );
                     },
-                    child: Card(
-                      elevation: 4,
-                      child: Padding(
-                        padding: EdgeInsets.all(16.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Row(
-                                  children: [
-                                    IconButton(
-                                      icon:
-                                          Icon(Icons.info, color: Colors.black),
-                                      onPressed: () {
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (context) => PoemDetails(
-                                              poemeName: titre,
-                                            ),
-                                          ),
-                                        );
-                                      },
-                                    ),
-                                    IconButton(
-                                      icon: Icon(
-                                        isFavorite
-                                            ? Icons.favorite
-                                            : Icons.favorite_border,
-                                        color: Colors.red,
-                                      ),
-                                      onPressed: () {
-                                        toggleFavorite(poemId);
-                                      },
-                                    ),
-                                  ],
-                                ),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.end,
-                                  children: [
-                                    Text(
-                                      titre,
-                                      style: TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                    Text(
-                                      'البحر: $alBaher',
-                                      style: TextStyle(fontSize: 16),
-                                    ),
-                                    Text(
-                                      'الروي : $rawy',
-                                      style: TextStyle(fontSize: 16),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                );
+                  );
+                } else {
+                  return Center(
+                    child: Text('No poems available.'),
+                  );
+                }
               },
-            );
-          } else {
-            return Center(
-              child: Text('No poems available.'),
-            );
-          }
-        },
+            ),
+          ),
+        ],
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {

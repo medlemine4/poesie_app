@@ -13,6 +13,8 @@ class FavoritePoemsPage extends StatefulWidget {
 
 class _FavoritePoemsPageState extends State<FavoritePoemsPage> {
   List<FavoritePoem> favoritePoems = [];
+  late TextEditingController _searchController = TextEditingController();
+  String _searchText = '';
 
   @override
   void initState() {
@@ -58,111 +60,155 @@ class _FavoritePoemsPageState extends State<FavoritePoemsPage> {
         centerTitle: true,
         backgroundColor: Color.fromARGB(255, 230, 230, 145),
       ),
-      body: FutureBuilder(
-        future: MongoDataBase.getAllPoems(), // Utilisez la méthode appropriée pour obtenir tous les poèmes
-        builder: (context, AsyncSnapshot<List<Map<String, dynamic>>> snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
-          } else {
-            List<Map<String, dynamic>>? allPoems = snapshot.data;
-            List<Map<String, dynamic>> favoritePoemsData = allPoems!.where((poem) {
-              String poemId = poem['ID_Poeme'];
-              return favoritePoems.any((favorite) => favorite.poemId == poemId);
-            }).toList();
-            return ListView.builder(
-              itemCount: favoritePoemsData.length,
-              itemBuilder: (context, index) {
-                Map<String, dynamic> poem = favoritePoemsData[index];
-                String poemId = poem['ID_Poeme'] ?? '';
-                String titre = poem['Titre'] ?? '';
-                String contenu = poem['Contenue'] ?? '';
-                String alBaher = poem['AlBaher'] ?? '';
-                String rawy = poem['Rawy'] ?? '';
-                bool isFavorite = favoritePoems.any((poem) => poem.poemId == poemId);
-                return Padding(
-                  padding: EdgeInsets.all(8.0),
-                  child: GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => PoemContent(
-                            poemContent: contenu,
-                            poemTitle: titre,
+      body: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            child: Row(
+              children: [
+                Expanded(
+                  child: TextField(
+                    controller: _searchController,
+                    decoration: InputDecoration(
+                      hintText: 'ابحث في القصائد المفضلة',
+                      border: InputBorder.none,
+                    ),
+                    onChanged: (value) {
+                      setState(() {
+                        _searchText = value;
+                      });
+                    },
+                  ),
+                ),
+                IconButton(
+                  icon: Icon(Icons.clear),
+                  onPressed: () {
+                    setState(() {
+                      _searchText = '';
+                      _searchController.clear();
+                    });
+                  },
+                ),
+              ],
+            ),
+          ),
+          Expanded(
+            child: FutureBuilder(
+              future: MongoDataBase.getAllPoems(), // Utilisez la méthode appropriée pour obtenir tous les poèmes
+              builder: (context, AsyncSnapshot<List<Map<String, dynamic>>> snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Center(child: CircularProgressIndicator());
+                } else if (snapshot.hasError) {
+                  return Center(child: Text('Error: ${snapshot.error}'));
+                } else {
+                  List<Map<String, dynamic>>? allPoems = snapshot.data;
+                  List<Map<String, dynamic>> favoritePoemsData = allPoems!.where((poem) {
+                    String poemId = poem['ID_Poeme'] ?? '';
+                    String titre = poem['Titre'] ?? '';
+                    String contenu = poem['Contenue'] ?? '';
+                    String alBaher = poem['AlBaher'] ?? '';
+                    String rawy = poem['Rawy'] ?? '';
+                    return favoritePoems.any((favorite) => favorite.poemId == poemId) &&
+                        (titre.toLowerCase().contains(_searchText.toLowerCase()) ||
+                            contenu.toLowerCase().contains(_searchText.toLowerCase()) ||
+                            alBaher.toLowerCase().contains(_searchText.toLowerCase()) ||
+                            rawy.toLowerCase().contains(_searchText.toLowerCase()));
+                  }).toList();
+                  return ListView.builder(
+                    itemCount: favoritePoemsData.length,
+                    itemBuilder: (context, index) {
+                      Map<String, dynamic> poem = favoritePoemsData[index];
+                      String poemId = poem['ID_Poeme'] ?? '';
+                      String titre = poem['Titre'] ?? '';
+                      String alBaher = poem['AlBaher'] ?? '';
+                      String rawy = poem['Rawy'] ?? '';
+                      String contenu = poem['Contenue'] ?? '';
+                      bool isFavorite = favoritePoems.any((poem) => poem.poemId == poemId);
+                      return Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => PoemContent(
+                                  poemContent: contenu,
+                                  poemTitle: titre,
+                                ),
+                              ),
+                            );
+                          },
+                          child: Card(
+                            elevation: 4,
+                            child: Padding(
+                              padding: EdgeInsets.all(16.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Row(
+                                        children: [
+                                          IconButton(
+                                            icon: Icon(
+                                              isFavorite ? Icons.favorite : Icons.favorite_border,
+                                              color: Colors.red,
+                                            ),
+                                            onPressed: () {
+                                              toggleFavorite(poemId);
+                                            },
+                                          ),
+                                          IconButton(
+                                            icon: Icon(Icons.info, color: Colors.black),
+                                            onPressed: () {
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) => PoemDetails(
+                                                    poemeName: titre,
+                                                  ),
+                                                ),
+                                              );
+                                            },
+                                          ),
+                                        ],
+                                      ),
+                                      Column(
+                                        crossAxisAlignment: CrossAxisAlignment.end,
+                                        children: [
+                                          Text(
+                                            titre,
+                                            style: TextStyle(
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                          Text(
+                                            'البحر: $alBaher',
+                                            style: TextStyle(fontSize: 16),
+                                          ),
+                                          Text(
+                                            'الروي : $rawy',
+                                            style: TextStyle(fontSize: 16),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
                           ),
                         ),
                       );
                     },
-                    child: Card(
-                      elevation: 4,
-                      child: Padding(
-                        padding: EdgeInsets.all(16.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Row(
-                                  children: [
-                                    IconButton(
-                                      icon: Icon(
-                                        isFavorite ? Icons.favorite : Icons.favorite_border,
-                                        color: Colors.red,
-                                      ),
-                                      onPressed: () {
-                                        toggleFavorite(poemId);
-                                      },
-                                    ),
-                                    IconButton(
-                                      icon: Icon(Icons.info, color: Colors.black),
-                                      onPressed: () {
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (context) => PoemDetails(
-                                              poemeName: titre,
-                                            ),
-                                          ),
-                                        );
-                                      },
-                                    ),
-                                  ],
-                                ),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.end,
-                                  children: [
-                                    Text(
-                                      titre,
-                                      style: TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                    Text(
-                                      'البحر: $alBaher',
-                                      style: TextStyle(fontSize: 16),
-                                    ),
-                                    Text(
-                                      'الروي : $rawy',
-                                      style: TextStyle(fontSize: 16),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                );
+                  );
+                }
               },
-            );
-          }
-        },
+            ),
+          ),
+        ],
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
