@@ -22,9 +22,19 @@ class PoemContent extends StatelessWidget {
       body: Padding(
         padding: EdgeInsets.all(20.0),
         child: SingleChildScrollView(
-          child: Text(
-            poemContent,
-            style: TextStyle(fontFamily: 'Amiri', fontSize: 18.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              for (String line in poemContent.split('\n'))
+                Padding(
+                  padding: EdgeInsets.only(bottom: 19.0),
+                  child: Text(
+                    line,
+                    style: TextStyle(fontFamily: 'Almarai', fontSize: 18.0),
+                    textDirection: TextDirection.rtl,
+                  ),
+                ),
+            ],
           ),
         ),
       ),

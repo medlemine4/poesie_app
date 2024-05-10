@@ -27,4 +27,7 @@ flutter:
     - family: Gulzar
       fonts:
         - asset: fonts/Gulzar/Gulzar-Regular.ttf
-        # - asset: fonts/Lemonada/Lemonada-Regular.ttf
+    - family: Almarai
+      fonts:
+        - asset: fonts/Almarai/Almarai-Regular.ttf
+        - asset: fonts/Almarai/Almarai-Bold.ttf
