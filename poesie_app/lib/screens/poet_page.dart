@@ -66,32 +66,42 @@ class _PoetPageState extends State<PoetPage> {
         children: [
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            child: Row(
-              children: [
-                Expanded(
-                  child: TextField(
-                    controller: _searchController,
-                    decoration: InputDecoration(
-                      hintText: 'ابحث عن الشاعر',
-                      border: InputBorder.none,
+            child: Container(
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.grey), // Ajout de la bordure
+                borderRadius: BorderRadius.circular(8.0), // Bordure arrondie
+              ),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: TextField(
+                        controller: _searchController,
+                        decoration: InputDecoration(
+                          hintText: 'ابحث عن الشاعر',
+                          border: InputBorder.none,
+                          contentPadding: EdgeInsets.zero, // Padding réduit à zéro
+                        ),
+                        onChanged: (value) {
+                          setState(() {
+                            _searchText = value;
+                          });
+                        },
+                      ),
                     ),
-                    onChanged: (value) {
-                      setState(() {
-                        _searchText = value;
-                      });
-                    },
-                  ),
+                    IconButton(
+                      onPressed: () {
+                        _searchController.clear();
+                        setState(() {
+                          _searchText = '';
+                        });
+                      },
+                      icon: Icon(Icons.clear),
+                    ),
+                  ],
                 ),
-                IconButton(
-                  onPressed: () {
-                    _searchController.clear();
-                    setState(() {
-                      _searchText = '';
-                    });
-                  },
-                  icon: Icon(Icons.clear),
-                ),
-              ],
+              ),
             ),
           ),
           Expanded(
@@ -215,6 +225,18 @@ class _PoetPageState extends State<PoetPage> {
             ),
           ),
         ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => SearchPage(),
+            ),
+          );
+        },
+        backgroundColor: Color.fromARGB(255, 230, 230, 145),
+        child: Icon(Icons.search),
       ),
     );
   }
