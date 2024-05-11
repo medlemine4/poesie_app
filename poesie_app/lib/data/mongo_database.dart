@@ -49,8 +49,6 @@ class MongoDataBase {
         'ID_Auteur': poet['ID_Auteur'].toString(), // Include the ID
         'nom': poet['nom'],
         'prenom': poet['prenom'],
-        'lieu_naissance': poet['lieu_naissance'],
-        // 'image': poet['image'],
       };
     }).toList();
 
@@ -116,9 +114,6 @@ class MongoDataBase {
         }, // Recherche de sous-chaînes et insensible à la casse
         {
           'prenom': {'\$regex': searchText, '\$options': 'i'}
-        },
-        {
-          'lieu_naissance': {'\$regex': searchText, '\$options': 'i'}
         }
       ]
     };

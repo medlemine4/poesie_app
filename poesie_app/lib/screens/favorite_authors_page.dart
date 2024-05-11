@@ -110,16 +110,12 @@ class _FavoriteAuthorsPageState extends State<FavoriteAuthorsPage> {
                     String authorId = poet['ID_Auteur'];
                     String nom = poet['nom'];
                     String prenom = poet['prenom'];
-                    String lieuNaissance = poet['lieu_naissance'];
                     return favoriteAuthors
                             .any((author) => author.authorId == authorId) &&
                         (nom
                                 .toLowerCase()
                                 .contains(_searchText.toLowerCase()) ||
                             prenom
-                                .toLowerCase()
-                                .contains(_searchText.toLowerCase()) ||
-                            lieuNaissance
                                 .toLowerCase()
                                 .contains(_searchText.toLowerCase()));
                   }).toList();
@@ -130,7 +126,6 @@ class _FavoriteAuthorsPageState extends State<FavoriteAuthorsPage> {
                       Map<String, dynamic> poet = favoritePoets[index];
                       String nom = poet['nom'];
                       String prenom = poet['prenom'];
-                      String lieuNaissance = poet['lieu_naissance'];
                       String authorId = poet['ID_Auteur'];
 
                       return Padding(
@@ -200,14 +195,6 @@ class _FavoriteAuthorsPageState extends State<FavoriteAuthorsPage> {
                                         style: TextStyle(
                                           fontFamily: 'Amiri',
                                           fontSize: 20.0,
-                                          color: Colors.black,
-                                        ),
-                                      ),
-                                      Text(
-                                        lieuNaissance,
-                                        style: TextStyle(
-                                          fontFamily: 'Amiri',
-                                          fontSize: 16.0,
                                           color: Colors.black,
                                         ),
                                       ),

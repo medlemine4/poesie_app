@@ -117,7 +117,6 @@ class _PoetPageState extends State<PoetPage> {
                       Map<String, dynamic> poet = filteredPoetsList[index];
                       String nom = poet['nom'];
                       String prenom = poet['prenom'];
-                      String lieuNaissance = poet['lieu_naissance'];
                       String authorId = poet['ID_Auteur'];
 
                       bool isFavorite =
@@ -178,36 +177,32 @@ class _PoetPageState extends State<PoetPage> {
                                   ),
                                 ],
                               ),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.end,
                                 children: [
-                                  Column(
-                                    crossAxisAlignment: CrossAxisAlignment.end,
-                                    children: [
-                                      Text(
-                                        '$nom $prenom',
-                                        style: TextStyle(
-                                          fontFamily: 'Amiri',
-                                          fontSize: 20.0,
-                                          color: Colors.black,
-                                        ),
-                                      ),
-                                      Text(
-                                        lieuNaissance,
-                                        style: TextStyle(
-                                          fontFamily: 'Amiri',
-                                          fontSize: 16.0,
-                                          color: Colors.black,
-                                        ),
-                                      ),
-                                    ],
+                                  Text(
+                                    nom,
+                                    style: TextStyle(
+                                      fontFamily: 'Amiri',
+                                      fontSize: 20.0,
+                                      color: Colors.black,
+                                    ),
                                   ),
-                                  SizedBox(width: 10),
-                                  CircleAvatar(
-                                    backgroundImage: AssetImage('images/$nom.jpg'),
-                                    radius: 30,
+                                  SizedBox(height: 5),
+                                  Text(
+                                    prenom,
+                                    style: TextStyle(
+                                      fontFamily: 'Amiri',
+                                      fontSize: 20.0,
+                                      color: Colors.black,
+                                    ),
                                   ),
                                 ],
+                              ),
+                              SizedBox(width: 10),
+                              CircleAvatar(
+                                backgroundImage: AssetImage('images/$nom.jpg'),
+                                radius: 30,
                               ),
                             ],
                           ),

@@ -224,19 +224,9 @@ class _PoemListScreenState extends State<PoemListScreen> {
                   );
                 }
               },
-<<<<<<< HEAD
             ),
           ),
         ],
-=======
-            );
-          } else {
-            return Center(
-              child: Text('.لا توجد قصائد متوفرة في هذا الديوان'),
-            );
-          }
-        },
->>>>>>> 3d6d88beadf585e3d726a81f39b3d67f44ca0084
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
