@@ -31,44 +31,11 @@ class PoemDetails extends StatelessWidget {
             return Padding(
               padding: EdgeInsets.all(20.0),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  Text(
-                    ': الوصف',
-                    textAlign: TextAlign.right,
-                    style: TextStyle(fontFamily: 'Amiri', fontSize: 20.0, fontWeight: FontWeight.bold),
-                  ),
-                  SizedBox(height: 10),
-                  Text(
-                    poemDetails!['description'] ?? 'N/A',
-                    textAlign: TextAlign.right,
-                    style: TextStyle(fontFamily: 'Amiri', fontSize: 18.0),
-                  ),
-                  SizedBox(height: 20),
-                  Text(
-                    ': البحر',
-                    textAlign: TextAlign.right,
-                    style: TextStyle(fontFamily: 'Amiri', fontSize: 20.0, fontWeight: FontWeight.bold),
-                  ),
-                  SizedBox(height: 10),
-                  Text(
-                    poemDetails['AlBaher'] ?? 'N/A',
-                    textAlign: TextAlign.right,
-                    style: TextStyle(fontFamily: 'Amiri', fontSize: 18.0),
-                  ),
-                  SizedBox(height: 20),
-                  Text(
-                    ': غرض القصيدة',
-                    textAlign: TextAlign.right,
-                    style: TextStyle(fontFamily: 'Amiri', fontSize: 20.0, fontWeight: FontWeight.bold),
-                  ),
-                  SizedBox(height: 10),
-                  Text(
-                    poemDetails['Categorie'] ?? 'N/A',
-                    textAlign: TextAlign.right,
-                    style: TextStyle(fontFamily: 'Amiri', fontSize: 18.0),
-                  ),
-                  SizedBox(height: 20),
+                  PoemDetailItem(label: ': الوصف', text: poemDetails!['description'] ?? 'N/A'),
+                  PoemDetailItem(label: ': البحر', text: poemDetails['AlBaher'] ?? 'N/A'),
+                  PoemDetailItem(label: ': غرض القصيدة', text: poemDetails['Categorie'] ?? 'N/A'),
                 ],
               ),
             );
@@ -87,6 +54,32 @@ class PoemDetails extends StatelessWidget {
         backgroundColor: Color.fromARGB(255, 230, 230, 145), // Couleur du bouton flottant
         child: Icon(Icons.search), // Icône de recherche
       ),
+    );
+  }
+}
+
+class PoemDetailItem extends StatelessWidget {
+  final String label;
+  final String text;
+
+  PoemDetailItem({required this.label, required this.text});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: [
+        Text(
+          label,
+          style: TextStyle(fontFamily: 'Amiri', fontSize: 20.0, fontWeight: FontWeight.bold),
+        ),
+        SizedBox(height: 10),
+        Text(
+          text,
+          style: TextStyle(fontFamily: 'Amiri', fontSize: 18.0),
+        ),
+        SizedBox(height: 20),
+      ],
     );
   }
 }
