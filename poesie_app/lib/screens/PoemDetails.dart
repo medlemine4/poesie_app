@@ -11,64 +11,64 @@ class PoemDetails extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
+        title: Text(
           'تفاصيل القصيدة',
           style: TextStyle(fontFamily: 'Amiri', fontSize: 24.0),
         ),
         centerTitle: true,
-        backgroundColor: const Color.fromARGB(255, 230, 230, 145),
+        backgroundColor: Color.fromARGB(255, 230, 230, 145),
       ),
       body: FutureBuilder<Map<String, dynamic>>(
         future: MongoDataBase.getPoemDetails(poemeName),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
+            return Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
             return Center(child: Text('Error: ${snapshot.error}'));
           } else {
             Map<String, dynamic>? poemDetails = snapshot.data;
 
             return Padding(
-              padding: const EdgeInsets.all(20.0),
+              padding: EdgeInsets.all(20.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
+                  Text(
                     ': الوصف',
                     textAlign: TextAlign.right,
                     style: TextStyle(fontFamily: 'Amiri', fontSize: 20.0, fontWeight: FontWeight.bold),
                   ),
-                  const SizedBox(height: 10),
+                  SizedBox(height: 10),
                   Text(
                     poemDetails!['description'] ?? 'N/A',
                     textAlign: TextAlign.right,
-                    style: const TextStyle(fontFamily: 'Amiri', fontSize: 18.0),
+                    style: TextStyle(fontFamily: 'Amiri', fontSize: 18.0),
                   ),
-                  const SizedBox(height: 20),
-                  const Text(
+                  SizedBox(height: 20),
+                  Text(
                     ': البحر',
                     textAlign: TextAlign.right,
                     style: TextStyle(fontFamily: 'Amiri', fontSize: 20.0, fontWeight: FontWeight.bold),
                   ),
-                  const SizedBox(height: 10),
+                  SizedBox(height: 10),
                   Text(
                     poemDetails['AlBaher'] ?? 'N/A',
                     textAlign: TextAlign.right,
-                    style: const TextStyle(fontFamily: 'Amiri', fontSize: 18.0),
+                    style: TextStyle(fontFamily: 'Amiri', fontSize: 18.0),
                   ),
-                  const SizedBox(height: 20),
-                  const Text(
+                  SizedBox(height: 20),
+                  Text(
                     ': غرض القصيدة',
                     textAlign: TextAlign.right,
                     style: TextStyle(fontFamily: 'Amiri', fontSize: 20.0, fontWeight: FontWeight.bold),
                   ),
-                  const SizedBox(height: 10),
+                  SizedBox(height: 10),
                   Text(
                     poemDetails['Categorie'] ?? 'N/A',
                     textAlign: TextAlign.right,
-                    style: const TextStyle(fontFamily: 'Amiri', fontSize: 18.0),
+                    style: TextStyle(fontFamily: 'Amiri', fontSize: 18.0),
                   ),
-                  const SizedBox(height: 20),
+                  SizedBox(height: 20),
                 ],
               ),
             );
@@ -84,8 +84,8 @@ class PoemDetails extends StatelessWidget {
             ),
           );
         },
-        backgroundColor: const Color.fromARGB(255, 230, 230, 145), // Couleur du bouton flottant
-        child: const Icon(Icons.search), // Icône de recherche
+        backgroundColor: Color.fromARGB(255, 230, 230, 145), // Couleur du bouton flottant
+        child: Icon(Icons.search), // Icône de recherche
       ),
     );
   }
