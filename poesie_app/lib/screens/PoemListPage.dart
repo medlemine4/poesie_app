@@ -132,7 +132,6 @@ class _PoemListScreenState extends State<PoemListScreen> {
                       String titre = poem['Titre'] ?? '';
                       String contenu = poem['Contenue'] ?? '';
                       String alBaher = poem['AlBaher'] ?? '';
-                      String rawy = poem['Rawy'] ?? '';
                       bool isFavorite =
                           favoritePoems.any((poem) => poem.poemId == poemId);
                       return Padding(
@@ -200,10 +199,6 @@ class _PoemListScreenState extends State<PoemListScreen> {
                                           ),
                                           Text(
                                             'البحر: $alBaher',
-                                            style: TextStyle(fontSize: 16),
-                                          ),
-                                          Text(
-                                            'الروي : $rawy',
                                             style: TextStyle(fontSize: 16),
                                           ),
                                         ],
