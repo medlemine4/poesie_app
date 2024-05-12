@@ -1,9 +1,6 @@
-// ignore_for_file: prefer_const_constructors, use_key_in_widget_constructors, prefer_const_constructors_in_immutables
-
 import 'package:flutter/material.dart';
 import 'package:poesie_app/screens/SearchPage.dart';
 import '../data/mongo_database.dart';
-import 'package:intl/intl.dart'; // Import the intl package to format dates
 
 class PoemDetails extends StatelessWidget {
   final String poemeName;
@@ -14,79 +11,64 @@ class PoemDetails extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
+        title: const Text(
           'تفاصيل القصيدة',
           style: TextStyle(fontFamily: 'Amiri', fontSize: 24.0),
         ),
         centerTitle: true,
-        backgroundColor: Color.fromARGB(255, 230, 230, 145),
+        backgroundColor: const Color.fromARGB(255, 230, 230, 145),
       ),
       body: FutureBuilder<Map<String, dynamic>>(
         future: MongoDataBase.getPoemDetails(poemeName),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
             return Center(child: Text('Error: ${snapshot.error}'));
           } else {
             Map<String, dynamic>? poemDetails = snapshot.data;
 
             return Padding(
-              padding: EdgeInsets.all(20.0),
+              padding: const EdgeInsets.all(20.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
+                  const Text(
                     ': الوصف',
+                    textAlign: TextAlign.right,
                     style: TextStyle(fontFamily: 'Amiri', fontSize: 20.0, fontWeight: FontWeight.bold),
                   ),
-                  SizedBox(height: 10),
+                  const SizedBox(height: 10),
                   Text(
                     poemDetails!['description'] ?? 'N/A',
-                    style: TextStyle(fontFamily: 'Amiri', fontSize: 18.0),
+                    textAlign: TextAlign.right,
+                    style: const TextStyle(fontFamily: 'Amiri', fontSize: 18.0),
                   ),
-                  SizedBox(height: 20),
-                  Text(
+                  const SizedBox(height: 20),
+                  const Text(
                     ': البحر',
+                    textAlign: TextAlign.right,
                     style: TextStyle(fontFamily: 'Amiri', fontSize: 20.0, fontWeight: FontWeight.bold),
                   ),
-                  SizedBox(height: 10),
+                  const SizedBox(height: 10),
                   Text(
                     poemDetails['AlBaher'] ?? 'N/A',
-                    style: TextStyle(fontFamily: 'Amiri', fontSize: 18.0),
+                    textAlign: TextAlign.right,
+                    style: const TextStyle(fontFamily: 'Amiri', fontSize: 18.0),
                   ),
-                  SizedBox(height: 20),
-                  Text(
-                    ': الروي',
-                    style: TextStyle(fontFamily: 'Amiri', fontSize: 20.0, fontWeight: FontWeight.bold),
-                  ),
-                  SizedBox(height: 10),
-                  Text(
-                    poemDetails['Rawy'] ?? 'N/A',
-                    style: TextStyle(fontFamily: 'Amiri', fontSize: 18.0),
-                  ),
-                  SizedBox(height: 20),
-                  Text(
+                  const SizedBox(height: 20),
+                  const Text(
                     ': غرض القصيدة',
+                    textAlign: TextAlign.right,
                     style: TextStyle(fontFamily: 'Amiri', fontSize: 20.0, fontWeight: FontWeight.bold),
                   ),
-                  SizedBox(height: 10),
+                  const SizedBox(height: 10),
                   Text(
                     poemDetails['Categorie'] ?? 'N/A',
-                    style: TextStyle(fontFamily: 'Amiri', fontSize: 18.0),
+                    textAlign: TextAlign.right,
+                    style: const TextStyle(fontFamily: 'Amiri', fontSize: 18.0),
                   ),
-                  SizedBox(height: 20),
-                  Text(
-                    ': تاريخ النشر',
-                    style: TextStyle(fontFamily: 'Amiri', fontSize: 20.0, fontWeight: FontWeight.bold),
-                  ),
-                  SizedBox(height: 10),
-                  Text(
-                    poemDetails['Date_Publication'] != null
-                        ? DateFormat('yyyy-MM-dd').format(DateTime.fromMillisecondsSinceEpoch(poemDetails['Date_Publication']))
-                        : 'N/A',
-                    style: TextStyle(fontFamily: 'Amiri', fontSize: 18.0),
-                  ),
+                  const SizedBox(height: 20),
                 ],
               ),
             );
@@ -102,8 +84,8 @@ class PoemDetails extends StatelessWidget {
             ),
           );
         },
-        backgroundColor: Color.fromARGB(255, 230, 230, 145), // Couleur du bouton flottant
-        child: Icon(Icons.search), // Icône de recherche
+        backgroundColor: const Color.fromARGB(255, 230, 230, 145), // Couleur du bouton flottant
+        child: const Icon(Icons.search), // Icône de recherche
       ),
     );
   }

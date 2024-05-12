@@ -23,7 +23,6 @@ class PoemListScreen extends StatefulWidget {
 
 class _PoemListScreenState extends State<PoemListScreen> {
   late TextEditingController _searchController = TextEditingController();
-  String _searchText = '';
   List<FavoritePoem> favoritePoems = [];
 
   @override
@@ -93,7 +92,6 @@ class _PoemListScreenState extends State<PoemListScreen> {
                     ),
                     onChanged: (value) {
                       setState(() {
-                        _searchText = value;
                       });
                     },
                   ),
@@ -102,7 +100,6 @@ class _PoemListScreenState extends State<PoemListScreen> {
                   onPressed: () {
                     _searchController.clear();
                     setState(() {
-                      _searchText = '';
                     });
                   },
                   icon: Icon(Icons.clear),

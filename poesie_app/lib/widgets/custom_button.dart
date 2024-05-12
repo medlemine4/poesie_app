@@ -2,7 +2,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:poesie_app/screens/FavoritePoemsPage.dart';
-import 'package:poesie_app/screens/PoemListPage.dart';
 import 'package:poesie_app/screens/poet_page.dart';
 import '../screens/favorite_authors_page.dart';
 import '../screens/deewan_page.dart';
