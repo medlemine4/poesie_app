@@ -266,7 +266,7 @@ class _SearchResultPageState extends State<SearchResultPage> {
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     Text(
-                      '$nom $prenom',
+                      '$nom',
                       style: TextStyle(
                         fontFamily: 'Amiri',
                         fontSize: 20.0,
@@ -274,7 +274,7 @@ class _SearchResultPageState extends State<SearchResultPage> {
                       ),
                     ),
                     Text(
-                      lieuNaissance,
+                      '$prenom',
                       style: TextStyle(
                         fontFamily: 'Amiri',
                         fontSize: 16.0,
