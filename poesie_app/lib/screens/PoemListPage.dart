@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_const_constructors
+
 import 'package:flutter/material.dart';
 import 'package:poesie_app/screens/SearchPage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -77,35 +79,65 @@ class _PoemListScreenState extends State<PoemListScreen> {
             Navigator.of(context).pop();
           },
         ),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.search),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => SearchPage(),
+                ),
+              );
+            },
+          ),
+        ],
       ),
       body: Column(
         children: [
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
             child: Row(
               children: [
                 Expanded(
-                  child: TextField(
-                    controller: _searchController,
-                    decoration: InputDecoration(
-                      hintText: 'ابحث في القصائد',
-                      border: InputBorder.none,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(30.0),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.3),
+                          spreadRadius: 3,
+                          blurRadius: 5,
+                          offset: Offset(0, 3),
+                        ),
+                      ],
                     ),
-                    onChanged: (value) {
-                      setState(() {
-                        _searchText = value;
-                      });
-                    },
+                    child: TextField(
+                      controller: _searchController,
+                      decoration: InputDecoration(
+                        hintText: 'ابحث في قائمة القصائد',
+                        border: InputBorder.none,
+                        prefixIcon: Icon(Icons.search, color: Colors.grey),
+                        suffixIcon: IconButton(
+                          onPressed: () {
+                            _searchController.clear();
+                            setState(() {
+                              _searchText = '';
+                            });
+                          },
+                          icon: Icon(Icons.clear, color: Colors.grey),
+                        ),
+                        contentPadding: EdgeInsets.symmetric(
+                            vertical: 15.0, horizontal: 20.0),
+                      ),
+                      onChanged: (value) {
+                        setState(() {
+                          _searchText = value;
+                        });
+                      },
+                    ),
                   ),
-                ),
-                IconButton(
-                  onPressed: () {
-                    _searchController.clear();
-                    setState(() {
-                      _searchText = '';
-                    });
-                  },
-                  icon: Icon(Icons.clear),
                 ),
               ],
             ),
@@ -194,17 +226,18 @@ class _PoemListScreenState extends State<PoemListScreen> {
                                           Text(
                                             titre,
                                             style: TextStyle(
-                                              fontSize: 18,
+                                              fontSize: 20.0,
                                               fontWeight: FontWeight.bold,
+                                              fontFamily: 'Almarai',
                                             ),
                                           ),
                                           Text(
-                                            'البحر: $alBaher',
-                                            style: TextStyle(fontSize: 16),
+                                            'البحر:  $alBaher',
+                                            style: TextStyle(fontSize: 16,fontFamily: 'Almarai'),
                                           ),
                                           Text(
-                                            'الروي : $rawy',
-                                            style: TextStyle(fontSize: 16),
+                                            'الروي :  $rawy',
+                                            style: TextStyle(fontSize: 16,fontFamily: 'Almarai'),
                                           ),
                                         ],
                                       ),
@@ -220,25 +253,13 @@ class _PoemListScreenState extends State<PoemListScreen> {
                   );
                 } else {
                   return Center(
-                    child: Text('No poems available.'),
+                    child: Text('لا توجد قصائد متاحة في هذا الديوان'),
                   );
                 }
               },
             ),
           ),
         ],
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => SearchPage(), // Aller vers la page de recherche
-            ),
-          );
-        },
-        backgroundColor: Color.fromARGB(255, 230, 230, 145), // Couleur du bouton flottant
-        child: Icon(Icons.search), // Icône de recherche
       ),
     );
   }

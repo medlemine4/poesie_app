@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors
+// ignore_for_file: prefer_const_constructors, prefer_final_fields, use_key_in_widget_constructors, prefer_const_constructors_in_immutables, library_private_types_in_public_api
 
 import 'package:flutter/material.dart';
 import 'package:poesie_app/screens/SearchPage.dart';
@@ -10,10 +10,11 @@ class DeewanParAuteurPage extends StatefulWidget {
   final String poetFirstname;
   final String poetLastname;
 
-  DeewanParAuteurPage(
-      {required this.authorId,
-      required this.poetFirstname,
-      required this.poetLastname});
+  DeewanParAuteurPage({
+    required this.authorId,
+    required this.poetFirstname,
+    required this.poetLastname,
+  });
 
   @override
   _DeewanParAuteurPageState createState() => _DeewanParAuteurPageState();
@@ -29,41 +30,80 @@ class _DeewanParAuteurPageState extends State<DeewanParAuteurPage> {
       appBar: AppBar(
         title: Text(
           'دواوين ${widget.poetFirstname} ${widget.poetLastname}',
-          style: TextStyle(fontFamily: 'Amiri', fontSize: 24.0),
+          style: TextStyle(fontFamily: 'Almarai', fontSize: 25.0),
         ),
         centerTitle: true,
         backgroundColor: Color.fromARGB(255, 230, 230, 145),
+        actions: [
+          IconButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => SearchPage(),
+                ),
+              );
+            },
+            icon: Icon(Icons.search),
+          ),
+        ],
       ),
       body: Column(
         children: [
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            child: Row(
-              children: [
-                Expanded(
-                  child: TextField(
-                    controller: _searchController,
-                    decoration: InputDecoration(
-                      hintText: 'ابحث في الدواوين',
-                      border: InputBorder.none,
-                    ),
-                    onChanged: (value) {
+            padding:
+                const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(30.0),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withOpacity(0.3),
+                    spreadRadius: 3,
+                    blurRadius: 5,
+                    offset: Offset(0, 3),
+                  ),
+                ],
+              ),
+              child: TextField(
+                controller: _searchController,
+                decoration: InputDecoration(
+                  hintText: 'ابحث في قائمة الدواوين',
+                  filled: true,
+                  fillColor: Colors.white,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(30.0),
+                    borderSide: BorderSide.none,
+                  ),
+                  prefixIcon: Icon(Icons.search, color: Colors.grey),
+                  suffixIcon: IconButton(
+                    onPressed: () {
                       setState(() {
-                        _searchText = value;
+                        _searchText = '';
+                        _searchController.clear();
                       });
                     },
+                    icon: Icon(Icons.clear, color: Colors.grey),
+                  ),
+                  contentPadding:
+                      EdgeInsets.symmetric(vertical: 15.0, horizontal: 20.0),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(30.0),
+                    borderSide:
+                        BorderSide(color: Colors.grey.shade300, width: 1.5),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(30.0),
+                    borderSide:
+                        BorderSide(color: Colors.grey.shade600, width: 1.5),
                   ),
                 ),
-                IconButton(
-                  onPressed: () {
-                    setState(() {
-                      _searchText = '';
-                      _searchController.clear();
-                    });
-                  },
-                  icon: Icon(Icons.clear),
-                ),
-              ],
+                onChanged: (value) {
+                  setState(() {
+                    _searchText = value;
+                  });
+                },
+              ),
             ),
           ),
           Expanded(
@@ -79,14 +119,15 @@ class _DeewanParAuteurPageState extends State<DeewanParAuteurPage> {
                   if (deewanList == null || deewanList.isEmpty) {
                     return Center(child: Text('No data available'));
                   }
-                  // Filtrer les données en fonction du texte de recherche
-                  List<Map<String, dynamic>> filteredDeewans = _searchText.isEmpty
-                      ? deewanList
-                      : deewanList
-                          .where((deewan) => (deewan['nom'] as String)
-                              .toLowerCase()
-                              .contains(_searchText.toLowerCase()))
-                          .toList();
+                  // Filter the data based on the search text
+                  List<Map<String, dynamic>> filteredDeewans =
+                      _searchText.isEmpty
+                          ? deewanList
+                          : deewanList
+                              .where((deewan) => (deewan['nom'] as String)
+                                  .toLowerCase()
+                                  .contains(_searchText.toLowerCase()))
+                              .toList();
                   return ListView.builder(
                     itemCount: filteredDeewans.length,
                     itemBuilder: (context, index) {
@@ -104,26 +145,31 @@ class _DeewanParAuteurPageState extends State<DeewanParAuteurPage> {
                             ),
                           );
                         },
-                        child: Card(
-                          elevation: 2.0,
-                          margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12.0),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(20.0),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey.withOpacity(0.3),
+                                spreadRadius: 3,
+                                blurRadius: 5,
+                                offset: Offset(0, 3),
+                              ),
+                            ],
                           ),
+                          margin: EdgeInsets.symmetric(
+                              vertical: 8.0, horizontal: 16.0),
                           child: Padding(
                             padding: const EdgeInsets.all(16.0),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Row(
-                                  children: [
-                                    IconButton(
-                                      icon: Icon(Icons.info),
-                                      onPressed: () {
-                                        // Add functionality for info button
-                                      },
-                                    ),
-                                  ],
+                                IconButton(
+                                  icon: Icon(Icons.info),
+                                  onPressed: () {
+                                    // Add functionality for info button
+                                  },
                                 ),
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.end,
@@ -131,12 +177,13 @@ class _DeewanParAuteurPageState extends State<DeewanParAuteurPage> {
                                     Text(
                                       deewan['nom'] ?? '',
                                       style: TextStyle(
-                                        fontFamily: 'Amiri',
-                                        fontSize: 18.0,
+                                        fontFamily: 'Almarai',
+                                        fontSize: 20.0,
+                                        fontWeight: FontWeight.bold,
                                         color: Colors.black,
                                       ),
                                     ),
-                                    SizedBox(width: 20.0),
+                                    SizedBox(width: 30.0),
                                     Icon(Icons.book, color: Colors.blue),
                                   ],
                                 ),
@@ -152,20 +199,6 @@ class _DeewanParAuteurPageState extends State<DeewanParAuteurPage> {
             ),
           ),
         ],
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) =>
-                  SearchPage(), // Aller vers la page de recherche
-            ),
-          );
-        },
-        backgroundColor:
-            Color.fromARGB(255, 230, 230, 145), // Couleur du bouton flottant
-        child: Icon(Icons.search), // Icône de recherche
       ),
     );
   }

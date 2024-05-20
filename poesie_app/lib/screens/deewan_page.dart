@@ -20,48 +20,75 @@ class _DeewanPageState extends State<DeewanPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'الدواوين',
-          style: TextStyle(fontFamily: 'Amiri', fontSize: 24.0),
+          'قائمة الدواوين',
+          style: TextStyle(fontFamily: 'Almarai', fontSize: 25.0),
         ),
-        centerTitle: true, // Centrer le titre de l'app bar
-        backgroundColor: Color.fromARGB(255, 230, 230, 145), // Couleur de l'app bar
-        leading: IconButton( // Ajouter une flèche de retour
+        centerTitle: true,
+        backgroundColor: Color.fromARGB(255, 230, 230, 145),
+        leading: IconButton(
           icon: Icon(Icons.arrow_back),
           onPressed: () {
             Navigator.of(context).pop();
           },
         ),
+        actions: [
+          IconButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => SearchPage(),
+                ),
+              );
+            },
+            icon: Icon(Icons.search),
+            color: Colors.white,
+          ),
+        ],
       ),
       body: Column(
         children: [
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            child: Row(
-              children: [
-                Expanded(
-                  child: TextField(
-                    controller: _searchController,
-                    decoration: InputDecoration(
-                      hintText: 'ابحث في الدواوين',
-                      border: InputBorder.none,
-                    ),
-                    onChanged: (value) {
-                      setState(() {
-                        _searchText = value;
-                      });
-                    },
+            padding:
+                const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(30.0),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withOpacity(0.3),
+                    spreadRadius: 3,
+                    blurRadius: 5,
+                    offset: Offset(0, 3),
                   ),
-                ),
-                IconButton(
-                  onPressed: () {
-                    _searchController.clear();
+                ],
+              ),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: TextField(
+                  controller: _searchController,
+                  decoration: InputDecoration(
+                    hintText: 'ابحث في قائمة الدواوين',
+                    border: InputBorder.none,
+                    prefixIcon: Icon(Icons.search, color: Colors.grey),
+                    suffixIcon: IconButton(
+                      onPressed: () {
+                        _searchController.clear();
+                        setState(() {
+                          _searchText = '';
+                        });
+                      },
+                      icon: Icon(Icons.clear, color: Colors.grey),
+                    ),
+                  ),
+                  onChanged: (value) {
                     setState(() {
-                      _searchText = '';
+                      _searchText = value;
                     });
                   },
-                  icon: Icon(Icons.clear),
                 ),
-              ],
+              ),
             ),
           ),
           Expanded(
@@ -75,16 +102,18 @@ class _DeewanPageState extends State<DeewanPage> {
                 } else {
                   List<Map<String, dynamic>>? deewans = snapshot.data;
                   if (deewans == null || deewans.isEmpty) {
-                    return Center(child: Text('No data available'));
+                    return Center(
+                        child: Text('لا توجد قصائد متاحة في هذا الديوان'));
                   }
-                  // Filtrer les données en fonction du texte de recherche
-                  List<Map<String, dynamic>> filteredDeewans = _searchText.isEmpty
-                      ? deewans
-                      : deewans
-                          .where((deewan) => (deewan['nom'] as String)
-                              .toLowerCase()
-                              .contains(_searchText.toLowerCase()))
-                          .toList();
+                  // Filtrer les données en fonction du texte de recherche :
+                  List<Map<String, dynamic>> filteredDeewans =
+                      _searchText.isEmpty
+                          ? deewans
+                          : deewans
+                              .where((deewan) => (deewan['nom'] as String)
+                                  .toLowerCase()
+                                  .contains(_searchText.toLowerCase()))
+                              .toList();
                   return ListView.builder(
                     itemCount: filteredDeewans.length,
                     itemBuilder: (context, index) {
@@ -102,39 +131,45 @@ class _DeewanPageState extends State<DeewanPage> {
                             ),
                           );
                         },
-                        child: Card(
-                          elevation: 2.0,
-                          margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12.0),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(20.0),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey.withOpacity(0.3),
+                                spreadRadius: 3,
+                                blurRadius: 5,
+                                offset: Offset(0, 3),
+                              ),
+                            ],
                           ),
+                          margin: EdgeInsets.symmetric(
+                              vertical: 8.0, horizontal: 16.0),
                           child: Padding(
                             padding: const EdgeInsets.all(16.0),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Row(
-                                  children: [
-                                    IconButton(
-                                      icon: Icon(Icons.info),
-                                      onPressed: () {
-                                        // Add functionality for info button
-                                      },
-                                    ),
-                                  ],
+                                IconButton(
+                                  icon: Icon(Icons.info),
+                                  onPressed: () {
+                                    // Add functionality for info button
+                                  },
                                 ),
                                 Row(
-                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
                                     Text(
                                       deewan['nom'] ?? '',
                                       style: TextStyle(
-                                        fontFamily: 'Amiri',
-                                        fontSize: 18.0,
+                                        fontFamily: 'Almarai',
+                                        fontSize: 20.0,
+                                        fontWeight: FontWeight.bold,
                                         color: Colors.black,
                                       ),
                                     ),
-                                    SizedBox(width: 20.0),
+                                    SizedBox(width: 30.0),
                                     Icon(Icons.book, color: Colors.blue),
                                   ],
                                 ),
@@ -150,18 +185,6 @@ class _DeewanPageState extends State<DeewanPage> {
             ),
           ),
         ],
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => SearchPage(), // Aller vers la page de recherche
-            ),
-          );
-        },
-        backgroundColor: Color.fromARGB(255, 230, 230, 145), // Couleur du bouton flottant
-        child: Icon(Icons.search), // Icône de recherche
       ),
     );
   }

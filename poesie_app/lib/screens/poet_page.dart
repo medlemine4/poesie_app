@@ -1,10 +1,12 @@
+// ignore_for_file: prefer_const_constructors
+
 import 'package:flutter/material.dart';
-import 'package:poesie_app/models/favorite_author.dart';
+import 'package:poesie_app/screens/full_screen_image_page.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:poesie_app/screens/DeewanParAuteurPage.dart';
 import 'package:poesie_app/screens/PoetDetails.dart';
 import 'package:poesie_app/screens/SearchPage.dart';
 import '../data/mongo_database.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class PoetPage extends StatefulWidget {
   @override
@@ -14,7 +16,7 @@ class PoetPage extends StatefulWidget {
 class _PoetPageState extends State<PoetPage> {
   late TextEditingController _searchController = TextEditingController();
   String _searchText = '';
-  List<FavoriteAuthor> favoriteAuthors = [];
+  List<String> favoriteAuthors = [];
 
   @override
   void initState() {
@@ -27,25 +29,22 @@ class _PoetPageState extends State<PoetPage> {
     List<String>? favoriteAuthorIds = prefs.getStringList('favoriteAuthors');
     if (favoriteAuthorIds != null) {
       setState(() {
-        favoriteAuthors =
-            favoriteAuthorIds.map((id) => FavoriteAuthor(authorId: id)).toList();
+        favoriteAuthors = favoriteAuthorIds;
       });
     }
   }
 
   void saveFavoriteAuthors() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    List<String> favoriteAuthorIds =
-        favoriteAuthors.map((author) => author.authorId).toList();
-    await prefs.setStringList('favoriteAuthors', favoriteAuthorIds);
+    await prefs.setStringList('favoriteAuthors', favoriteAuthors);
   }
 
   void toggleFavorite(String authorId) {
     setState(() {
-      if (favoriteAuthors.any((author) => author.authorId == authorId)) {
-        favoriteAuthors.removeWhere((author) => author.authorId == authorId);
+      if (favoriteAuthors.contains(authorId)) {
+        favoriteAuthors.remove(authorId);
       } else {
-        favoriteAuthors.add(FavoriteAuthor(authorId: authorId));
+        favoriteAuthors.add(authorId);
       }
       saveFavoriteAuthors();
     });
@@ -56,51 +55,77 @@ class _PoetPageState extends State<PoetPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'الشعراء',
-          style: TextStyle(fontFamily: 'Amiri', fontSize: 24.0),
+          'قائمة الشعراء',
+          style: TextStyle(fontFamily: 'Almarai', fontSize: 27.0),
         ),
         centerTitle: true,
         backgroundColor: Color.fromARGB(255, 230, 230, 145),
+        actions: [
+          IconButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => SearchPage(),
+                ),
+              );
+            },
+            icon: Icon(Icons.search),
+            color: Colors.white,
+          ),
+        ],
       ),
       body: Column(
         children: [
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
             child: Container(
               decoration: BoxDecoration(
-                border: Border.all(color: Colors.grey), // Ajout de la bordure
-                borderRadius: BorderRadius.circular(8.0), // Bordure arrondie
+                borderRadius: BorderRadius.circular(30.0),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withOpacity(0.3),
+                    spreadRadius: 3,
+                    blurRadius: 5,
+                    offset: Offset(0, 3),
+                  ),
+                ],
               ),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: TextField(
-                        controller: _searchController,
-                        decoration: InputDecoration(
-                          hintText: 'ابحث عن الشاعر',
-                          border: InputBorder.none,
-                          contentPadding: EdgeInsets.zero, // Padding réduit à zéro
-                        ),
-                        onChanged: (value) {
-                          setState(() {
-                            _searchText = value;
-                          });
-                        },
-                      ),
-                    ),
-                    IconButton(
-                      onPressed: () {
-                        _searchController.clear();
-                        setState(() {
-                          _searchText = '';
-                        });
-                      },
-                      icon: Icon(Icons.clear),
-                    ),
-                  ],
+              child: TextField(
+                controller: _searchController,
+                decoration: InputDecoration(
+                  hintText: 'ابحث عن الشاعر',
+                  filled: true,
+                  fillColor: Colors.white,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(30.0),
+                    borderSide: BorderSide.none,
+                  ),
+                  prefixIcon: Icon(Icons.search, color: Colors.grey),
+                  suffixIcon: IconButton(
+                    onPressed: () {
+                      _searchController.clear();
+                      setState(() {
+                        _searchText = '';
+                      });
+                    },
+                    icon: Icon(Icons.clear, color: Colors.grey),
+                  ),
+                  contentPadding: EdgeInsets.symmetric(vertical: 15.0, horizontal: 20.0),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(30.0),
+                    borderSide: BorderSide(color: Colors.grey.shade300, width: 1.5),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(30.0),
+                    borderSide: BorderSide(color: Colors.grey.shade600, width: 1.5),
+                  ),
                 ),
+                onChanged: (value) {
+                  setState(() {
+                    _searchText = value;
+                  });
+                },
               ),
             ),
           ),
@@ -114,7 +139,6 @@ class _PoetPageState extends State<PoetPage> {
                   return Center(child: Text('Error: ${snapshot.error}'));
                 } else {
                   List<Map<String, dynamic>>? poetsList = snapshot.data;
-                  // Filtrer les données en fonction du texte de recherche
                   List<Map<String, dynamic>> filteredPoetsList = _searchText.isEmpty
                       ? poetsList!
                       : poetsList!
@@ -129,92 +153,100 @@ class _PoetPageState extends State<PoetPage> {
                       String prenom = poet['prenom'];
                       String authorId = poet['ID_Auteur'];
 
-                      bool isFavorite =
-                          favoriteAuthors.any((author) => author.authorId == authorId);
+                      bool isFavorite = favoriteAuthors.contains(authorId);
 
                       return Padding(
                         padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
-                        child: ElevatedButton(
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => DeewanParAuteurPage(
-                                  authorId: authorId,
-                                  poetFirstname: nom,
-                                  poetLastname: prenom,
-                                ),
-                              ),
-                            );
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.white,
-                            padding: EdgeInsets.all(10),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(20.0),
-                            ),
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: [
-                                  IconButton(
-                                    onPressed: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) =>
-                                              PoetDetails(poetName: nom),
-                                        ),
-                                      );
-                                    },
-                                    icon: Icon(
-                                      Icons.info,
-                                      color: Colors.black,
-                                    ),
-                                  ),
-                                  SizedBox(width: 10),
-                                  IconButton(
-                                    onPressed: () {
-                                      toggleFavorite(authorId);
-                                    },
-                                    icon: Icon(
-                                      isFavorite ? Icons.favorite : Icons.favorite_border,
-                                      color: Colors.red,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.end,
-                                children: [
-                                  Text(
-                                    nom,
-                                    style: TextStyle(
-                                      fontFamily: 'Amiri',
-                                      fontSize: 20.0,
-                                      color: Colors.black,
-                                    ),
-                                  ),
-                                  SizedBox(height: 5),
-                                  Text(
-                                    prenom,
-                                    style: TextStyle(
-                                      fontFamily: 'Amiri',
-                                      fontSize: 20.0,
-                                      color: Colors.black,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              SizedBox(width: 10),
-                              CircleAvatar(
-                                backgroundImage: AssetImage('images/$nom.jpg'),
-                                radius: 30,
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(20.0),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey.withOpacity(0.3),
+                                spreadRadius: 3,
+                                blurRadius: 5,
+                                offset: Offset(0, 3),
                               ),
                             ],
+                          ),
+                          child: ListTile(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => DeewanParAuteurPage(
+                                    authorId: authorId,
+                                    poetFirstname: nom,
+                                    poetLastname: prenom,
+                                  ),
+                                ),
+                              );
+                            },
+                            contentPadding: EdgeInsets.all(10),
+                            trailing: GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => FullScreenImagePage(
+                                      imageUrl: 'images/$nom.jpg', 
+                                    ),
+                                  ),
+                                );
+                              },
+                              child: CircleAvatar(
+                                backgroundImage: AssetImage('images/$nom.jpg'), 
+                                radius: 30,
+                              ),
+                            ),
+                            title: Text(
+                              nom,
+                              style: TextStyle(
+                                fontFamily: 'Amiri',
+                                fontSize: 20.0,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black,
+                              ),
+                            ),
+                            subtitle: Text(
+                              prenom,
+                              style: TextStyle(
+                                fontFamily: 'Amiri',
+                                fontSize: 18.0,
+                                color: Colors.black54,
+                              ),
+                            ),
+                            leading: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                IconButton(
+                                  onPressed: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            PoetDetails(poetName: nom),
+                                      ),
+                                    );
+                                  },
+                                  icon: Icon(
+                                    Icons.info,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                                SizedBox(width: 10),
+                                IconButton(
+                                  onPressed: () {
+                                    toggleFavorite(authorId);
+                                  },
+                                  icon: Icon(
+                                    isFavorite ? Icons.favorite : Icons.favorite_border,
+                                    color: Colors.red,
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       );
@@ -226,23 +258,10 @@ class _PoetPageState extends State<PoetPage> {
           ),
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => SearchPage(),
-            ),
-          );
-        },
-        backgroundColor: Color.fromARGB(255, 230, 230, 145),
-        child: Icon(Icons.search),
-      ),
     );
   }
 
   bool _searchInPoet(Map<String, dynamic> poet, String searchText) {
-    // Rechercher dans tous les champs du poète
     return poet.values.any((value) => value.toString().toLowerCase().contains(searchText));
   }
 }

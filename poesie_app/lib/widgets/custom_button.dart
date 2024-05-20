@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors, use_key_in_widget_constructors, prefer_const_constructors_in_immutables
+// ignore_for_file: prefer_const_constructors, use_key_in_widget_constructors, prefer_const_constructors_in_immutables, unused_import
 
 import 'package:flutter/material.dart';
 import 'package:poesie_app/screens/FavoritePoemsPage.dart';
@@ -43,13 +43,13 @@ class CustomButton extends StatelessWidget {
         },
         style: ElevatedButton.styleFrom(
           backgroundColor: Color.fromARGB(255, 230, 230, 145),
-          textStyle: TextStyle(fontSize: 20),
+          textStyle: TextStyle(fontSize: 40),
         ),
         child: Text(
           title,
           style: TextStyle(
-            fontFamily: 'Lateef',
-            fontSize: 24,
+            fontFamily: 'Amiri',
+            fontSize: 25,
           ),
         ),
       ),
