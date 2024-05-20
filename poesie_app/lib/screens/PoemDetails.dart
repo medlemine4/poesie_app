@@ -1,9 +1,8 @@
-// ignore_for_file: prefer_const_constructors, use_key_in_widget_constructors, prefer_const_constructors_in_immutables
+// ignore_for_file: prefer_const_constructors
 
 import 'package:flutter/material.dart';
 import 'package:poesie_app/screens/SearchPage.dart';
 import '../data/mongo_database.dart';
-import 'package:intl/intl.dart'; // Import the intl package to format dates
 
 class PoemDetails extends StatelessWidget {
   final String poemeName;
@@ -34,59 +33,11 @@ class PoemDetails extends StatelessWidget {
             return Padding(
               padding: EdgeInsets.all(20.0),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  Text(
-                    ': الوصف',
-                    style: TextStyle(fontFamily: 'Amiri', fontSize: 20.0, fontWeight: FontWeight.bold),
-                  ),
-                  SizedBox(height: 10),
-                  Text(
-                    poemDetails!['description'] ?? 'N/A',
-                    style: TextStyle(fontFamily: 'Amiri', fontSize: 18.0),
-                  ),
-                  SizedBox(height: 20),
-                  Text(
-                    ': البحر',
-                    style: TextStyle(fontFamily: 'Amiri', fontSize: 20.0, fontWeight: FontWeight.bold),
-                  ),
-                  SizedBox(height: 10),
-                  Text(
-                    poemDetails['AlBaher'] ?? 'N/A',
-                    style: TextStyle(fontFamily: 'Amiri', fontSize: 18.0),
-                  ),
-                  SizedBox(height: 20),
-                  Text(
-                    ': الروي',
-                    style: TextStyle(fontFamily: 'Amiri', fontSize: 20.0, fontWeight: FontWeight.bold),
-                  ),
-                  SizedBox(height: 10),
-                  Text(
-                    poemDetails['Rawy'] ?? 'N/A',
-                    style: TextStyle(fontFamily: 'Amiri', fontSize: 18.0),
-                  ),
-                  SizedBox(height: 20),
-                  Text(
-                    ': غرض القصيدة',
-                    style: TextStyle(fontFamily: 'Amiri', fontSize: 20.0, fontWeight: FontWeight.bold),
-                  ),
-                  SizedBox(height: 10),
-                  Text(
-                    poemDetails['Categorie'] ?? 'N/A',
-                    style: TextStyle(fontFamily: 'Amiri', fontSize: 18.0),
-                  ),
-                  SizedBox(height: 20),
-                  Text(
-                    ': تاريخ النشر',
-                    style: TextStyle(fontFamily: 'Amiri', fontSize: 20.0, fontWeight: FontWeight.bold),
-                  ),
-                  SizedBox(height: 10),
-                  Text(
-                    poemDetails['Date_Publication'] != null
-                        ? DateFormat('yyyy-MM-dd').format(DateTime.fromMillisecondsSinceEpoch(poemDetails['Date_Publication']))
-                        : 'N/A',
-                    style: TextStyle(fontFamily: 'Amiri', fontSize: 18.0),
-                  ),
+                  PoemDetailItem(label: ': الوصف', text: poemDetails!['description'] ?? 'N/A'),
+                  PoemDetailItem(label: ': البحر', text: poemDetails['AlBaher'] ?? 'N/A'),
+                  PoemDetailItem(label: ': غرض القصيدة', text: poemDetails['Categorie'] ?? 'N/A'),
                 ],
               ),
             );
@@ -105,6 +56,32 @@ class PoemDetails extends StatelessWidget {
         backgroundColor: Color.fromARGB(255, 230, 230, 145), // Couleur du bouton flottant
         child: Icon(Icons.search), // Icône de recherche
       ),
+    );
+  }
+}
+
+class PoemDetailItem extends StatelessWidget {
+  final String label;
+  final String text;
+
+  PoemDetailItem({required this.label, required this.text});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: [
+        Text(
+          label,
+          style: TextStyle(fontFamily: 'Amiri', fontSize: 20.0, fontWeight: FontWeight.bold),
+        ),
+        SizedBox(height: 10),
+        Text(
+          text,
+          style: TextStyle(fontFamily: 'Amiri', fontSize: 18.0),
+        ),
+        SizedBox(height: 20),
+      ],
     );
   }
 }

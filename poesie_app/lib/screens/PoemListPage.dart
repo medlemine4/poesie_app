@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors
+// ignore_for_file: prefer_const_constructors, non_constant_identifier_names, prefer_final_fields, unused_field
 
 import 'package:flutter/material.dart';
 import 'package:poesie_app/screens/SearchPage.dart';
@@ -10,13 +10,13 @@ import 'PoemDetails.dart';
 
 class PoemListScreen extends StatefulWidget {
   final String deewanId;
-  final String poetFirstname;
-  final String poetLastname;
+  final String deewan_name;
+  // final String poetLastname;
 
   PoemListScreen({
     required this.deewanId,
-    required this.poetFirstname,
-    required this.poetLastname,
+    required this.deewan_name,
+    // required this.poetLastname,
   });
 
   @override
@@ -68,7 +68,7 @@ class _PoemListScreenState extends State<PoemListScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'قصائد ${widget.poetFirstname} ${widget.poetLastname}',
+          'قصائد  ${widget.deewan_name}',
           style: TextStyle(fontFamily: 'Amiri', fontSize: 24.0),
         ),
         centerTitle: true,

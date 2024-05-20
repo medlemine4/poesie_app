@@ -139,8 +139,7 @@ class _DeewanParAuteurPageState extends State<DeewanParAuteurPage> {
                             MaterialPageRoute(
                               builder: (context) => PoemListScreen(
                                 deewanId: deewan['Id_Deewan'].toString(),
-                                poetLastname: deewan['nom'].toString(),
-                                poetFirstname: '',
+                                deewan_name: deewan['nom'].toString(),
                               ),
                             ),
                           );

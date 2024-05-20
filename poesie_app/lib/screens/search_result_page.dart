@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
+
 import 'package:flutter/material.dart';
 import 'package:poesie_app/models/favorite_author.dart';
 import 'package:poesie_app/screens/DeewanParAuteurPage.dart';
@@ -266,7 +268,7 @@ class _SearchResultPageState extends State<SearchResultPage> {
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     Text(
-                      '$nom $prenom',
+                      '$nom',
                       style: TextStyle(
                         fontFamily: 'Amiri',
                         fontSize: 20.0,
@@ -274,7 +276,7 @@ class _SearchResultPageState extends State<SearchResultPage> {
                       ),
                     ),
                     Text(
-                      lieuNaissance,
+                      '$prenom',
                       style: TextStyle(
                         fontFamily: 'Amiri',
                         fontSize: 16.0,
@@ -304,8 +306,7 @@ class _SearchResultPageState extends State<SearchResultPage> {
           MaterialPageRoute(
             builder: (context) => PoemListScreen(
               deewanId: deewanId,
-              poetLastname: nom,
-              poetFirstname: '',
+              deewan_name: nom,
             ),
           ),
         );
