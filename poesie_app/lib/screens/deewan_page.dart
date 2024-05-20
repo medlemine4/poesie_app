@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_const_constructors
+
 import 'package:flutter/material.dart';
 import 'package:poesie_app/screens/PoemListPage.dart';
 import 'package:poesie_app/screens/SearchPage.dart';
@@ -125,8 +127,8 @@ class _DeewanPageState extends State<DeewanPage> {
                             MaterialPageRoute(
                               builder: (context) => PoemListScreen(
                                 deewanId: deewan['Id_Deewan'].toString(),
-                                poetLastname: deewan['nom'].toString(),
-                                poetFirstname: '',
+                                deewan_name: deewan['nom'].toString(),
+                                
                               ),
                             ),
                           );
