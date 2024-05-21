@@ -69,7 +69,7 @@ class _PoemListScreenState extends State<PoemListScreen> {
       appBar: AppBar(
         title: Text(
           'قصائد  ${widget.deewan_name}',
-          style: TextStyle(fontFamily: 'Amiri', fontSize: 24.0),
+          style: TextStyle(fontFamily: 'Almarai', fontSize: 25.0),
         ),
         centerTitle: true,
         backgroundColor: Color.fromARGB(255, 230, 230, 145),
@@ -81,7 +81,7 @@ class _PoemListScreenState extends State<PoemListScreen> {
         ),
         actions: [
           IconButton(
-            icon: Icon(Icons.search),
+            icon: Icon(Icons.search,color: Colors.white,),
             onPressed: () {
               Navigator.push(
                 context,

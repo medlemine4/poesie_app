@@ -94,7 +94,7 @@ class _PoetPageState extends State<PoetPage> {
               child: TextField(
                 controller: _searchController,
                 decoration: InputDecoration(
-                  hintText: 'ابحث عن الشاعر',
+                  hintText: 'ابحث عن الشاعر عن طريق القائمة',
                   filled: true,
                   fillColor: Colors.white,
                   border: OutlineInputBorder(
@@ -213,8 +213,9 @@ class _PoetPageState extends State<PoetPage> {
                               prenom,
                               style: TextStyle(
                                 fontFamily: 'Amiri',
-                                fontSize: 18.0,
-                                color: Colors.black54,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 20.0,
+                                color: Colors.black,
                               ),
                             ),
                             leading: Row(

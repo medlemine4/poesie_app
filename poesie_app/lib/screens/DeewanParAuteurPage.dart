@@ -44,7 +44,7 @@ class _DeewanParAuteurPageState extends State<DeewanParAuteurPage> {
                 ),
               );
             },
-            icon: Icon(Icons.search),
+            icon: Icon(Icons.search , color: Colors.white,),
           ),
         ],
       ),

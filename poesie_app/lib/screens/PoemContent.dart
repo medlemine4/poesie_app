@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_const_constructors
+
 import 'package:flutter/material.dart';
 
 class PoemContent extends StatelessWidget {
@@ -14,7 +16,7 @@ class PoemContent extends StatelessWidget {
       appBar: AppBar(
         title: Text(
           poemTitle,
-          style: TextStyle(fontFamily: 'Amiri', fontSize: 24.0),
+          style: TextStyle(fontFamily: 'Almarai', fontSize: 24.0),
         ),
         centerTitle: true,
         backgroundColor: Color.fromARGB(255, 230, 230, 145),

@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_const_constructors
+
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/favorite_author.dart';
@@ -11,6 +13,7 @@ class SearchPage extends StatefulWidget {
 class _SearchPageState extends State<SearchPage> {
   late TextEditingController _searchController = TextEditingController();
   List<historical> _searchHistory = [];
+  String _searchText = '';
 
   @override
   void initState() {
@@ -29,7 +32,10 @@ class _SearchPageState extends State<SearchPage> {
     List<String>? history = prefs.getStringList('searchHistory');
     if (history != null) {
       setState(() {
-        _searchHistory = history.map((item) => historical(historic: item)).toList();
+        _searchHistory =
+            history.map((item) => historical(historic: item)).toList();
+        _searchHistory.sort((a, b) =>
+            b.timestamp.compareTo(a.timestamp)); // Sort by most recent
       });
     }
   }
@@ -41,12 +47,13 @@ class _SearchPageState extends State<SearchPage> {
   }
 
   void _performSearch(String searchText) {
-    // Logique pour effectuer la recherche avec le texte de recherche.
-    // Après avoir effectué la recherche, naviguez vers la page des résultats.
+    // Logic to perform the search with the search text.
+    // After performing the search, navigate to the results page.
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => SearchResultPage(searchText: searchText), // Passer le texte de recherche à la page des résultats
+        builder: (context) => SearchResultPage(
+            searchText: searchText), // Pass the search text to the results page
       ),
     );
   }
@@ -61,95 +68,166 @@ class _SearchPageState extends State<SearchPage> {
 
   @override
   Widget build(BuildContext context) {
+    var screenWidth = MediaQuery.of(context).size.width;
+    var screenHeight = MediaQuery.of(context).size.height;
+
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'البحث',
-          style: TextStyle(fontSize: 20.0),
+          'صفحة البحث',
+          style: TextStyle(fontSize: 24.0),
         ),
-        backgroundColor: Color.fromARGB(255, 230, 230, 145), // Couleur de l'app bar
+        centerTitle: true,
+        backgroundColor:
+            Color.fromARGB(255, 230, 230, 145), // Couleur de l'app bar
       ),
       body: Container(
-        padding: EdgeInsets.all(20.0),
+        padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.04),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            TextField(
-              controller: _searchController,
-              decoration: InputDecoration(
-                hintText: 'أدخل بحثك هنا',
-                filled: true,
-                fillColor: Colors.white,
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10.0),
-                  borderSide: BorderSide.none,
+            SizedBox(height: screenHeight * 0.02),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.04),
+              child: Container(
+                decoration: BoxDecoration(
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.withOpacity(0.3),
+                      spreadRadius: 3,
+                      blurRadius: 5,
+                      offset: Offset(0, 3),
+                    ),
+                  ],
                 ),
-              ),
-              textAlign: TextAlign.right,
-            ),
-            SizedBox(height: 20.0),
-            ElevatedButton(
-              onPressed: () {
-                String searchText = _searchController.text.trim();
-                if (searchText.isNotEmpty) {
-                  setState(() {
-                    // Ajouter le terme à l'historique s'il n'existe pas déjà.
-                    if (!_searchHistory.any((item) => item.historic == searchText)) {
-                      _searchHistory.add(historical(historic: searchText));
-                      _saveSearchHistory();
+                child: TextField(
+                  controller: _searchController,
+                  decoration: InputDecoration(
+                    hintText: '...أدخل بحثك هنا',
+                    filled: true,
+                    fillColor: Colors.white,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(30.0),
+                      borderSide: BorderSide.none,
+                    ),
+                    prefixIcon: IconButton(
+                      onPressed: () {
+                        String searchText = _searchController.text.trim();
+                        if (searchText.isNotEmpty) {
+                          setState(() {
+                            if (!_searchHistory
+                                .any((item) => item.historic == searchText)) {
+                              _searchHistory
+                                  .add(historical(historic: searchText));
+                              _saveSearchHistory();
+                              _searchHistory.sort((a, b) => b.timestamp
+                                  .compareTo(
+                                      a.timestamp)); // Sort by most recent
+                            }
+                          });
+                          _performSearch(searchText);
+                        }
+                      },
+                      icon: Icon(Icons.search, color: Colors.grey),
+                    ),
+                    suffixIcon: IconButton(
+                      onPressed: () {
+                        setState(() {
+                          _searchText = '';
+                          _searchController.clear();
+                        });
+                      },
+                      icon: Icon(Icons.clear, color: Colors.grey),
+                    ),
+                    contentPadding: EdgeInsets.symmetric(
+                        vertical: screenHeight * 0.02,
+                        horizontal: screenWidth * 0.04),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(30.0),
+                      borderSide:
+                          BorderSide(color: Colors.grey.shade300, width: 1.5),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(30.0),
+                      borderSide:
+                          BorderSide(color: Colors.grey.shade600, width: 1.5),
+                    ),
+                  ),
+                  textAlign: TextAlign.right,
+                  textInputAction: TextInputAction.search,
+                  onSubmitted: (value) {
+                    String searchText = value.trim();
+                    if (searchText.isNotEmpty) {
+                      setState(() {
+                        if (!_searchHistory
+                            .any((item) => item.historic == searchText)) {
+                          _searchHistory.add(historical(historic: searchText));
+                          _saveSearchHistory();
+                          _searchHistory.sort((a, b) => b.timestamp
+                              .compareTo(a.timestamp)); // Sort by most recent
+                        }
+                      });
+                      _performSearch(searchText);
                     }
-                  });
-                  _performSearch(searchText);
-                }
-              },
-              child: Text(
-                'ابحث',
-                style: TextStyle(fontSize: 18.0),
-              ),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.blue, // Couleur du bouton
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10.0),
+                  },
                 ),
               ),
             ),
             SizedBox(height: 20.0),
-            Text(
-              'سجل البحث',
-              style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
-              textAlign: TextAlign.right,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                IconButton(
+                  icon: Icon(Icons.delete_forever),
+                  onPressed: _clearSearchHistory,
+                  color: Colors.red,
+                ),
+                Text(
+                  'البحث الأخير',
+                  style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
+                  textAlign: TextAlign.right,
+                ),
+              ],
             ),
             Expanded(
-              child: ListView.builder(
-                itemCount: _searchHistory.length,
-                itemBuilder: (context, index) {
-                  return GestureDetector(
-                    onTap: () {
-                      _performSearch(_searchHistory[index].historic);
-                    },
-                    child: Card(
-                      elevation: 3.0,
-                      margin: EdgeInsets.symmetric(vertical: 10.0),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10.0),
-                      ),
-                      child: Padding(
-                        padding: EdgeInsets.all(10.0),
-                        child: Text(
-                          _searchHistory[index].historic,
-                          style: TextStyle(fontSize: 16.0),
-                          textAlign: TextAlign.right,
-                        ),
-                      ),
+              child: _searchHistory.isEmpty
+                  ? Center(
+                      child: Text('لا توجد نتائج بحث'),
+                    )
+                  : ListView.separated(
+                      itemCount: _searchHistory.length,
+                      separatorBuilder: (context, index) => Divider(),
+                      itemBuilder: (context, index) {
+                        return Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            IconButton(
+                              icon: Icon(Icons.delete),
+                              onPressed: () {
+                                setState(() {
+                                  _searchHistory.removeAt(index);
+                                  _saveSearchHistory();
+                                });
+                              },
+                              color: Colors.red,
+                            ),
+                            Expanded(
+                              child: ListTile(
+                                onTap: () {
+                                  _performSearch(
+                                      _searchHistory[index].historic);
+                                },
+                                title: Text(
+                                  _searchHistory[index].historic,
+                                  style: TextStyle(fontSize: 16.0),
+                                  textAlign: TextAlign.right,
+                                ),
+                              ),
+                            ),
+                          ],
+                        );
+                      },
                     ),
-                  );
-                },
-              ),
-            ),
-            IconButton(
-              icon: Icon(Icons.delete),
-              onPressed: _clearSearchHistory,
-              color: Colors.red, // Couleur de l'icône
             ),
           ],
         ),

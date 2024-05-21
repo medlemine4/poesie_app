@@ -21,4 +21,8 @@ class historical {
   historical({
     required this.historic,
   });
+
+  get timestamp => null;
+
+  static fromMap(String item) {}
 }

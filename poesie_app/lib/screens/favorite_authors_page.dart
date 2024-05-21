@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_const_constructors, unnecessary_string_interpolations
+
 import 'package:flutter/material.dart';
 import 'package:poesie_app/screens/SearchPage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -54,47 +56,93 @@ class _FavoriteAuthorsPageState extends State<FavoriteAuthorsPage> {
 
   @override
   Widget build(BuildContext context) {
+    var screenWidth = MediaQuery.of(context).size.width;
+    var screenHeight = MediaQuery.of(context).size.height;
+
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'الشعراء المفضلين',
-          style: TextStyle(fontFamily: 'Amiri', fontSize: 24.0),
+          'قائمة الشعراء المفضلين',
+          style: TextStyle(fontFamily: 'Almarai', fontSize: screenWidth * 0.06),
         ),
         centerTitle: true,
         backgroundColor: Color.fromARGB(255, 230, 230, 145),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.search),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => SearchPage(),
+                ),
+              );
+            },
+            color: Colors.white,
+          ),
+        ],
       ),
       body: Column(
         children: [
+          SizedBox(
+              height: screenHeight *
+                  0.02), // Add space between AppBar and TextField
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            child: Row(
-              children: [
-                Expanded(
-                  child: TextField(
-                    controller: _searchController,
-                    decoration: InputDecoration(
-                      hintText: 'ابحث في الشعراء المفضلين',
-                      border: InputBorder.none,
-                    ),
-                    onChanged: (value) {
+            padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.04),
+            child: Container(
+              decoration: BoxDecoration(
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withOpacity(0.3),
+                    spreadRadius: 3,
+                    blurRadius: 5,
+                    offset: Offset(0, 3),
+                  ),
+                ],
+              ),
+              child: TextField(
+                controller: _searchController,
+                decoration: InputDecoration(
+                  hintText: 'ابحث في قائمة شعرائك المفضلين',
+                  filled: true,
+                  fillColor: Colors.white,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(30.0),
+                    borderSide: BorderSide.none,
+                  ),
+                  prefixIcon: Icon(Icons.search, color: Colors.grey),
+                  suffixIcon: IconButton(
+                    onPressed: () {
                       setState(() {
-                        _searchText = value;
+                        _searchText = '';
+                        _searchController.clear();
                       });
                     },
+                    icon: Icon(Icons.clear, color: Colors.grey),
+                  ),
+                  contentPadding: EdgeInsets.symmetric(
+                      vertical: screenHeight * 0.02,
+                      horizontal: screenWidth * 0.04),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(30.0),
+                    borderSide:
+                        BorderSide(color: Colors.grey.shade300, width: 1.5),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(30.0),
+                    borderSide:
+                        BorderSide(color: Colors.grey.shade600, width: 1.5),
                   ),
                 ),
-                IconButton(
-                  onPressed: () {
-                    setState(() {
-                      _searchText = '';
-                      _searchController.clear();
-                    });
-                  },
-                  icon: Icon(Icons.clear),
-                ),
-              ],
+                onChanged: (value) {
+                  setState(() {
+                    _searchText = value;
+                  });
+                },
+              ),
             ),
           ),
+          SizedBox(height: screenHeight * 0.04), // Add a bit more space
           Expanded(
             child: FutureBuilder<List<Map<String, dynamic>>>(
               future: MongoDataBase.getPoetDetailsList(),
@@ -130,85 +178,101 @@ class _FavoriteAuthorsPageState extends State<FavoriteAuthorsPage> {
 
                       return Padding(
                         padding: EdgeInsets.symmetric(
-                            vertical: 10.0, horizontal: 20.0),
-                        child: ElevatedButton(
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => DeewanParAuteurPage(
-                                  authorId: authorId,
-                                  poetFirstname: nom,
-                                  poetLastname: prenom,
-                                ),
-                              ),
-                            );
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.white,
-                            padding: EdgeInsets.all(10),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(20.0),
-                            ),
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: [
-                                  IconButton(
-                                    onPressed: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) =>
-                                              PoetDetails(poetName: nom),
-                                        ),
-                                      );
-                                    },
-                                    icon: Icon(
-                                      Icons.info,
-                                      color: Colors.black,
-                                    ),
-                                  ),
-                                  SizedBox(width: 10),
-                                  IconButton(
-                                    onPressed: () {
-                                      toggleFavorite(authorId);
-                                    },
-                                    icon: Icon(
-                                      Icons.favorite,
-                                      color: Colors.red,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Column(
-                                    crossAxisAlignment: CrossAxisAlignment.end,
-                                    children: [
-                                      Text(
-                                        '$nom $prenom',
-                                        style: TextStyle(
-                                          fontFamily: 'Amiri',
-                                          fontSize: 20.0,
-                                          color: Colors.black,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  SizedBox(width: 10),
-                                  CircleAvatar(
-                                    backgroundImage:
-                                        AssetImage('images/$nom.jpg'),
-                                    radius: 30,
-                                  ),
-                                ],
+                            vertical: 8.0, horizontal: 16.0),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey.withOpacity(0.3),
+                                spreadRadius: 3,
+                                blurRadius: 5,
+                                offset: Offset(0, 3),
                               ),
                             ],
+                            borderRadius: BorderRadius.circular(20.0),
+                          ),
+                          child: ElevatedButton(
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => DeewanParAuteurPage(
+                                    authorId: authorId,
+                                    poetFirstname: nom,
+                                    poetLastname: prenom,
+                                  ),
+                                ),
+                              );
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.white,
+                              padding: EdgeInsets.all(16.0),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(20.0),
+                              ),
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Row(
+                                  children: [
+                                    IconButton(
+                                      onPressed: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                PoetDetails(poetName: nom),
+                                          ),
+                                        );
+                                      },
+                                      icon: Icon(
+                                        Icons.info,
+                                        color: Colors.black,
+                                      ),
+                                    ),
+                                    SizedBox(width: 10),
+                                    IconButton(
+                                      onPressed: () {
+                                        toggleFavorite(authorId);
+                                      },
+                                      icon: Icon(
+                                        Icons.favorite,
+                                        color: Colors.red,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                Column(
+                                  children: [
+                                    Text(
+                                      '$nom',
+                                      style: TextStyle(
+                                        fontFamily: 'Amiri',
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: screenWidth * 0.05,
+                                        color: Colors.black,
+                                      ),
+                                    ),
+                                    Text(
+                                      '$prenom',
+                                      style: TextStyle(
+                                        fontFamily: 'Amiri',
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: screenWidth * 0.05,
+                                        color: Colors.black,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                CircleAvatar(
+                                  backgroundImage:
+                                      AssetImage('images/$nom.jpg'),
+                                  radius: 30.0,
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       );
@@ -219,20 +283,6 @@ class _FavoriteAuthorsPageState extends State<FavoriteAuthorsPage> {
             ),
           ),
         ],
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) =>
-                  SearchPage(), // Aller vers la page de recherche
-            ),
-          );
-        },
-        backgroundColor:
-            Color.fromARGB(255, 230, 230, 145), // Couleur du bouton flottant
-        child: Icon(Icons.search), // Icône de recherche
       ),
     );
   }

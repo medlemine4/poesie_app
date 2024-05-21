@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_constructors, sort_child_properties_last
 
 import 'package:flutter/material.dart';
+import 'package:poesie_app/screens/SearchPage.dart';
 import '../widgets/custom_button.dart';
 
 class FirstScreen extends StatelessWidget {
@@ -43,17 +44,17 @@ class FirstScreen extends StatelessWidget {
           ],
         ),
       ),
-      // floatingActionButton: FloatingActionButton(
-      //   onPressed: () {
-      //     Navigator.push(
-      //       context,
-      //       MaterialPageRoute(builder: (context) => SearchPage()),
-      //     );
-      //   },
-      //   child: Icon(Icons.search),
-      //   backgroundColor: Color.fromARGB(255, 237, 237, 182),
-      // ),
-      // floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => SearchPage()),
+          );
+        },
+        child: Icon(Icons.search),
+        backgroundColor: Color.fromARGB(255, 237, 237, 182),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
     );
   }
 }
