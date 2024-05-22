@@ -73,7 +73,7 @@ class MongoDataBase {
     await db.open();
     var collection = db.collection(COLLECTION_NAME3);
     var result = await collection
-        .find(mongo.where.eq("ID_Deewan", int.parse(deewanId)))
+        .find(mongo.where.eq("ID_Deewan", deewanId))
         .toList();
     await db.close();
     return result.map((poem) => poem as Map<String, dynamic>).toList();
