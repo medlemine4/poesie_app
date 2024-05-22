@@ -28,9 +28,12 @@ class _DeewanParAuteurPageState extends State<DeewanParAuteurPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          'دواوين ${widget.poetFirstname} ${widget.poetLastname}',
-          style: TextStyle(fontFamily: 'Almarai', fontSize: 25.0),
+        title: FittedBox(
+          fit: BoxFit.scaleDown,
+          child: Text(
+            'دواوين ${widget.poetFirstname} ${widget.poetLastname}',
+            style: TextStyle(fontFamily: 'Almarai', fontSize: 25.0),
+          ),
         ),
         centerTitle: true,
         backgroundColor: Color.fromARGB(255, 230, 230, 145),
@@ -46,7 +49,7 @@ class _DeewanParAuteurPageState extends State<DeewanParAuteurPage> {
             },
             icon: Icon(
               Icons.search,
-              color: Colors.white,
+              color: Colors.black,
             ),
           ),
         ],
@@ -71,14 +74,14 @@ class _DeewanParAuteurPageState extends State<DeewanParAuteurPage> {
               child: TextField(
                 controller: _searchController,
                 decoration: InputDecoration(
-                  hintText: 'ابحث في قائمة الدواوين',
+                  hintText: '...ابحث في قائمة الدواوين',
                   filled: true,
                   fillColor: Colors.white,
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(30.0),
                     borderSide: BorderSide.none,
                   ),
-                  prefixIcon: Icon(Icons.search, color: Colors.grey),
+                  // prefixIcon: Icon(Icons.search, color: Colors.grey),
                   suffixIcon: IconButton(
                     onPressed: () {
                       setState(() {
@@ -165,7 +168,7 @@ class _DeewanParAuteurPageState extends State<DeewanParAuteurPage> {
                           child: Padding(
                             padding: const EdgeInsets.all(16.0),
                             child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              mainAxisAlignment: MainAxisAlignment.end,
                               children: [
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.end,

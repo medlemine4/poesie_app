@@ -71,14 +71,15 @@ class _PoetPageState extends State<PoetPage> {
               );
             },
             icon: Icon(Icons.search),
-            color: Colors.white,
+            color: Colors.black,
           ),
         ],
       ),
       body: Column(
         children: [
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
+            padding:
+                const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
             child: Container(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(30.0),
@@ -94,14 +95,15 @@ class _PoetPageState extends State<PoetPage> {
               child: TextField(
                 controller: _searchController,
                 decoration: InputDecoration(
-                  hintText: 'ابحث عن الشاعر عن طريق القائمة',
+                  hintText: '...ابحث عن الشاعر عن طريق القائمة',
+                  hintStyle: TextStyle(fontFamily: 'Almarai', fontSize: 14.0),
                   filled: true,
                   fillColor: Colors.white,
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(30.0),
                     borderSide: BorderSide.none,
                   ),
-                  prefixIcon: Icon(Icons.search, color: Colors.grey),
+                  // prefixIcon: Icon(Icons.search, color: Colors.grey),
                   suffixIcon: IconButton(
                     onPressed: () {
                       _searchController.clear();
@@ -111,14 +113,17 @@ class _PoetPageState extends State<PoetPage> {
                     },
                     icon: Icon(Icons.clear, color: Colors.grey),
                   ),
-                  contentPadding: EdgeInsets.symmetric(vertical: 15.0, horizontal: 20.0),
+                  contentPadding:
+                      EdgeInsets.symmetric(vertical: 15.0, horizontal: 20.0),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(30.0),
-                    borderSide: BorderSide(color: Colors.grey.shade300, width: 1.5),
+                    borderSide:
+                        BorderSide(color: Colors.grey.shade300, width: 1.5),
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(30.0),
-                    borderSide: BorderSide(color: Colors.grey.shade600, width: 1.5),
+                    borderSide:
+                        BorderSide(color: Colors.grey.shade600, width: 1.5),
                   ),
                 ),
                 onChanged: (value) {
@@ -139,7 +144,8 @@ class _PoetPageState extends State<PoetPage> {
                   return Center(child: Text('Error: ${snapshot.error}'));
                 } else {
                   List<Map<String, dynamic>>? poetsList = snapshot.data;
-                  List<Map<String, dynamic>> filteredPoetsList = _searchText.isEmpty
+                  List<Map<String, dynamic>> filteredPoetsList = _searchText
+                          .isEmpty
                       ? poetsList!
                       : poetsList!
                           .where((poet) =>
@@ -156,7 +162,8 @@ class _PoetPageState extends State<PoetPage> {
                       bool isFavorite = favoriteAuthors.contains(authorId);
 
                       return Padding(
-                        padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
+                        padding: EdgeInsets.symmetric(
+                            vertical: 10.0, horizontal: 20.0),
                         child: Container(
                           decoration: BoxDecoration(
                             color: Colors.white,
@@ -183,27 +190,32 @@ class _PoetPageState extends State<PoetPage> {
                                 ),
                               );
                             },
-                            contentPadding: EdgeInsets.all(10),
+                            contentPadding: EdgeInsets.all(8),
                             trailing: GestureDetector(
                               onTap: () {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
                                     builder: (context) => FullScreenImagePage(
-                                      imageUrl: 'images/$nom.jpg', 
+                                      imageUrl: 'images/$nom.jpg',
+                                      tag: 'hero-$nom', // Pass the hero tag
                                     ),
                                   ),
                                 );
                               },
-                              child: CircleAvatar(
-                                backgroundImage: AssetImage('images/$nom.jpg'), 
-                                radius: 30,
+                              child: Hero(
+                                tag: 'hero-$nom', // Unique tag for each poet
+                                child: CircleAvatar(
+                                  backgroundImage:
+                                      AssetImage('images/$nom.jpg'),
+                                  radius: 30,
+                                ),
                               ),
                             ),
                             title: Text(
                               nom,
                               style: TextStyle(
-                                fontFamily: 'Amiri',
+                                fontFamily: 'Almarai',
                                 fontSize: 20.0,
                                 fontWeight: FontWeight.bold,
                                 color: Colors.black,
@@ -212,9 +224,9 @@ class _PoetPageState extends State<PoetPage> {
                             subtitle: Text(
                               prenom,
                               style: TextStyle(
-                                fontFamily: 'Amiri',
+                                fontFamily: 'Almarai',
                                 fontWeight: FontWeight.bold,
-                                fontSize: 20.0,
+                                fontSize: 19.0,
                                 color: Colors.black,
                               ),
                             ),
@@ -242,7 +254,9 @@ class _PoetPageState extends State<PoetPage> {
                                     toggleFavorite(authorId);
                                   },
                                   icon: Icon(
-                                    isFavorite ? Icons.favorite : Icons.favorite_border,
+                                    isFavorite
+                                        ? Icons.favorite
+                                        : Icons.favorite_border,
                                     color: Colors.red,
                                   ),
                                 ),
@@ -263,6 +277,7 @@ class _PoetPageState extends State<PoetPage> {
   }
 
   bool _searchInPoet(Map<String, dynamic> poet, String searchText) {
-    return poet.values.any((value) => value.toString().toLowerCase().contains(searchText));
+    return poet.values
+        .any((value) => value.toString().toLowerCase().contains(searchText));
   }
 }

@@ -5,8 +5,9 @@ import 'package:photo_view/photo_view.dart';
 
 class FullScreenImagePage extends StatelessWidget {
   final String imageUrl;
+  final String tag;
 
-  FullScreenImagePage({required this.imageUrl});
+  FullScreenImagePage({required this.imageUrl, required this.tag});
 
   @override
   Widget build(BuildContext context) {
@@ -15,11 +16,14 @@ class FullScreenImagePage extends StatelessWidget {
       body: Stack(
         children: [
           Center(
-            child: PhotoView(
-              imageProvider: AssetImage(imageUrl),
-              backgroundDecoration: BoxDecoration(color: Colors.black),
-              minScale: PhotoViewComputedScale.contained * 0.8,
-              maxScale: PhotoViewComputedScale.covered * 2,
+            child: Hero(
+              tag: tag,
+              child: PhotoView(
+                imageProvider: AssetImage(imageUrl),
+                backgroundDecoration: BoxDecoration(color: Colors.black),
+                minScale: PhotoViewComputedScale.contained * 0.8,
+                maxScale: PhotoViewComputedScale.covered * 2,
+              ),
             ),
           ),
           Positioned(

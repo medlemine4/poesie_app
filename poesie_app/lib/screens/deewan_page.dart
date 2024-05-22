@@ -44,7 +44,7 @@ class _DeewanPageState extends State<DeewanPage> {
               );
             },
             icon: Icon(Icons.search),
-            color: Colors.white,
+            color: Colors.black,
           ),
         ],
       ),
@@ -66,30 +66,43 @@ class _DeewanPageState extends State<DeewanPage> {
                   ),
                 ],
               ),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                child: TextField(
-                  controller: _searchController,
-                  decoration: InputDecoration(
-                    hintText: 'ابحث في قائمة الدواوين',
-                    border: InputBorder.none,
-                    prefixIcon: Icon(Icons.search, color: Colors.grey),
-                    suffixIcon: IconButton(
-                      onPressed: () {
-                        _searchController.clear();
-                        setState(() {
-                          _searchText = '';
-                        });
-                      },
-                      icon: Icon(Icons.clear, color: Colors.grey),
-                    ),
+              child: TextField(
+                controller: _searchController,
+                decoration: InputDecoration(
+                  hintText: '...ابحث في قائمة الدواوين',
+                  filled: true,
+                  fillColor: Colors.white,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(30.0),
+                    borderSide: BorderSide.none,
                   ),
-                  onChanged: (value) {
-                    setState(() {
-                      _searchText = value;
-                    });
-                  },
+                  suffixIcon: IconButton(
+                    onPressed: () {
+                      setState(() {
+                        _searchText = '';
+                        _searchController.clear();
+                      });
+                    },
+                    icon: Icon(Icons.clear, color: Colors.grey),
+                  ),
+                  contentPadding:
+                      EdgeInsets.symmetric(vertical: 15.0, horizontal: 20.0),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(30.0),
+                    borderSide:
+                        BorderSide(color: Colors.grey.shade300, width: 1.5),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(30.0),
+                    borderSide:
+                        BorderSide(color: Colors.grey.shade600, width: 1.5),
+                  ),
                 ),
+                onChanged: (value) {
+                  setState(() {
+                    _searchText = value;
+                  });
+                },
               ),
             ),
           ),
@@ -150,10 +163,10 @@ class _DeewanPageState extends State<DeewanPage> {
                           child: Padding(
                             padding: const EdgeInsets.all(16.0),
                             child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              mainAxisAlignment: MainAxisAlignment.end,
                               children: [
                                 Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  // crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
                                     Text(
                                       deewan['nom'] ?? '',

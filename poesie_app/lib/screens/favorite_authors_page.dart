@@ -78,7 +78,7 @@ class _FavoriteAuthorsPageState extends State<FavoriteAuthorsPage> {
                 ),
               );
             },
-            color: Colors.white,
+            color: Colors.black,
           ),
         ],
       ),
@@ -103,14 +103,14 @@ class _FavoriteAuthorsPageState extends State<FavoriteAuthorsPage> {
               child: TextField(
                 controller: _searchController,
                 decoration: InputDecoration(
-                  hintText: 'ابحث في قائمة شعرائك المفضلين',
+                  hintText: '...ابحث في قائمة شعرائك المفضلين',
                   filled: true,
                   fillColor: Colors.white,
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(30.0),
                     borderSide: BorderSide.none,
                   ),
-                  prefixIcon: Icon(Icons.search, color: Colors.grey),
+                  // prefixIcon: Icon(Icons.search, color: Colors.grey),
                   suffixIcon: IconButton(
                     onPressed: () {
                       setState(() {

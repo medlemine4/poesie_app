@@ -81,7 +81,10 @@ class _PoemListScreenState extends State<PoemListScreen> {
         ),
         actions: [
           IconButton(
-            icon: Icon(Icons.search,color: Colors.white,),
+            icon: Icon(
+              Icons.search,
+              color: Colors.black,
+            ),
             onPressed: () {
               Navigator.push(
                 context,
@@ -96,7 +99,8 @@ class _PoemListScreenState extends State<PoemListScreen> {
       body: Column(
         children: [
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
+            padding:
+                const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
             child: Row(
               children: [
                 Expanded(
@@ -116,9 +120,14 @@ class _PoemListScreenState extends State<PoemListScreen> {
                     child: TextField(
                       controller: _searchController,
                       decoration: InputDecoration(
-                        hintText: 'ابحث في قائمة القصائد',
-                        border: InputBorder.none,
-                        prefixIcon: Icon(Icons.search, color: Colors.grey),
+                        hintText: '...ابحث في قائمة القصائد',
+                        filled: true,
+                        fillColor: Colors.white,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(30.0),
+                          borderSide: BorderSide.none,
+                        ),
+                        // prefixIcon: Icon(Icons.search, color: Colors.grey),
                         suffixIcon: IconButton(
                           onPressed: () {
                             _searchController.clear();
@@ -130,6 +139,16 @@ class _PoemListScreenState extends State<PoemListScreen> {
                         ),
                         contentPadding: EdgeInsets.symmetric(
                             vertical: 15.0, horizontal: 20.0),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(30.0),
+                          borderSide: BorderSide(
+                              color: Colors.grey.shade300, width: 1.5),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(30.0),
+                          borderSide: BorderSide(
+                              color: Colors.grey.shade600, width: 1.5),
+                        ),
                       ),
                       onChanged: (value) {
                         setState(() {
@@ -145,7 +164,8 @@ class _PoemListScreenState extends State<PoemListScreen> {
           Expanded(
             child: FutureBuilder<List<Map<String, dynamic>>>(
               future: MongoDataBase.getPoemsByDeewanId(widget.deewanId),
-              builder: (context, AsyncSnapshot<List<Map<String, dynamic>>> snapshot) {
+              builder: (context,
+                  AsyncSnapshot<List<Map<String, dynamic>>> snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return Center(
                     child: CircularProgressIndicator(),
@@ -189,18 +209,20 @@ class _PoemListScreenState extends State<PoemListScreen> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
                                     children: [
                                       Row(
                                         children: [
                                           IconButton(
-                                            icon:
-                                                Icon(Icons.info, color: Colors.black),
+                                            icon: Icon(Icons.info,
+                                                color: Colors.black),
                                             onPressed: () {
                                               Navigator.push(
                                                 context,
                                                 MaterialPageRoute(
-                                                  builder: (context) => PoemDetails(
+                                                  builder: (context) =>
+                                                      PoemDetails(
                                                     poemeName: titre,
                                                   ),
                                                 ),
@@ -221,7 +243,8 @@ class _PoemListScreenState extends State<PoemListScreen> {
                                         ],
                                       ),
                                       Column(
-                                        crossAxisAlignment: CrossAxisAlignment.end,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.end,
                                         children: [
                                           Text(
                                             titre,
@@ -233,11 +256,15 @@ class _PoemListScreenState extends State<PoemListScreen> {
                                           ),
                                           Text(
                                             'البحر:  $alBaher',
-                                            style: TextStyle(fontSize: 16,fontFamily: 'Almarai'),
+                                            style: TextStyle(
+                                                fontSize: 16,
+                                                fontFamily: 'Almarai'),
                                           ),
                                           Text(
                                             'الروي :  $rawy',
-                                            style: TextStyle(fontSize: 16,fontFamily: 'Almarai'),
+                                            style: TextStyle(
+                                                fontSize: 16,
+                                                fontFamily: 'Almarai'),
                                           ),
                                         ],
                                       ),
