@@ -44,7 +44,10 @@ class _DeewanParAuteurPageState extends State<DeewanParAuteurPage> {
                 ),
               );
             },
-            icon: Icon(Icons.search , color: Colors.white,),
+            icon: Icon(
+              Icons.search,
+              color: Colors.white,
+            ),
           ),
         ],
       ),
@@ -164,12 +167,6 @@ class _DeewanParAuteurPageState extends State<DeewanParAuteurPage> {
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                IconButton(
-                                  icon: Icon(Icons.info),
-                                  onPressed: () {
-                                    // Add functionality for info button
-                                  },
-                                ),
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.end,
                                   children: [

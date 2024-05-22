@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
+// ignore_for_file: prefer_const_constructors, unnecessary_string_interpolations, prefer_const_literals_to_create_immutables, unused_import
 
 import 'package:flutter/material.dart';
 import 'package:poesie_app/models/favorite_author.dart';
@@ -7,8 +7,11 @@ import 'package:poesie_app/screens/PoemContent.dart';
 import 'package:poesie_app/screens/PoemDetails.dart';
 import 'package:poesie_app/screens/PoemListPage.dart';
 import 'package:poesie_app/screens/PoetDetails.dart';
+import 'package:poesie_app/screens/photo_view_gallery.dart';
 import '../data/mongo_database.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:photo_view/photo_view.dart';
+import 'package:photo_view/photo_view_gallery.dart';
 
 class SearchResultPage extends StatefulWidget {
   final String searchText;
@@ -104,7 +107,19 @@ class _SearchResultPageState extends State<SearchResultPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('نتائج البحث'),
+        title: Text(
+          'نتائج البحث',
+          style: TextStyle(
+              fontSize: 24.0,
+              fontFamily: 'Almarai',
+              fontWeight: FontWeight.bold,
+              color: Colors.white),
+        ),
+        iconTheme: IconThemeData(
+          color: Colors.white, // Change the color here
+        ),
+        centerTitle: true,
+        backgroundColor: Colors.blueGrey[900],
       ),
       body: FutureBuilder<List<Map<String, dynamic>>?>(
         future: loadResults(),
@@ -112,7 +127,6 @@ class _SearchResultPageState extends State<SearchResultPage> {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(child: CircularProgressIndicator());
           }
-
           if (snapshot.hasError ||
               snapshot.data == null ||
               snapshot.data!.isEmpty) {
@@ -126,7 +140,7 @@ class _SearchResultPageState extends State<SearchResultPage> {
                     color: Colors.red,
                   ),
                   Text(
-                    'Aucune donnée trouvée',
+                    '...لا معلومات موجودة عن ما تبحث عنه للأسف',
                     style: TextStyle(fontSize: 18),
                   ),
                 ],
@@ -139,13 +153,18 @@ class _SearchResultPageState extends State<SearchResultPage> {
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              if (widget.searchText
-                  .isNotEmpty) // Afficher uniquement si la recherche a été effectuée
+              if (widget.searchText.isNotEmpty)
                 Container(
                   padding: EdgeInsets.all(16),
-                  child: Text(
-                    'نتائج البحث عن: ${widget.searchText}',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  child: Center(
+                    child: Text(
+                      'نتائج البحث عن : ${widget.searchText}',
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontFamily: 'Almarai',
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                   ),
                 ),
               Expanded(
@@ -154,15 +173,13 @@ class _SearchResultPageState extends State<SearchResultPage> {
                   itemBuilder: (context, index) {
                     var result = allResults[index];
                     if (displayedResults.contains(result.toString())) {
-                      return SizedBox(); // Si l'élément est déjà affiché, ne rien afficher
+                      return SizedBox();
                     }
 
-                    displayedResults.add(result
-                        .toString()); // Ajouter l'élément à l'ensemble des éléments déjà affichés
+                    displayedResults.add(result.toString());
 
                     if (result.containsKey('nom') &&
                         result.containsKey('prenom')) {
-                      // C'est un auteur
                       String nom = result['nom'];
                       String prenom = result['prenom'];
                       String lieuNaissance = result['lieu_naissance'] ?? '';
@@ -174,13 +191,11 @@ class _SearchResultPageState extends State<SearchResultPage> {
                       return _buildAuthorCard(
                           nom, prenom, lieuNaissance, authorId, isFavorite);
                     } else if (result.containsKey('Id_Deewan')) {
-                      // C'est un deewan
                       String deewanId = result['Id_Deewan'].toString();
                       String nom = result['nom'].toString();
 
                       return _buildDeewanCard(deewanId, nom);
                     } else if (result.containsKey('Titre')) {
-                      // C'est un poème
                       String titre = result['Titre'] ?? '';
                       String contenu = result['Contenue'] ?? '';
                       String alBaher = result['AlBaher'] ?? '';
@@ -193,7 +208,7 @@ class _SearchResultPageState extends State<SearchResultPage> {
                       return _buildPoemCard(
                           titre, contenu, alBaher, rawy, poemId, isFavorite);
                     } else {
-                      return SizedBox(); // Gérer d'autres types d'éléments si nécessaire
+                      return SizedBox();
                     }
                   },
                 ),
@@ -209,145 +224,179 @@ class _SearchResultPageState extends State<SearchResultPage> {
       String authorId, bool isFavorite) {
     return Padding(
       padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
-      child: ElevatedButton(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => DeewanParAuteurPage(
-                authorId: authorId,
-                poetFirstname: nom,
-                poetLastname: prenom,
+      child: Material(
+        elevation: 4.0,
+        borderRadius: BorderRadius.circular(20.0),
+        shadowColor: Colors.black, // Added box shadow color
+        child: InkWell(
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) =>
+                    AuthorImagePage(imagePath: 'images/$nom.jpg'),
               ),
+            );
+          },
+          child: Container(
+            padding: EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(20.0),
+              color: Colors.blueGrey[900],
             ),
-          );
-        },
-        style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.white,
-          padding: EdgeInsets.all(10),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20.0),
-          ),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                IconButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => PoetDetails(poetName: nom),
+                Row(
+                  children: [
+                    IconButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => PoetDetails(poetName: nom),
+                          ),
+                        );
+                      },
+                      icon: Icon(
+                        Icons.info,
+                        color: Colors.white,
                       ),
-                    );
-                  },
-                  icon: Icon(
-                    Icons.info,
-                    color: Colors.black,
-                  ),
+                    ),
+                    IconButton(
+                      onPressed: () {
+                        toggleFavoriteAuthor(authorId);
+                      },
+                      icon: Icon(
+                        isFavorite ? Icons.favorite : Icons.favorite_border,
+                        color: isFavorite ? Colors.red : Colors.white,
+                      ),
+                    ),
+                  ],
                 ),
-                SizedBox(width: 10),
-                IconButton(
-                  onPressed: () {
-                    toggleFavoriteAuthor(authorId);
-                  },
-                  icon: Icon(
-                    isFavorite ? Icons.favorite : Icons.favorite_border,
-                    color: isFavorite ? Colors.red : Colors.black,
-                  ),
-                ),
-              ],
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     Text(
                       '$nom',
                       style: TextStyle(
-                        fontFamily: 'Amiri',
+                        fontFamily: 'Almarai',
                         fontSize: 20.0,
-                        color: Colors.black,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
                       ),
                     ),
                     Text(
                       '$prenom',
                       style: TextStyle(
                         fontFamily: 'Amiri',
-                        fontSize: 16.0,
-                        color: Colors.black,
+                        fontSize: 20.0,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
                       ),
                     ),
                   ],
                 ),
-                SizedBox(width: 10),
-                CircleAvatar(
-                  backgroundImage: AssetImage('images/$nom.jpg'),
-                  radius: 30,
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            AuthorImagePage(imagePath: 'images/$nom.jpg'),
+                      ),
+                    );
+                  },
+                  child: CircleAvatar(
+                    backgroundImage: AssetImage('images/$nom.jpg'),
+                    radius: 30,
+                  ),
                 ),
               ],
             ),
-          ],
+          ),
         ),
       ),
     );
   }
 
   Widget _buildDeewanCard(String deewanId, String nom) {
-    return InkWell(
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => PoemListScreen(
-              deewanId: deewanId,
-              deewan_name: nom,
+    return Padding(
+      padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+      child: Material(
+        elevation: 4.0,
+        borderRadius: BorderRadius.circular(12.0),
+        child: InkWell(
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => PoemListScreen(
+                  deewanId: deewanId,
+                  deewan_name: nom,
+                ),
+              ),
+            );
+          },
+          child: Container(
+            padding: EdgeInsets.all(16.0),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(12.0),
+              color: Colors.blue[200], // Updated color
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.5),
+                  spreadRadius: 3,
+                  blurRadius: 7,
+                  offset: Offset(0, 3), // changes position of shadow
+                ),
+              ],
             ),
-          ),
-        );
-      },
-      child: Card(
-        elevation: 2.0,
-        margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12.0),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Row(
-                children: [
-                  IconButton(
-                    icon: Icon(Icons.info),
-                    onPressed: () {
-                      // Add functionality for info button
-                    },
-                  ),
-                ],
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Text(
-                    nom,
-                    style: TextStyle(
-                      fontFamily: 'Amiri',
-                      fontSize: 18.0,
-                      color: Colors.black,
+            child: Stack(
+              alignment: Alignment.topRight,
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Text(
+                          '$nom', // Prefix "ديوان" to the name
+                          style: TextStyle(
+                            fontFamily: 'Almarai',
+                            fontSize: 20.0,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
+                          ),
+                        ),
+                        SizedBox(
+                          width: 20.0,
+                        ), // Add spacing between $nom and icon
+                        Icon(Icons.book, color: Colors.blue),
+                      ],
                     ),
-                  ),
-                  SizedBox(width: 20.0),
-                  Icon(Icons.book, color: Colors.blue),
-                ],
-              ),
-            ],
+                    SizedBox(height: 5), // Add some spacing
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        SizedBox(
+                          width: 30.0,
+                        ), // Push 'عدد القصائد' more towards left
+                        Text(
+                          ': عدد القصائد',
+                          style: TextStyle(
+                            fontFamily: 'Amiri',
+                            fontSize: 15.0,
+                            color: Colors.grey[700],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -371,7 +420,13 @@ class _SearchResultPageState extends State<SearchResultPage> {
           );
         },
         child: Card(
-          elevation: 4,
+          elevation: 5, // Increase elevation for a stronger shadow
+          shape: RoundedRectangleBorder(
+            borderRadius:
+                BorderRadius.circular(20.0), // Use circular border radius
+          ),
+          color: Colors.indigo[400], // Add background color
+          shadowColor: Colors.grey.withOpacity(0.8), // Stronger shadow color
           child: Padding(
             padding: EdgeInsets.all(16.0),
             child: Column(
@@ -382,19 +437,7 @@ class _SearchResultPageState extends State<SearchResultPage> {
                   children: [
                     Row(
                       children: [
-                        IconButton(
-                          icon: Icon(Icons.info, color: Colors.black),
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => PoemDetails(
-                                  poemeName: titre,
-                                ),
-                              ),
-                            );
-                          },
-                        ),
+                        Icon(Icons.info, color: Colors.white),
                         IconButton(
                           icon: Icon(
                             isFavorite ? Icons.favorite : Icons.favorite_border,
@@ -412,17 +455,25 @@ class _SearchResultPageState extends State<SearchResultPage> {
                         Text(
                           titre,
                           style: TextStyle(
-                            fontSize: 18,
+                            fontSize: 20.0,
                             fontWeight: FontWeight.bold,
+                            fontFamily: 'Almarai',
+                            color: Colors.white,
                           ),
                         ),
                         Text(
-                          'البحر: $alBaher',
-                          style: TextStyle(fontSize: 16),
+                          'البحر:  $alBaher',
+                          style: TextStyle(
+                              fontSize: 16,
+                              fontFamily: 'Almarai',
+                              color: Colors.white),
                         ),
                         Text(
-                          'الروي : $rawy',
-                          style: TextStyle(fontSize: 16),
+                          'الروي :  $rawy',
+                          style: TextStyle(
+                              fontSize: 16,
+                              fontFamily: 'Almarai',
+                              color: Colors.white),
                         ),
                       ],
                     ),

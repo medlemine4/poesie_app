@@ -128,7 +128,6 @@ class _DeewanPageState extends State<DeewanPage> {
                               builder: (context) => PoemListScreen(
                                 deewanId: deewan['Id_Deewan'].toString(),
                                 deewan_name: deewan['nom'].toString(),
-                                
                               ),
                             ),
                           );
@@ -153,12 +152,6 @@ class _DeewanPageState extends State<DeewanPage> {
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                IconButton(
-                                  icon: Icon(Icons.info),
-                                  onPressed: () {
-                                    // Add functionality for info button
-                                  },
-                                ),
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
