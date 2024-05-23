@@ -125,13 +125,11 @@ class _FavoriteAuthorsPageState extends State<FavoriteAuthorsPage> {
                       horizontal: screenWidth * 0.04),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(30.0),
-                    borderSide:
-                        BorderSide(color: Colors.grey.shade300, width: 1.5),
+                    borderSide: BorderSide(color: Colors.grey.shade300, width: 1.5),
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(30.0),
-                    borderSide:
-                        BorderSide(color: Colors.grey.shade600, width: 1.5),
+                    borderSide: BorderSide(color: Colors.grey.shade600, width: 1.5),
                   ),
                 ),
                 onChanged: (value) {
@@ -160,12 +158,8 @@ class _FavoriteAuthorsPageState extends State<FavoriteAuthorsPage> {
                     String prenom = poet['prenom'];
                     return favoriteAuthors
                             .any((author) => author.authorId == authorId) &&
-                        (nom
-                                .toLowerCase()
-                                .contains(_searchText.toLowerCase()) ||
-                            prenom
-                                .toLowerCase()
-                                .contains(_searchText.toLowerCase()));
+                        (nom.toLowerCase().contains(_searchText.toLowerCase()) ||
+                            prenom.toLowerCase().contains(_searchText.toLowerCase()));
                   }).toList();
 
                   return ListView.builder(
@@ -177,11 +171,10 @@ class _FavoriteAuthorsPageState extends State<FavoriteAuthorsPage> {
                       String authorId = poet['ID_Auteur'];
 
                       return Padding(
-                        padding: EdgeInsets.symmetric(
-                            vertical: 8.0, horizontal: 16.0),
+                        padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
                         child: Container(
                           decoration: BoxDecoration(
-                            color: Colors.white,
+                            color: Colors.teal[900], // Updated color to teal[700]
                             boxShadow: [
                               BoxShadow(
                                 color: Colors.grey.withOpacity(0.3),
@@ -206,7 +199,7 @@ class _FavoriteAuthorsPageState extends State<FavoriteAuthorsPage> {
                               );
                             },
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.white,
+                              backgroundColor: Colors.teal[700], // Match the container color
                               padding: EdgeInsets.all(16.0),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(20.0),
@@ -222,14 +215,13 @@ class _FavoriteAuthorsPageState extends State<FavoriteAuthorsPage> {
                                         Navigator.push(
                                           context,
                                           MaterialPageRoute(
-                                            builder: (context) =>
-                                                PoetDetails(poetName: nom),
+                                            builder: (context) => PoetDetails(poetName: nom),
                                           ),
                                         );
                                       },
                                       icon: Icon(
                                         Icons.info,
-                                        color: Colors.black,
+                                        color: Colors.white, // Updated icon color
                                       ),
                                     ),
                                     SizedBox(width: 10),
@@ -252,7 +244,7 @@ class _FavoriteAuthorsPageState extends State<FavoriteAuthorsPage> {
                                         fontFamily: 'Amiri',
                                         fontWeight: FontWeight.bold,
                                         fontSize: screenWidth * 0.05,
-                                        color: Colors.black,
+                                        color: Colors.white, // Updated text color
                                       ),
                                     ),
                                     Text(
@@ -261,14 +253,13 @@ class _FavoriteAuthorsPageState extends State<FavoriteAuthorsPage> {
                                         fontFamily: 'Amiri',
                                         fontWeight: FontWeight.bold,
                                         fontSize: screenWidth * 0.05,
-                                        color: Colors.black,
+                                        color: Colors.white, // Updated text color
                                       ),
                                     ),
                                   ],
                                 ),
                                 CircleAvatar(
-                                  backgroundImage:
-                                      AssetImage('images/$nom.jpg'),
+                                  backgroundImage: AssetImage('images/$nom.jpg'),
                                   radius: 30.0,
                                 ),
                               ],

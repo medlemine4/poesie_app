@@ -19,13 +19,26 @@ class MongoDataBase {
   }
 
   static Future<List<Map<String, dynamic>>> getDeewanNames() async {
-    var db = await mongo.Db.create(MONGO_URL);
-    await db.open();
-    var collection = db.collection(COLLECTION_NAME2);
-    var result = await collection.find().toList();
-    await db.close();
-    return result;
+  var db = await mongo.Db.create(MONGO_URL);
+  await db.open();
+  var collection = db.collection(COLLECTION_NAME2);
+  var deewans = await collection.find().toList();
+
+  var poemsCollection = db.collection(COLLECTION_NAME3);
+
+  // Pour chaque Diwan, obtenir le nombre de poèmes
+  for (var deewan in deewans) {
+    var poemCount = await poemsCollection
+        .find(mongo.where.eq("ID_Deewan", deewan['Id_Deewan'].toString()))
+        .length;
+    deewan['poemCount'] = poemCount;
   }
+
+  await db.close();
+  return deewans;
+}
+
+
 
   static Future<Map<String, dynamic>> getPoetDetails(String poetName) async {
     var db = await mongo.Db.create(MONGO_URL);
@@ -55,17 +68,26 @@ class MongoDataBase {
     return poetsList;
   }
 
-  static Future<List<Map<String, dynamic>>> getDeewanByAuthorId(
-      String authorId) async {
-    var db = await mongo.Db.create(MONGO_URL);
-    await db.open();
-    var collection = db.collection(COLLECTION_NAME2);
-    var result = await collection
-        .find(mongo.where.eq("ID_Auteur", int.parse(authorId)))
-        .toList();
-    await db.close();
-    return result.map((deewan) => deewan as Map<String, dynamic>).toList();
+  static Future<List<Map<String, dynamic>>> getDeewanByAuthorId(String authorId) async {
+  var db = await mongo.Db.create(MONGO_URL);
+  await db.open();
+  var collection = db.collection(COLLECTION_NAME2);
+  var deewans = await collection.find(mongo.where.eq('ID_Auteur', int.parse(authorId))).toList();
+
+  var poemsCollection = db.collection(COLLECTION_NAME3);
+
+  // Pour chaque Diwan, obtenir le nombre de poèmes
+  for (var deewan in deewans) {
+    var poemCount = await poemsCollection
+        .find(mongo.where.eq("ID_Deewan", deewan['Id_Deewan'].toString()))
+        .length;
+    deewan['poemCount'] = poemCount;
   }
+
+  await db.close();
+  return deewans;
+}
+
 
   static Future<List<Map<String, dynamic>>> getPoemsByDeewanId(
       String deewanId) async {
