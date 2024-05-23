@@ -1,17 +1,16 @@
-// ignore_for_file: prefer_const_constructors, unnecessary_string_interpolations, prefer_const_literals_to_create_immutables, unused_import
+// ignore_for_file: prefer_const_literals_to_create_immutables, prefer_const_constructors
 
 import 'package:flutter/material.dart';
+import 'package:poesie_app/data/mongo_database.dart';
 import 'package:poesie_app/models/favorite_author.dart';
 import 'package:poesie_app/screens/DeewanParAuteurPage.dart';
 import 'package:poesie_app/screens/PoemContent.dart';
 import 'package:poesie_app/screens/PoemDetails.dart';
 import 'package:poesie_app/screens/PoemListPage.dart';
 import 'package:poesie_app/screens/PoetDetails.dart';
-import 'package:poesie_app/screens/photo_view_gallery.dart';
-import '../data/mongo_database.dart';
+import 'package:poesie_app/screens/full_screen_image_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:photo_view/photo_view.dart';
-import 'package:photo_view/photo_view_gallery.dart';
+import 'dart:convert'; // To handle JSON encoding and decoding
 
 class SearchResultPage extends StatefulWidget {
   final String searchText;
@@ -26,12 +25,13 @@ class SearchResultPage extends StatefulWidget {
 class _SearchResultPageState extends State<SearchResultPage> {
   List<FavoriteAuthor> favoriteAuthors = [];
   List<FavoritePoem> favoritePoems = [];
-  Set<String> displayedResults = Set();
+  List<Map<String, dynamic>> allResults = [];
 
   @override
   void initState() {
     super.initState();
     loadFavorites();
+    loadSavedResults();
   }
 
   void loadFavorites() async {
@@ -66,6 +66,48 @@ class _SearchResultPageState extends State<SearchResultPage> {
     await prefs.setStringList('favoritePoems', favoritePoemIds);
   }
 
+  void loadSavedResults() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? savedResults =
+        prefs.getString('searchResults_${widget.searchText}');
+
+    if (savedResults != null) {
+      setState(() {
+        allResults = List<Map<String, dynamic>>.from(json.decode(savedResults));
+      });
+    } else {
+      // Fetch results if not saved
+      List<Map<String, dynamic>>? fetchedResults = await loadResults();
+      if (fetchedResults != null) {
+        setState(() {
+          allResults = fetchedResults;
+          saveResults(fetchedResults);
+        });
+      }
+    }
+  }
+
+  void saveResults(List<Map<String, dynamic>> results) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString(
+        'searchResults_${widget.searchText}', json.encode(results));
+  }
+
+  Future<List<Map<String, dynamic>>?> loadResults() async {
+    try {
+      List<Map<String, dynamic>> poemsList =
+          await MongoDataBase.searchAllCollections(widget.searchText);
+
+      List<Map<String, dynamic>> allResults = [];
+      allResults.addAll(poemsList);
+
+      return allResults;
+    } catch (error) {
+      print('Error loading results: $error');
+      return null;
+    }
+  }
+
   void toggleFavoriteAuthor(String authorId) {
     setState(() {
       if (favoriteAuthors.any((author) => author.authorId == authorId)) {
@@ -88,21 +130,6 @@ class _SearchResultPageState extends State<SearchResultPage> {
     });
   }
 
-  Future<List<Map<String, dynamic>>?> loadResults() async {
-    try {
-      List<Map<String, dynamic>> poemsList =
-          await MongoDataBase.searchAllCollections(widget.searchText);
-
-      List<Map<String, dynamic>> allResults = [];
-      allResults.addAll(poemsList);
-
-      return allResults;
-    } catch (error) {
-      print('Error loading results: $error');
-      return null;
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -121,109 +148,113 @@ class _SearchResultPageState extends State<SearchResultPage> {
         centerTitle: true,
         backgroundColor: Colors.blueGrey[900],
       ),
-      body: FutureBuilder<List<Map<String, dynamic>>?>(
-        future: loadResults(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
-          }
-          if (snapshot.hasError ||
-              snapshot.data == null ||
-              snapshot.data!.isEmpty) {
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    Icons.warning,
-                    size: 50,
-                    color: Colors.red,
-                  ),
-                  Text(
-                    '...لا معلومات موجودة عن ما تبحث عنه للأسف',
-                    style: TextStyle(fontSize: 18),
-                  ),
-                ],
-              ),
-            );
-          }
-
-          List<Map<String, dynamic>> allResults = snapshot.data!;
-
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              if (widget.searchText.isNotEmpty)
-                Container(
-                  padding: EdgeInsets.all(16),
-                  child: Center(
-                    child: Text(
-                      'نتائج البحث عن : ${widget.searchText}',
-                      style: TextStyle(
-                        fontSize: 24,
-                        fontFamily: 'Almarai',
-                        fontWeight: FontWeight.bold,
-                      ),
+      body: allResults.isEmpty
+          ? FutureBuilder<List<Map<String, dynamic>>?>(
+              future: loadResults(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Center(child: CircularProgressIndicator());
+                }
+                if (snapshot.hasError ||
+                    snapshot.data == null ||
+                    snapshot.data!.isEmpty) {
+                  return Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.warning,
+                          size: 50,
+                          color: Colors.red,
+                        ),
+                        Text(
+                          '...لا معلومات موجودة عن ما تبحث عنه للأسف',
+                          style: TextStyle(fontSize: 18),
+                        ),
+                      ],
                     ),
-                  ),
-                ),
-              Expanded(
-                child: ListView.builder(
-                  itemCount: allResults.length,
-                  itemBuilder: (context, index) {
-                    var result = allResults[index];
-                    if (displayedResults.contains(result.toString())) {
-                      return SizedBox();
-                    }
+                  );
+                }
 
-                    displayedResults.add(result.toString());
+                List<Map<String, dynamic>> results = snapshot.data!;
+                saveResults(results);
+                setState(() {
+                  allResults = results;
+                });
 
-                    if (result.containsKey('nom') &&
-                        result.containsKey('prenom')) {
-                      String nom = result['nom'];
-                      String prenom = result['prenom'];
-                      String lieuNaissance = result['lieu_naissance'] ?? '';
-                      String authorId = result['ID_Auteur'];
+                return buildResultsList();
+              },
+            )
+          : buildResultsList(),
+    );
+  }
 
-                      bool isFavorite = favoriteAuthors
-                          .any((author) => author.authorId == authorId);
-
-                      return _buildAuthorCard(
-                          nom, prenom, lieuNaissance, authorId, isFavorite);
-                    } else if (result.containsKey('Id_Deewan')) {
-                      String deewanId = result['Id_Deewan'].toString();
-                      String nom = result['nom'].toString();
-
-                      return _buildDeewanCard(deewanId, nom);
-                    } else if (result.containsKey('Titre')) {
-                      String titre = result['Titre'] ?? '';
-                      String contenu = result['Contenue'] ?? '';
-                      String alBaher = result['AlBaher'] ?? '';
-                      String rawy = result['Rawy'] ?? '';
-                      String poemId = result['ID_Poeme'] ?? '';
-
-                      bool isFavorite =
-                          favoritePoems.any((poem) => poem.poemId == poemId);
-
-                      return _buildPoemCard(
-                          titre, contenu, alBaher, rawy, poemId, isFavorite);
-                    } else {
-                      return SizedBox();
-                    }
-                  },
+  Widget buildResultsList() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        if (widget.searchText.isNotEmpty)
+          Container(
+            padding: EdgeInsets.all(16),
+            child: Center(
+              child: Text(
+                'نتائج البحث عن : ${widget.searchText}',
+                style: TextStyle(
+                  fontSize: 24,
+                  fontFamily: 'Almarai',
+                  fontWeight: FontWeight.bold,
                 ),
               ),
-            ],
-          );
-        },
-      ),
+            ),
+          ),
+        Expanded(
+          child: ListView.builder(
+            itemCount: allResults.length,
+            itemBuilder: (context, index) {
+              var result = allResults[index];
+
+              if (result.containsKey('nom') && result.containsKey('prenom')) {
+                String nom = result['nom'];
+                String prenom = result['prenom'];
+                String lieuNaissance = result['lieu_naissance'] ?? '';
+                String authorId = result['ID_Auteur'];
+
+                bool isFavorite = favoriteAuthors
+                    .any((author) => author.authorId == authorId);
+
+                return _buildAuthorCard(
+                    nom, prenom, lieuNaissance, authorId, isFavorite);
+              } else if (result.containsKey('Id_Deewan')) {
+                String deewanId = result['Id_Deewan'].toString();
+                String nom = result['nom'].toString();
+
+                return _buildDeewanCard(deewanId, nom);
+              } else if (result.containsKey('Titre')) {
+                String titre = result['Titre'] ?? '';
+                String contenu = result['Contenue'] ?? '';
+                String alBaher = result['AlBaher'] ?? '';
+                String rawy = result['Rawy'] ?? '';
+                String poemId = result['ID_Poeme'] ?? '';
+
+                bool isFavorite =
+                    favoritePoems.any((poem) => poem.poemId == poemId);
+
+                return _buildPoemCard(
+                    titre, contenu, alBaher, rawy, poemId, isFavorite);
+              } else {
+                return SizedBox();
+              }
+            },
+          ),
+        ),
+      ],
     );
   }
 
   Widget _buildAuthorCard(String nom, String prenom, String lieuNaissance,
       String authorId, bool isFavorite) {
     return Padding(
-      padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
+      padding: EdgeInsets.all(8.0),
       child: Material(
         elevation: 4.0,
         borderRadius: BorderRadius.circular(20.0),
@@ -233,8 +264,11 @@ class _SearchResultPageState extends State<SearchResultPage> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) =>
-                    AuthorImagePage(imagePath: 'images/$nom.jpg'),
+                builder: (context) => DeewanParAuteurPage(
+                  authorId: authorId,
+                  poetFirstname: nom,
+                  poetLastname: prenom,
+                ),
               ),
             );
           },
@@ -302,8 +336,8 @@ class _SearchResultPageState extends State<SearchResultPage> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) =>
-                            AuthorImagePage(imagePath: 'images/$nom.jpg'),
+                        builder: (context) => FullScreenImagePage(
+                            tag: 'hero-$nom', imageUrl: 'images/$nom.jpg'),
                       ),
                     );
                   },
@@ -322,7 +356,7 @@ class _SearchResultPageState extends State<SearchResultPage> {
 
   Widget _buildDeewanCard(String deewanId, String nom) {
     return Padding(
-      padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+      padding: EdgeInsets.all(8.0),
       child: Material(
         elevation: 4.0,
         borderRadius: BorderRadius.circular(12.0),
