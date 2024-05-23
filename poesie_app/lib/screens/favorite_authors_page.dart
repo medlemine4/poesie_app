@@ -150,7 +150,7 @@ class _FavoriteAuthorsPageState extends State<FavoriteAuthorsPage> {
               ),
             ),
           ),
-          SizedBox(height: screenHeight * 0.04), // Add a bit more space
+          SizedBox(height: screenHeight * 0.04), 
           Expanded(
             child: FutureBuilder<List<Map<String, dynamic>>>(
               future: MongoDataBase.getPoetDetailsList(),
