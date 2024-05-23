@@ -116,7 +116,7 @@ class _SearchResultPageState extends State<SearchResultPage> {
               color: Colors.white),
         ),
         iconTheme: IconThemeData(
-          color: Colors.white, // Change the color here
+          color: Colors.white,
         ),
         centerTitle: true,
         backgroundColor: Colors.blueGrey[900],
@@ -233,8 +233,11 @@ class _SearchResultPageState extends State<SearchResultPage> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) =>
-                    AuthorImagePage(imagePath: 'images/$nom.jpg'),
+                builder: (context) => DeewanParAuteurPage(
+                  authorId: authorId,
+                  poetFirstname: nom,
+                  poetLastname: prenom,
+                ),
               ),
             );
           },
@@ -254,7 +257,9 @@ class _SearchResultPageState extends State<SearchResultPage> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => PoetDetails(poetName: nom),
+                            builder: (context) => PoetDetails(
+                              poetName: nom,
+                            ),
                           ),
                         );
                       },
@@ -482,6 +487,34 @@ class _SearchResultPageState extends State<SearchResultPage> {
               ],
             ),
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class AuthorImagePage extends StatelessWidget {
+  final String imagePath;
+
+  const AuthorImagePage({Key? key, required this.imagePath}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          'صورة الشاعر',
+          style: TextStyle(
+            fontFamily: 'Almarai',
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
+        ),
+        backgroundColor: Colors.blueGrey[900],
+      ),
+      body: Center(
+        child: PhotoView(
+          imageProvider: AssetImage(imagePath),
         ),
       ),
     );
