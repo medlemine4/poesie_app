@@ -23,15 +23,21 @@ class _DeewanPageState extends State<DeewanPage> {
       appBar: AppBar(
         title: Text(
           'قائمة الدواوين',
-          style: TextStyle(fontFamily: 'Almarai', fontSize: 25.0),
+          style: TextStyle(
+            fontFamily: 'Almarai',
+            fontSize: 25.0,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
         ),
         centerTitle: true,
-        backgroundColor: Color.fromARGB(255, 230, 230, 145),
+        backgroundColor: Colors.teal[700],
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
           onPressed: () {
             Navigator.of(context).pop();
           },
+          color: Colors.white,
         ),
         actions: [
           IconButton(
@@ -44,18 +50,17 @@ class _DeewanPageState extends State<DeewanPage> {
               );
             },
             icon: Icon(Icons.search),
-            color: Colors.black,
+            color: Colors.white,
           ),
         ],
       ),
       body: Column(
         children: [
           Padding(
-            padding:
-                const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
+            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
             child: Container(
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: Colors.teal[300],
                 borderRadius: BorderRadius.circular(30.0),
                 boxShadow: [
                   BoxShadow(
@@ -85,17 +90,14 @@ class _DeewanPageState extends State<DeewanPage> {
                     },
                     icon: Icon(Icons.clear, color: Colors.grey),
                   ),
-                  contentPadding:
-                      EdgeInsets.symmetric(vertical: 15.0, horizontal: 20.0),
+                  contentPadding: EdgeInsets.symmetric(vertical: 15.0, horizontal: 20.0),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(30.0),
-                    borderSide:
-                        BorderSide(color: Colors.grey.shade300, width: 1.5),
+                    borderSide: BorderSide(color: Colors.grey.shade300, width: 1.5),
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(30.0),
-                    borderSide:
-                        BorderSide(color: Colors.grey.shade600, width: 1.5),
+                    borderSide: BorderSide(color: Colors.grey.shade600, width: 1.5),
                   ),
                 ),
                 onChanged: (value) {
@@ -117,18 +119,15 @@ class _DeewanPageState extends State<DeewanPage> {
                 } else {
                   List<Map<String, dynamic>>? deewans = snapshot.data;
                   if (deewans == null || deewans.isEmpty) {
-                    return Center(
-                        child: Text('لا توجد قصائد متاحة في هذا الديوان'));
+                    return Center(child: Text('لا توجد قصائد متاحة في هذا الديوان'));
                   }
                   // Filtrer les données en fonction du texte de recherche :
                   List<Map<String, dynamic>> filteredDeewans =
                       _searchText.isEmpty
                           ? deewans
-                          : deewans
-                              .where((deewan) => (deewan['nom'] as String)
-                                  .toLowerCase()
-                                  .contains(_searchText.toLowerCase()))
-                              .toList();
+                          : deewans.where((deewan) => (deewan['nom'] as String)
+                              .toLowerCase()
+                              .contains(_searchText.toLowerCase())).toList();
                   return ListView.builder(
                     itemCount: filteredDeewans.length,
                     itemBuilder: (context, index) {
@@ -147,7 +146,7 @@ class _DeewanPageState extends State<DeewanPage> {
                         },
                         child: Container(
                           decoration: BoxDecoration(
-                            color: Colors.white,
+                            color: Colors.teal[300],
                             borderRadius: BorderRadius.circular(20.0),
                             boxShadow: [
                               BoxShadow(
@@ -158,15 +157,13 @@ class _DeewanPageState extends State<DeewanPage> {
                               ),
                             ],
                           ),
-                          margin: EdgeInsets.symmetric(
-                              vertical: 8.0, horizontal: 16.0),
+                          margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
                           child: Padding(
                             padding: const EdgeInsets.all(16.0),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.end,
                               children: [
                                 Row(
-                                  // crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
                                     Text(
                                       deewan['nom'] ?? '',
@@ -178,7 +175,7 @@ class _DeewanPageState extends State<DeewanPage> {
                                       ),
                                     ),
                                     SizedBox(width: 30.0),
-                                    Icon(Icons.book, color: Colors.blue),
+                                    Icon(Icons.book, color: Colors.teal[700]),
                                   ],
                                 ),
                               ],
