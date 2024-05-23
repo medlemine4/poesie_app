@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:flutter/material.dart';
+import 'package:poesie_app/screens/SearchPage.dart';
 import '../data/mongo_database.dart';
 
 class PoetDetails extends StatelessWidget {
@@ -12,20 +13,33 @@ class PoetDetails extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          'تفاصيل الشاعر',
-          style: TextStyle(
-              fontSize: 27.0,
-              fontFamily: 'Almarai',
-              fontWeight: FontWeight.bold,
-              color: Colors.white),
-        ),
-        iconTheme: IconThemeData(
-          color: Colors.white,
-        ),
-        centerTitle: true,
-        backgroundColor: Colors.teal[700],
-      ),
+          title: Text(
+            'تفاصيل الشاعر',
+            style: TextStyle(
+                fontSize: 27.0,
+                fontFamily: 'Almarai',
+                fontWeight: FontWeight.bold,
+                color: Colors.white),
+          ),
+          iconTheme: IconThemeData(
+            color: Colors.white,
+          ),
+          centerTitle: true,
+          backgroundColor: Colors.teal[700],
+          actions: [
+            IconButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => SearchPage(),
+                  ),
+                );
+              },
+              icon: Icon(Icons.search),
+              color: Colors.white,
+            ),
+          ]),
       body: SingleChildScrollView(
         child: FutureBuilder<Map<String, dynamic>>(
           future: MongoDataBase.getPoetDetails(poetName),
@@ -36,13 +50,12 @@ class PoetDetails extends StatelessWidget {
               return Center(child: Text('Error: ${snapshot.error}'));
             } else {
               Map<String, dynamic>? poetDetails = snapshot.data;
-
               return Column(
                 children: [
                   // Afficher l'image de l'auteur
                   Container(
                     width: double.infinity,
-                    height: 200, // Taille de l'image
+                    height: 200,
                     decoration: BoxDecoration(
                       image: DecorationImage(
                         image: AssetImage(

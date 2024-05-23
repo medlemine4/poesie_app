@@ -75,11 +75,17 @@ class _SearchPageState extends State<SearchPage> {
       appBar: AppBar(
         title: Text(
           'صفحة البحث',
-          style: TextStyle(fontSize: 24.0),
+          style: TextStyle(
+              fontSize: 27.0,
+              fontFamily: 'Almarai',
+              fontWeight: FontWeight.bold,
+              color: Colors.white),
+        ),
+        iconTheme: IconThemeData(
+          color: Colors.white,
         ),
         centerTitle: true,
-        backgroundColor:
-            Color.fromARGB(255, 230, 230, 145), // Couleur de l'app bar
+        backgroundColor: Colors.teal[700], // Couleur de l'app bar
       ),
       body: Container(
         padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.04),

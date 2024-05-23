@@ -61,15 +61,25 @@ class _FavoriteAuthorsPageState extends State<FavoriteAuthorsPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          'قائمة الشعراء المفضلين',
-          style: TextStyle(fontFamily: 'Almarai', fontSize: screenWidth * 0.06),
+        title: FittedBox(
+          fit: BoxFit.scaleDown,
+          child: Text(
+            'قائمة الشعراء المفضلين',
+            style: TextStyle(
+                fontSize: 27.0,
+                fontFamily: 'Almarai',
+                fontWeight: FontWeight.bold,
+                color: Colors.white),
+          ),
+        ),
+        iconTheme: IconThemeData(
+          color: Colors.white,
         ),
         centerTitle: true,
-        backgroundColor: Color.fromARGB(255, 230, 230, 145),
+        backgroundColor: Colors.teal[700],
         actions: [
           IconButton(
-            icon: Icon(Icons.search),
+            icon: Icon(Icons.search, color: Colors.white),
             onPressed: () {
               Navigator.push(
                 context,
@@ -178,10 +188,11 @@ class _FavoriteAuthorsPageState extends State<FavoriteAuthorsPage> {
 
                       return Padding(
                         padding: EdgeInsets.symmetric(
-                            vertical: 8.0, horizontal: 16.0),
+                            vertical: 10.0, horizontal: 20.0),
                         child: Container(
+                          // color: Colors.teal[100],
                           decoration: BoxDecoration(
-                            color: Colors.white,
+                            color: Colors.teal[100],
                             boxShadow: [
                               BoxShadow(
                                 color: Colors.grey.withOpacity(0.3),
@@ -229,7 +240,7 @@ class _FavoriteAuthorsPageState extends State<FavoriteAuthorsPage> {
                                       },
                                       icon: Icon(
                                         Icons.info,
-                                        color: Colors.black,
+                                        color: Colors.teal[900],
                                       ),
                                     ),
                                     SizedBox(width: 10),
@@ -252,7 +263,7 @@ class _FavoriteAuthorsPageState extends State<FavoriteAuthorsPage> {
                                         fontFamily: 'Amiri',
                                         fontWeight: FontWeight.bold,
                                         fontSize: screenWidth * 0.05,
-                                        color: Colors.black,
+                                        color: Colors.teal[900],
                                       ),
                                     ),
                                     Text(
@@ -261,7 +272,7 @@ class _FavoriteAuthorsPageState extends State<FavoriteAuthorsPage> {
                                         fontFamily: 'Amiri',
                                         fontWeight: FontWeight.bold,
                                         fontSize: screenWidth * 0.05,
-                                        color: Colors.black,
+                                        color: Colors.teal[900],
                                       ),
                                     ),
                                   ],
