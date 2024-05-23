@@ -270,7 +270,8 @@ class _FavoritePoemsPageState extends State<FavoritePoemsPage> {
                                             'البحر: $alBaher',
                                             style: TextStyle(
                                                 fontSize: 16,
-                                                fontFamily: 'Almarai',color: Colors.teal[900]),
+                                                fontFamily: 'Almarai',
+                                                color: Colors.teal[900]),
                                           ),
                                           Text(
                                             'الروي : $rawy',
