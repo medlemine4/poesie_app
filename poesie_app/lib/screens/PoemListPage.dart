@@ -69,10 +69,17 @@ class _PoemListScreenState extends State<PoemListScreen> {
       appBar: AppBar(
         title: Text(
           'قصائد  ${widget.deewan_name}',
-          style: TextStyle(fontFamily: 'Almarai', fontSize: 25.0),
+          style: TextStyle(
+              fontSize: 27.0,
+              fontFamily: 'Almarai',
+              fontWeight: FontWeight.bold,
+              color: Colors.white),
+        ),
+        iconTheme: IconThemeData(
+          color: Colors.white,
         ),
         centerTitle: true,
-        backgroundColor: Color.fromARGB(255, 230, 230, 145),
+        backgroundColor: Colors.teal[700],
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
           onPressed: () {
@@ -83,7 +90,7 @@ class _PoemListScreenState extends State<PoemListScreen> {
           IconButton(
             icon: Icon(
               Icons.search,
-              color: Colors.black,
+              color: Colors.white,
             ),
             onPressed: () {
               Navigator.push(
@@ -106,7 +113,7 @@ class _PoemListScreenState extends State<PoemListScreen> {
                 Expanded(
                   child: Container(
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: Colors.teal[50],
                       borderRadius: BorderRadius.circular(30.0),
                       boxShadow: [
                         BoxShadow(
@@ -203,6 +210,7 @@ class _PoemListScreenState extends State<PoemListScreen> {
                           },
                           child: Card(
                             elevation: 4,
+                            color: Colors.teal[50],
                             child: Padding(
                               padding: EdgeInsets.all(16.0),
                               child: Column(
@@ -216,7 +224,7 @@ class _PoemListScreenState extends State<PoemListScreen> {
                                         children: [
                                           IconButton(
                                             icon: Icon(Icons.info,
-                                                color: Colors.black),
+                                                color: Colors.teal[900]),
                                             onPressed: () {
                                               Navigator.push(
                                                 context,
@@ -234,7 +242,9 @@ class _PoemListScreenState extends State<PoemListScreen> {
                                               isFavorite
                                                   ? Icons.favorite
                                                   : Icons.favorite_border,
-                                              color: Colors.red,
+                                              color: isFavorite
+                                                  ? Colors.red
+                                                  : Colors.teal[900],
                                             ),
                                             onPressed: () {
                                               toggleFavorite(poemId);
@@ -252,19 +262,24 @@ class _PoemListScreenState extends State<PoemListScreen> {
                                               fontSize: 20.0,
                                               fontWeight: FontWeight.bold,
                                               fontFamily: 'Almarai',
+                                              color: Colors.teal[900],
                                             ),
                                           ),
                                           Text(
                                             'البحر:  $alBaher',
                                             style: TextStyle(
-                                                fontSize: 16,
-                                                fontFamily: 'Almarai'),
+                                              fontSize: 16,
+                                              fontFamily: 'Almarai',
+                                              color: Colors.teal[900],
+                                            ),
                                           ),
                                           Text(
                                             'الروي :  $rawy',
                                             style: TextStyle(
-                                                fontSize: 16,
-                                                fontFamily: 'Almarai'),
+                                              fontSize: 16,
+                                              fontFamily: 'Almarai',
+                                              color: Colors.teal[900],
+                                            ),
                                           ),
                                         ],
                                       ),

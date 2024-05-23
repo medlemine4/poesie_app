@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_const_constructors
+
 import 'package:flutter/material.dart';
 import 'package:poesie_app/screens/SearchPage.dart';
 import '../data/mongo_database.dart';
@@ -13,10 +15,17 @@ class PoemDetails extends StatelessWidget {
       appBar: AppBar(
         title: Text(
           'تفاصيل القصيدة',
-          style: TextStyle(fontFamily: 'Amiri', fontSize: 24.0),
+          style: TextStyle(
+              fontSize: 27.0,
+              fontFamily: 'Almarai',
+              fontWeight: FontWeight.bold,
+              color: Colors.white),
+        ),
+        iconTheme: IconThemeData(
+          color: Colors.white,
         ),
         centerTitle: true,
-        backgroundColor: Color.fromARGB(255, 230, 230, 145),
+        backgroundColor: Colors.teal[700],
         actions: [
           IconButton(
             onPressed: () {
@@ -28,7 +37,7 @@ class PoemDetails extends StatelessWidget {
               );
             },
             icon: Icon(Icons.search),
-            color: Colors.black,
+            color: Colors.white,
           ),
         ],
       ),
@@ -49,9 +58,15 @@ class PoemDetails extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    PoemDetailItem(label: 'الوصف:', text: poemDetails!['description'] ?? 'غير متوفر'),
-                    PoemDetailItem(label: 'البحر:', text: poemDetails['AlBaher'] ?? 'غير متوفر'),
-                    PoemDetailItem(label: 'غرض القصيدة:', text: poemDetails['Categorie'] ?? 'غير متوفر'),
+                    PoemDetailItem(
+                        label: 'الوصف:',
+                        text: poemDetails!['description'] ?? 'غير متوفر'),
+                    PoemDetailItem(
+                        label: 'البحر:',
+                        text: poemDetails['AlBaher'] ?? 'غير متوفر'),
+                    PoemDetailItem(
+                        label: 'غرض القصيدة:',
+                        text: poemDetails['Categorie'] ?? 'غير متوفر'),
                   ],
                 ),
               ),
@@ -76,7 +91,8 @@ class PoemDetailItem extends StatelessWidget {
       children: [
         Text(
           label,
-          style: TextStyle(fontFamily: 'Amiri', fontSize: 20.0, fontWeight: FontWeight.bold),
+          style: TextStyle(
+              fontFamily: 'Amiri', fontSize: 20.0, fontWeight: FontWeight.bold),
         ),
         SizedBox(height: 10),
         Text(

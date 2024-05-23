@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_const_constructors
+
 import 'package:flutter/material.dart';
 import '../data/mongo_database.dart';
 
@@ -12,10 +14,17 @@ class PoetDetails extends StatelessWidget {
       appBar: AppBar(
         title: Text(
           'تفاصيل الشاعر',
-          style: TextStyle(fontFamily: 'Amiri', fontSize: 24.0),
+          style: TextStyle(
+              fontSize: 27.0,
+              fontFamily: 'Almarai',
+              fontWeight: FontWeight.bold,
+              color: Colors.white),
+        ),
+        iconTheme: IconThemeData(
+          color: Colors.white,
         ),
         centerTitle: true,
-        backgroundColor: Color.fromARGB(255, 230, 230, 145),
+        backgroundColor: Colors.teal[700],
       ),
       body: SingleChildScrollView(
         child: FutureBuilder<Map<String, dynamic>>(
@@ -36,7 +45,8 @@ class PoetDetails extends StatelessWidget {
                     height: 200, // Taille de l'image
                     decoration: BoxDecoration(
                       image: DecorationImage(
-                        image: AssetImage('images/$poetName.jpg'), // Remplacer par le chemin correct
+                        image: AssetImage(
+                            'images/$poetName.jpg'), // Remplacer par le chemin correct
                         fit: BoxFit.cover,
                       ),
                     ),
@@ -60,7 +70,8 @@ class PoetDetails extends StatelessWidget {
                     child: Text(
                       poetDetails!['description'] ?? 'N/A',
                       style: TextStyle(fontFamily: 'Amiri', fontSize: 18.0),
-                      textDirection: TextDirection.rtl, // Aligner le texte de droite à gauche
+                      textDirection: TextDirection
+                          .rtl, // Aligner le texte de droite à gauche
                     ),
                   ),
                 ],

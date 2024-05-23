@@ -56,10 +56,16 @@ class _PoetPageState extends State<PoetPage> {
       appBar: AppBar(
         title: Text(
           'قائمة الشعراء',
-          style: TextStyle(fontFamily: 'Almarai', fontSize: 27.0),
+          style: TextStyle(fontSize: 27.0,
+              fontFamily: 'Almarai',
+              fontWeight: FontWeight.bold,
+              color: Colors.white),
+        ),
+        iconTheme: IconThemeData(
+          color: Colors.white,
         ),
         centerTitle: true,
-        backgroundColor: Color.fromARGB(255, 230, 230, 145),
+        backgroundColor: Colors.teal[700],
         actions: [
           IconButton(
             onPressed: () {
@@ -71,7 +77,7 @@ class _PoetPageState extends State<PoetPage> {
               );
             },
             icon: Icon(Icons.search),
-            color: Colors.black,
+            color: Colors.white,
           ),
         ],
       ),
@@ -166,7 +172,7 @@ class _PoetPageState extends State<PoetPage> {
                             vertical: 10.0, horizontal: 20.0),
                         child: Container(
                           decoration: BoxDecoration(
-                            color: Colors.white,
+                            color: Colors.teal[100],
                             borderRadius: BorderRadius.circular(20.0),
                             boxShadow: [
                               BoxShadow(
@@ -218,7 +224,7 @@ class _PoetPageState extends State<PoetPage> {
                                 fontFamily: 'Almarai',
                                 fontSize: 20.0,
                                 fontWeight: FontWeight.bold,
-                                color: Colors.black,
+                                color: Colors.teal[900],
                               ),
                             ),
                             subtitle: Text(
@@ -227,7 +233,7 @@ class _PoetPageState extends State<PoetPage> {
                                 fontFamily: 'Almarai',
                                 fontWeight: FontWeight.bold,
                                 fontSize: 19.0,
-                                color: Colors.black,
+                                color: Colors.teal[900],
                               ),
                             ),
                             leading: Row(
@@ -245,7 +251,7 @@ class _PoetPageState extends State<PoetPage> {
                                   },
                                   icon: Icon(
                                     Icons.info,
-                                    color: Colors.black,
+                                    color: Colors.teal[900],
                                   ),
                                 ),
                                 SizedBox(width: 10),
@@ -257,7 +263,9 @@ class _PoetPageState extends State<PoetPage> {
                                     isFavorite
                                         ? Icons.favorite
                                         : Icons.favorite_border,
-                                    color: Colors.red,
+                                    color: isFavorite
+                                        ? Colors.red
+                                        : Colors.teal[900],
                                   ),
                                 ),
                               ],

@@ -10,16 +10,26 @@ class PoemContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<String> lines = poemContent.split('\n').where((line) => line.trim().isNotEmpty).toList();
+    List<String> lines = poemContent
+        .split('\n')
+        .where((line) => line.trim().isNotEmpty)
+        .toList();
 
     return Scaffold(
       appBar: AppBar(
         title: Text(
           poemTitle,
-          style: TextStyle(fontFamily: 'Almarai', fontSize: 24.0),
+          style: TextStyle(
+              fontSize: 27.0,
+              fontFamily: 'Almarai',
+              fontWeight: FontWeight.bold,
+              color: Colors.white),
+        ),
+        iconTheme: IconThemeData(
+          color: Colors.white,
         ),
         centerTitle: true,
-        backgroundColor: Color.fromARGB(255, 230, 230, 145),
+        backgroundColor: Colors.teal[700],
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -37,7 +47,8 @@ class PoemContent extends StatelessWidget {
                             Expanded(
                               child: Text(
                                 lines[i],
-                                style: TextStyle(fontFamily: 'Almarai', fontSize: 18.0),
+                                style: TextStyle(
+                                    fontFamily: 'Almarai', fontSize: 18.0),
                                 textDirection: TextDirection.rtl,
                               ),
                             ),
@@ -49,7 +60,8 @@ class PoemContent extends StatelessWidget {
                             Expanded(
                               child: Text(
                                 lines[i],
-                                style: TextStyle(fontFamily: 'Almarai', fontSize: 18.0),
+                                style: TextStyle(
+                                    fontFamily: 'Almarai', fontSize: 18.0),
                                 textDirection: TextDirection.ltr,
                               ),
                             ),

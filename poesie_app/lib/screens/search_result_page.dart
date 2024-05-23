@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_const_literals_to_create_immutables, prefer_const_constructors, unnecessary_string_interpolations
+
 import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:poesie_app/data/mongo_database.dart';
@@ -14,7 +16,8 @@ import 'dart:convert'; // To handle JSON encoding and decoding
 class SearchResultPage extends StatefulWidget {
   final String searchText;
 
-  const SearchResultPage({Key? key, required this.searchText}) : super(key: key);
+  const SearchResultPage({Key? key, required this.searchText})
+      : super(key: key);
 
   @override
   _SearchResultPageState createState() => _SearchResultPageState();
@@ -135,7 +138,7 @@ class _SearchResultPageState extends State<SearchResultPage> {
         title: Text(
           'نتائج البحث',
           style: TextStyle(
-              fontSize: 24.0,
+              fontSize: 27.0,
               fontFamily: 'Almarai',
               fontWeight: FontWeight.bold,
               color: Colors.white),
@@ -401,7 +404,7 @@ class _SearchResultPageState extends State<SearchResultPage> {
                             fontFamily: 'Almarai',
                             fontSize: 20.0,
                             fontWeight: FontWeight.bold,
-                            color: Colors.black,
+                            color: Colors.black87,
                           ),
                         ),
                         SizedBox(
@@ -422,7 +425,7 @@ class _SearchResultPageState extends State<SearchResultPage> {
                           style: TextStyle(
                             fontFamily: 'Amiri',
                             fontSize: 15.0,
-                            color: Colors.grey[700],
+                            color: Colors.grey[900],
                           ),
                         ),
                       ],
@@ -471,7 +474,19 @@ class _SearchResultPageState extends State<SearchResultPage> {
                   children: [
                     Row(
                       children: [
-                        Icon(Icons.info, color: Colors.teal[900]),
+                        IconButton(
+                          icon: Icon(Icons.info, color: Colors.teal[900]),
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => PoemDetails(
+                                  poemeName: titre,
+                                ),
+                              ),
+                            );
+                          },
+                        ),
                         IconButton(
                           icon: Icon(
                             isFavorite ? Icons.favorite : Icons.favorite_border,

@@ -32,11 +32,18 @@ class _DeewanParAuteurPageState extends State<DeewanParAuteurPage> {
           fit: BoxFit.scaleDown,
           child: Text(
             'دواوين ${widget.poetFirstname} ${widget.poetLastname}',
-            style: TextStyle(fontFamily: 'Almarai', fontSize: 25.0),
+            style: TextStyle(
+                fontSize: 27.0,
+                fontFamily: 'Almarai',
+                fontWeight: FontWeight.bold,
+                color: Colors.white),
           ),
         ),
+        iconTheme: IconThemeData(
+          color: Colors.white,
+        ),
         centerTitle: true,
-        backgroundColor: Color.fromARGB(255, 230, 230, 145),
+        backgroundColor: Colors.teal[700],
         actions: [
           IconButton(
             onPressed: () {
@@ -49,7 +56,7 @@ class _DeewanParAuteurPageState extends State<DeewanParAuteurPage> {
             },
             icon: Icon(
               Icons.search,
-              color: Colors.black,
+              color: Colors.white,
             ),
           ),
         ],
@@ -152,7 +159,7 @@ class _DeewanParAuteurPageState extends State<DeewanParAuteurPage> {
                         },
                         child: Container(
                           decoration: BoxDecoration(
-                            color: Colors.white,
+                            color: Colors.teal[300],
                             borderRadius: BorderRadius.circular(20.0),
                             boxShadow: [
                               BoxShadow(
@@ -179,7 +186,7 @@ class _DeewanParAuteurPageState extends State<DeewanParAuteurPage> {
                                         fontFamily: 'Almarai',
                                         fontSize: 20.0,
                                         fontWeight: FontWeight.bold,
-                                        color: Colors.black,
+                                        color: Colors.white,
                                       ),
                                     ),
                                     SizedBox(width: 30.0),
