@@ -1,5 +1,3 @@
-// ignore_for_file: prefer_const_literals_to_create_immutables, prefer_const_constructors
-
 import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:poesie_app/data/mongo_database.dart';
@@ -16,8 +14,7 @@ import 'dart:convert'; // To handle JSON encoding and decoding
 class SearchResultPage extends StatefulWidget {
   final String searchText;
 
-  const SearchResultPage({Key? key, required this.searchText})
-      : super(key: key);
+  const SearchResultPage({Key? key, required this.searchText}) : super(key: key);
 
   @override
   _SearchResultPageState createState() => _SearchResultPageState();
@@ -147,7 +144,7 @@ class _SearchResultPageState extends State<SearchResultPage> {
           color: Colors.white,
         ),
         centerTitle: true,
-        backgroundColor: Colors.blueGrey[900],
+        backgroundColor: Colors.teal[700],
       ),
       body: allResults.isEmpty
           ? FutureBuilder<List<Map<String, dynamic>>?>(
@@ -277,7 +274,7 @@ class _SearchResultPageState extends State<SearchResultPage> {
             padding: EdgeInsets.all(20),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(20.0),
-              color: Colors.blueGrey[900],
+              color: Colors.teal[100],
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -297,7 +294,7 @@ class _SearchResultPageState extends State<SearchResultPage> {
                       },
                       icon: Icon(
                         Icons.info,
-                        color: Colors.white,
+                        color: Colors.teal[900],
                       ),
                     ),
                     IconButton(
@@ -306,7 +303,7 @@ class _SearchResultPageState extends State<SearchResultPage> {
                       },
                       icon: Icon(
                         isFavorite ? Icons.favorite : Icons.favorite_border,
-                        color: isFavorite ? Colors.red : Colors.white,
+                        color: isFavorite ? Colors.red : Colors.teal[900],
                       ),
                     ),
                   ],
@@ -320,7 +317,7 @@ class _SearchResultPageState extends State<SearchResultPage> {
                         fontFamily: 'Almarai',
                         fontSize: 20.0,
                         fontWeight: FontWeight.bold,
-                        color: Colors.white,
+                        color: Colors.teal[900],
                       ),
                     ),
                     Text(
@@ -329,7 +326,7 @@ class _SearchResultPageState extends State<SearchResultPage> {
                         fontFamily: 'Amiri',
                         fontSize: 20.0,
                         fontWeight: FontWeight.bold,
-                        color: Colors.white,
+                        color: Colors.teal[900],
                       ),
                     ),
                   ],
@@ -379,7 +376,7 @@ class _SearchResultPageState extends State<SearchResultPage> {
             padding: EdgeInsets.all(16.0),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(12.0),
-              color: Colors.blue[200], // Updated color
+              color: Colors.teal[300], // Updated color
               boxShadow: [
                 BoxShadow(
                   color: Colors.grey.withOpacity(0.5),
@@ -410,7 +407,7 @@ class _SearchResultPageState extends State<SearchResultPage> {
                         SizedBox(
                           width: 20.0,
                         ), // Add spacing between $nom and icon
-                        Icon(Icons.book, color: Colors.blue),
+                        Icon(Icons.book, color: Colors.teal[700]),
                       ],
                     ),
                     SizedBox(height: 5), // Add some spacing
@@ -462,7 +459,7 @@ class _SearchResultPageState extends State<SearchResultPage> {
             borderRadius:
                 BorderRadius.circular(20.0), // Use circular border radius
           ),
-          color: Colors.indigo[400], // Add background color
+          color: Colors.teal[50], // Add background color
           shadowColor: Colors.grey.withOpacity(0.8), // Stronger shadow color
           child: Padding(
             padding: EdgeInsets.all(16.0),
@@ -474,11 +471,11 @@ class _SearchResultPageState extends State<SearchResultPage> {
                   children: [
                     Row(
                       children: [
-                        Icon(Icons.info, color: Colors.white),
+                        Icon(Icons.info, color: Colors.teal[900]),
                         IconButton(
                           icon: Icon(
                             isFavorite ? Icons.favorite : Icons.favorite_border,
-                            color: isFavorite ? Colors.red : Colors.black,
+                            color: isFavorite ? Colors.red : Colors.teal[900],
                           ),
                           onPressed: () {
                             toggleFavoritePoem(poemId);
@@ -495,7 +492,7 @@ class _SearchResultPageState extends State<SearchResultPage> {
                             fontSize: 20.0,
                             fontWeight: FontWeight.bold,
                             fontFamily: 'Almarai',
-                            color: Colors.white,
+                            color: Colors.teal[900],
                           ),
                         ),
                         Text(
@@ -503,14 +500,14 @@ class _SearchResultPageState extends State<SearchResultPage> {
                           style: TextStyle(
                               fontSize: 16,
                               fontFamily: 'Almarai',
-                              color: Colors.white),
+                              color: Colors.teal[900]),
                         ),
                         Text(
                           'الروي :  $rawy',
                           style: TextStyle(
                               fontSize: 16,
                               fontFamily: 'Almarai',
-                              color: Colors.white),
+                              color: Colors.teal[900]),
                         ),
                       ],
                     ),
@@ -542,7 +539,7 @@ class AuthorImagePage extends StatelessWidget {
             color: Colors.white,
           ),
         ),
-        backgroundColor: Colors.blueGrey[900],
+        backgroundColor: Colors.teal[700],
       ),
       body: Center(
         child: PhotoView(
