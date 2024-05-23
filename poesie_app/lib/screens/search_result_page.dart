@@ -327,7 +327,7 @@ class _SearchResultPageState extends State<SearchResultPage> {
                     Text(
                       '$prenom',
                       style: TextStyle(
-                        fontFamily: 'Amiri',
+                        fontFamily: 'Almarai',
                         fontSize: 20.0,
                         fontWeight: FontWeight.bold,
                         color: Colors.teal[900],
@@ -411,7 +411,7 @@ class _SearchResultPageState extends State<SearchResultPage> {
                         SizedBox(
                           width: 20.0,
                         ), // Add spacing between $nom and icon
-                        Icon(Icons.book, color: Colors.teal[700]),
+                        Icon(Icons.book, color: Colors.blue),
                       ],
                     ),
                     SizedBox(height: 5), // Add some spacing

@@ -186,7 +186,7 @@ class _DeewanPageState extends State<DeewanPage> {
                         ],
                       ),
                       SizedBox(width: 30.0),
-                      Icon(Icons.book, color: Colors.teal[700]),
+                      Icon(Icons.book, color: Colors.blue),
                     ],
                   ),
                 ),
