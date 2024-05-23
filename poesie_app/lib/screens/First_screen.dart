@@ -51,8 +51,8 @@ class FirstScreen extends StatelessWidget {
             MaterialPageRoute(builder: (context) => SearchPage()),
           );
         },
-        child: Icon(Icons.search),
-        backgroundColor: Color.fromARGB(255, 237, 237, 182),
+        child: Icon(Icons.search,color: Colors.white,),
+        backgroundColor: Colors.teal[700],
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
     );

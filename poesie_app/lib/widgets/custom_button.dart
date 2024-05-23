@@ -1,5 +1,3 @@
-// ignore_for_file: prefer_const_constructors, use_key_in_widget_constructors, prefer_const_constructors_in_immutables, unused_import
-
 import 'package:flutter/material.dart';
 import 'package:poesie_app/screens/FavoritePoemsPage.dart';
 import 'package:poesie_app/screens/poet_page.dart';
@@ -41,14 +39,18 @@ class CustomButton extends StatelessWidget {
           }
         },
         style: ElevatedButton.styleFrom(
-          backgroundColor: Color.fromARGB(255, 230, 230, 145),
-          textStyle: TextStyle(fontSize: 40),
+          backgroundColor: Colors.teal, // Utilisation de la couleur teal
+          textStyle: TextStyle(fontSize: 20),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(25), // Bord arrondi
+          ),
         ),
         child: Text(
           title,
           style: TextStyle(
-            fontFamily: 'Amiri',
-            fontSize: 25,
+            fontFamily: 'Almarai',
+            fontSize: 20,
+            color: Colors.white,
           ),
         ),
       ),

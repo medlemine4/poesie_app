@@ -61,15 +61,25 @@ class _FavoriteAuthorsPageState extends State<FavoriteAuthorsPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          'قائمة الشعراء المفضلين',
-          style: TextStyle(fontFamily: 'Almarai', fontSize: screenWidth * 0.06),
+        title: FittedBox(
+          fit: BoxFit.scaleDown,
+          child: Text(
+            'قائمة الشعراء المفضلين',
+            style: TextStyle(
+                fontSize: 27.0,
+                fontFamily: 'Almarai',
+                fontWeight: FontWeight.bold,
+                color: Colors.white),
+          ),
+        ),
+        iconTheme: IconThemeData(
+          color: Colors.white,
         ),
         centerTitle: true,
-        backgroundColor: Color.fromARGB(255, 230, 230, 145),
+        backgroundColor: Colors.teal[700],
         actions: [
           IconButton(
-            icon: Icon(Icons.search),
+            icon: Icon(Icons.search, color: Colors.white),
             onPressed: () {
               Navigator.push(
                 context,
@@ -173,11 +183,12 @@ class _FavoriteAuthorsPageState extends State<FavoriteAuthorsPage> {
                       return Padding(
                         padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
                         child: Container(
+                          // color: Colors.teal[100],
                           decoration: BoxDecoration(
-                            color: Colors.teal[900], // Updated color to teal[700]
+                            color: Colors.teal[900],
                             boxShadow: [
                               BoxShadow(
-                                color: Colors.grey.withOpacity(0.3),
+                                color: Colors.grey.withOpacity(0.8),
                                 spreadRadius: 3,
                                 blurRadius: 5,
                                 offset: Offset(0, 3),
@@ -199,7 +210,7 @@ class _FavoriteAuthorsPageState extends State<FavoriteAuthorsPage> {
                               );
                             },
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.teal[700], // Match the container color
+                              backgroundColor: Colors.teal[50], // Match the container color
                               padding: EdgeInsets.all(16.0),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(20.0),
@@ -221,7 +232,7 @@ class _FavoriteAuthorsPageState extends State<FavoriteAuthorsPage> {
                                       },
                                       icon: Icon(
                                         Icons.info,
-                                        color: Colors.white, // Updated icon color
+                                        color: Colors.black, // Updated icon color
                                       ),
                                     ),
                                     SizedBox(width: 10),
@@ -244,7 +255,7 @@ class _FavoriteAuthorsPageState extends State<FavoriteAuthorsPage> {
                                         fontFamily: 'Amiri',
                                         fontWeight: FontWeight.bold,
                                         fontSize: screenWidth * 0.05,
-                                        color: Colors.white, // Updated text color
+                                        color: Colors.teal[900],
                                       ),
                                     ),
                                     Text(
@@ -253,7 +264,7 @@ class _FavoriteAuthorsPageState extends State<FavoriteAuthorsPage> {
                                         fontFamily: 'Amiri',
                                         fontWeight: FontWeight.bold,
                                         fontSize: screenWidth * 0.05,
-                                        color: Colors.white, // Updated text color
+                                        color: Colors.teal[900],
                                       ),
                                     ),
                                   ],

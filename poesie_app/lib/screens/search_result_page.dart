@@ -228,8 +228,9 @@ class _SearchResultPageState extends State<SearchResultPage> {
               } else if (result.containsKey('Id_Deewan')) {
                 String deewanId = result['Id_Deewan'].toString();
                 String nom = result['nom'].toString();
+                int nombrePoemes = result['poemCount'] ?? 0;
 
-                return _buildDeewanCard(deewanId, nom);
+                return _buildDeewanCard(deewanId, nom, nombrePoemes);
               } else if (result.containsKey('Titre')) {
                 String titre = result['Titre'] ?? '';
                 String contenu = result['Contenue'] ?? '';
@@ -357,7 +358,7 @@ class _SearchResultPageState extends State<SearchResultPage> {
     );
   }
 
-  Widget _buildDeewanCard(String deewanId, String nom) {
+  Widget _buildDeewanCard(String deewanId, String nom, int nombrePoemes) {
     return Padding(
       padding: EdgeInsets.all(8.0),
       child: Material(
@@ -417,11 +418,8 @@ class _SearchResultPageState extends State<SearchResultPage> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        SizedBox(
-                          width: 30.0,
-                        ), // Push 'عدد القصائد' more towards left
                         Text(
-                          ': عدد القصائد',
+                          'عدد القصائد: $nombrePoemes',
                           style: TextStyle(
                             fontFamily: 'Amiri',
                             fontSize: 15.0,
@@ -473,8 +471,7 @@ class _SearchResultPageState extends State<SearchResultPage> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Row(
-                      children: [
-                        IconButton(
+                      children: [IconButton(
                           icon: Icon(Icons.info, color: Colors.teal[900]),
                           onPressed: () {
                             Navigator.push(
