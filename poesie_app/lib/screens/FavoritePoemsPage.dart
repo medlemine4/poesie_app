@@ -1,5 +1,3 @@
-// ignore_for_file: prefer_const_constructors, prefer_final_fields
-
 import 'package:flutter/material.dart';
 import 'package:poesie_app/screens/SearchPage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -14,13 +12,14 @@ class FavoritePoemsPage extends StatefulWidget {
 }
 
 class _FavoritePoemsPageState extends State<FavoritePoemsPage> {
-  List<FavoritePoem> favoritePoems = [];
-  late TextEditingController _searchController = TextEditingController();
+  late TextEditingController _searchController;
   String _searchText = '';
+  ValueNotifier<List<FavoritePoem>> favoritePoems = ValueNotifier([]);
 
   @override
   void initState() {
     super.initState();
+    _searchController = TextEditingController();
     loadFavoritePoems();
   }
 
@@ -28,29 +27,27 @@ class _FavoritePoemsPageState extends State<FavoritePoemsPage> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     List<String>? favoritePoemIds = prefs.getStringList('favoritePoems');
     if (favoritePoemIds != null) {
-      setState(() {
-        favoritePoems =
-            favoritePoemIds.map((id) => FavoritePoem(poemId: id)).toList();
-      });
+      favoritePoems.value =
+          favoritePoemIds.map((id) => FavoritePoem(poemId: id)).toList();
     }
   }
 
   void saveFavoritePoems() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     List<String> favoritePoemIds =
-        favoritePoems.map((poem) => poem.poemId).toList();
+        favoritePoems.value.map((poem) => poem.poemId).toList();
     await prefs.setStringList('favoritePoems', favoritePoemIds);
   }
 
   void toggleFavorite(String poemId) {
-    setState(() {
-      if (favoritePoems.any((poem) => poem.poemId == poemId)) {
-        favoritePoems.removeWhere((poem) => poem.poemId == poemId);
-      } else {
-        favoritePoems.add(FavoritePoem(poemId: poemId));
-      }
-      saveFavoritePoems();
-    });
+    if (favoritePoems.value.any((poem) => poem.poemId == poemId)) {
+      favoritePoems.value = List.from(favoritePoems.value)
+        ..removeWhere((poem) => poem.poemId == poemId);
+    } else {
+      favoritePoems.value = List.from(favoritePoems.value)
+        ..add(FavoritePoem(poemId: poemId));
+    }
+    saveFavoritePoems();
   }
 
   @override
@@ -65,10 +62,11 @@ class _FavoritePoemsPageState extends State<FavoritePoemsPage> {
           child: Text(
             'قائمة قصائدك المفضلة',
             style: TextStyle(
-                fontSize: 27.0,
-                fontFamily: 'Almarai',
-                fontWeight: FontWeight.bold,
-                color: Colors.white),
+              fontSize: 27.0,
+              fontFamily: 'Almarai',
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+            ),
           ),
         ),
         iconTheme: IconThemeData(
@@ -95,11 +93,14 @@ class _FavoritePoemsPageState extends State<FavoritePoemsPage> {
       ),
       body: Column(
         children: [
-          SizedBox(height: screenHeight * 0.02),
+          // SizedBox(height: screenHeight * 0.02),
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.04),
+            padding:
+                const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
             child: Container(
               decoration: BoxDecoration(
+                color: Colors.teal[300],
+                borderRadius: BorderRadius.circular(30.0),
                 boxShadow: [
                   BoxShadow(
                     color: Colors.grey.withOpacity(0.3),
@@ -129,8 +130,9 @@ class _FavoritePoemsPageState extends State<FavoritePoemsPage> {
                     icon: Icon(Icons.clear, color: Colors.grey),
                   ),
                   contentPadding: EdgeInsets.symmetric(
-                      vertical: screenHeight * 0.02,
-                      horizontal: screenWidth * 0.04),
+                    vertical: screenHeight * 0.02,
+                    horizontal: screenWidth * 0.04,
+                  ),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(30.0),
                     borderSide:
@@ -152,10 +154,9 @@ class _FavoritePoemsPageState extends State<FavoritePoemsPage> {
           ),
           SizedBox(height: screenHeight * 0.04),
           Expanded(
-            child: FutureBuilder(
+            child: FutureBuilder<List<Map<String, dynamic>>>(
               future: MongoDataBase.getAllPoems(),
-              builder: (context,
-                  AsyncSnapshot<List<Map<String, dynamic>>> snapshot) {
+              builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return Center(child: CircularProgressIndicator());
                 } else if (snapshot.hasError) {
@@ -169,7 +170,7 @@ class _FavoritePoemsPageState extends State<FavoritePoemsPage> {
                     String contenu = poem['Contenue'] ?? '';
                     String alBaher = poem['AlBaher'] ?? '';
                     String rawy = poem['Rawy'] ?? '';
-                    return favoritePoems
+                    return favoritePoems.value
                             .any((favorite) => favorite.poemId == poemId) &&
                         (titre
                                 .toLowerCase()
@@ -184,113 +185,11 @@ class _FavoritePoemsPageState extends State<FavoritePoemsPage> {
                                 .toLowerCase()
                                 .contains(_searchText.toLowerCase()));
                   }).toList();
-                  return ListView.builder(
-                    itemCount: favoritePoemsData.length,
-                    itemBuilder: (context, index) {
-                      Map<String, dynamic> poem = favoritePoemsData[index];
-                      String poemId = poem['ID_Poeme'] ?? '';
-                      String titre = poem['Titre'] ?? '';
-                      String alBaher = poem['AlBaher'] ?? '';
-                      String rawy = poem['Rawy'] ?? '';
-                      String contenu = poem['Contenue'] ?? '';
-                      bool isFavorite =
-                          favoritePoems.any((poem) => poem.poemId == poemId);
-                      return Padding(
-                        padding: EdgeInsets.all(8.0),
-                        child: GestureDetector(
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => PoemContent(
-                                  poemContent: contenu,
-                                  poemTitle: titre,
-                                ),
-                              ),
-                            );
-                          },
-                          child: Card(
-                            elevation: 4,
-                            color: Colors.teal[50],
-                            child: Padding(
-                              padding: EdgeInsets.all(16.0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Row(
-                                        children: [
-                                          IconButton(
-                                            icon: Icon(Icons.info,
-                                                color: Colors.teal[900]),
-                                            onPressed: () {
-                                              Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      PoemDetails(
-                                                    poemeName: titre,
-                                                  ),
-                                                ),
-                                              );
-                                            },
-                                          ),
-                                          IconButton(
-                                            icon: Icon(
-                                              isFavorite
-                                                  ? Icons.favorite
-                                                  : Icons.favorite_border,
-                                              color: isFavorite
-                                                  ? Colors.red
-                                                  : Colors.teal[900],
-                                            ),
-                                            onPressed: () {
-                                              toggleFavorite(poemId);
-                                            },
-                                          ),
-                                        ],
-                                      ),
-                                      Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.end,
-                                        children: [
-                                          Text(
-                                            titre,
-                                            style: TextStyle(
-                                              fontSize: 20.0,
-                                              fontWeight: FontWeight.bold,
-                                              fontFamily: 'Almarai',
-                                              color: Colors.teal[900],
-                                            ),
-                                          ),
-                                          Text(
-                                            'البحر: $alBaher',
-                                            style: TextStyle(
-                                                fontSize: 16,
-                                                fontFamily: 'Almarai',
-                                                color: Colors.teal[900]),
-                                          ),
-                                          Text(
-                                            'الروي : $rawy',
-                                            style: TextStyle(
-                                                fontSize: 16,
-                                                fontFamily: 'Almarai',
-                                                color: Colors.teal[900]),
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                      );
-                    },
+
+                  return PoemListView(
+                    poemsList: favoritePoemsData,
+                    favoritePoems: favoritePoems,
+                    toggleFavorite: toggleFavorite,
                   );
                 }
               },
@@ -298,6 +197,168 @@ class _FavoritePoemsPageState extends State<FavoritePoemsPage> {
           ),
         ],
       ),
+    );
+  }
+}
+
+class PoemListView extends StatelessWidget {
+  final List<Map<String, dynamic>> poemsList;
+  final ValueNotifier<List<FavoritePoem>> favoritePoems;
+  final Function(String) toggleFavorite;
+
+  const PoemListView({
+    required this.poemsList,
+    required this.favoritePoems,
+    required this.toggleFavorite,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return ValueListenableBuilder<List<FavoritePoem>>(
+      valueListenable: favoritePoems,
+      builder: (context, value, child) {
+        return ListView.builder(
+          itemCount: poemsList.length,
+          itemBuilder: (context, index) {
+            Map<String, dynamic> poem = poemsList[index];
+            String poemId = poem['ID_Poeme'] ?? '';
+            String titre = poem['Titre'] ?? '';
+            String alBaher = poem['AlBaher'] ?? '';
+            String rawy = poem['Rawy'] ?? '';
+            String contenu = poem['Contenue'] ?? '';
+            bool isFavorite =
+                favoritePoems.value.any((poem) => poem.poemId == poemId);
+
+            return Padding(
+              padding: EdgeInsets.all(8.0),
+              child: GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => PoemContent(
+                        poemContent: contenu,
+                        poemTitle: titre,
+                      ),
+                    ),
+                  );
+                },
+                child: Card(
+                  elevation: 4,
+                  color: Colors.teal[50],
+                  child: Padding(
+                    padding: EdgeInsets.all(16.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              children: [
+                                IconButton(
+                                  icon:
+                                      Icon(Icons.info, color: Colors.teal[900]),
+                                  onPressed: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => PoemDetails(
+                                          poemeName: titre,
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                ),
+                                FavoriteIcon(
+                                  isFavorite: isFavorite,
+                                  onPressed: () {
+                                    toggleFavorite(poemId);
+                                  },
+                                ),
+                              ],
+                            ),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                Text(
+                                  titre,
+                                  style: TextStyle(
+                                    fontSize: 20.0,
+                                    fontWeight: FontWeight.bold,
+                                    fontFamily: 'Almarai',
+                                    color: Colors.teal[900],
+                                  ),
+                                ),
+                                Text(
+                                  'البحر: $alBaher',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontFamily: 'Almarai',
+                                    color: Colors.teal[900],
+                                  ),
+                                ),
+                                Text(
+                                  'الروي : $rawy',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontFamily: 'Almarai',
+                                    color: Colors.teal[900],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+}
+
+class FavoriteIcon extends StatefulWidget {
+  final bool isFavorite;
+  final VoidCallback onPressed;
+
+  const FavoriteIcon({
+    Key? key,
+    required this.isFavorite,
+    required this.onPressed,
+  }) : super(key: key);
+
+  @override
+  _FavoriteIconState createState() => _FavoriteIconState();
+}
+
+class _FavoriteIconState extends State<FavoriteIcon> {
+  late bool _isFavorite;
+
+  @override
+  void initState() {
+    super.initState();
+    _isFavorite = widget.isFavorite;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+      icon: Icon(
+        _isFavorite ? Icons.favorite : Icons.favorite_border,
+        color: _isFavorite ? Colors.red : Colors.teal[900],
+      ),
+      onPressed: () {
+        setState(() {
+          _isFavorite = !_isFavorite;
+        });
+        widget.onPressed();
+      },
     );
   }
 }
