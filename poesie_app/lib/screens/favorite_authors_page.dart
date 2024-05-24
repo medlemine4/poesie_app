@@ -179,6 +179,8 @@ class _FavoriteAuthorsPageState extends State<FavoriteAuthorsPage> {
                       String nom = poet['nom'];
                       String prenom = poet['prenom'];
                       String authorId = poet['ID_Auteur'];
+                      int deewanCount = poet['deewanCount'];
+                      int poemCount = poet['poemCount'];
 
                       return Padding(
                         padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
@@ -267,6 +269,22 @@ class _FavoriteAuthorsPageState extends State<FavoriteAuthorsPage> {
                                         color: Colors.teal[900],
                                       ),
                                     ),
+                                Text(
+                                  'عدد الدواوين: $deewanCount',
+                                  style: TextStyle(
+                                    fontFamily: 'Amiri',
+                                    fontSize: 16.0,
+                                    color: Colors.teal[700],
+                                  ),
+                                ),
+                                Text(
+                                  'عدد القصائد: $poemCount',
+                                  style: TextStyle(
+                                    fontFamily: 'Amiri',
+                                    fontSize: 16.0,
+                                    color: Colors.teal[700],
+                                  ),
+                                ),
                                   ],
                                 ),
                                 CircleAvatar(

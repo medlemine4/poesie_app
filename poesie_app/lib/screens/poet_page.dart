@@ -1,5 +1,3 @@
-// ignore_for_file: prefer_const_constructors
-
 import 'package:flutter/material.dart';
 import 'package:poesie_app/screens/full_screen_image_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -56,10 +54,12 @@ class _PoetPageState extends State<PoetPage> {
       appBar: AppBar(
         title: Text(
           'قائمة الشعراء',
-          style: TextStyle(fontSize: 27.0,
-              fontFamily: 'Almarai',
-              fontWeight: FontWeight.bold,
-              color: Colors.white),
+          style: TextStyle(
+            fontSize: 27.0,
+            fontFamily: 'Almarai',
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
         ),
         iconTheme: IconThemeData(
           color: Colors.white,
@@ -84,8 +84,7 @@ class _PoetPageState extends State<PoetPage> {
       body: Column(
         children: [
           Padding(
-            padding:
-                const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
+            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
             child: Container(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(30.0),
@@ -150,12 +149,10 @@ class _PoetPageState extends State<PoetPage> {
                   return Center(child: Text('Error: ${snapshot.error}'));
                 } else {
                   List<Map<String, dynamic>>? poetsList = snapshot.data;
-                  List<Map<String, dynamic>> filteredPoetsList = _searchText
-                          .isEmpty
+                  List<Map<String, dynamic>> filteredPoetsList = _searchText.isEmpty
                       ? poetsList!
                       : poetsList!
-                          .where((poet) =>
-                              _searchInPoet(poet, _searchText.toLowerCase()))
+                          .where((poet) => _searchInPoet(poet, _searchText.toLowerCase()))
                           .toList();
                   return ListView.builder(
                     itemCount: filteredPoetsList.length,
@@ -164,12 +161,13 @@ class _PoetPageState extends State<PoetPage> {
                       String nom = poet['nom'];
                       String prenom = poet['prenom'];
                       String authorId = poet['ID_Auteur'];
+                      int deewanCount = poet['deewanCount'];
+                      int poemCount = poet['poemCount'];
 
                       bool isFavorite = favoriteAuthors.contains(authorId);
 
                       return Padding(
-                        padding: EdgeInsets.symmetric(
-                            vertical: 10.0, horizontal: 20.0),
+                        padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
                         child: Container(
                           decoration: BoxDecoration(
                             color: Colors.teal[100],
@@ -212,8 +210,7 @@ class _PoetPageState extends State<PoetPage> {
                               child: Hero(
                                 tag: 'hero-$nom', // Unique tag for each poet
                                 child: CircleAvatar(
-                                  backgroundImage:
-                                      AssetImage('images/$nom.jpg'),
+                                  backgroundImage: AssetImage('images/$nom.jpg'),
                                   radius: 30,
                                 ),
                               ),
@@ -227,14 +224,35 @@ class _PoetPageState extends State<PoetPage> {
                                 color: Colors.teal[900],
                               ),
                             ),
-                            subtitle: Text(
-                              prenom,
-                              style: TextStyle(
-                                fontFamily: 'Almarai',
-                                fontWeight: FontWeight.bold,
-                                fontSize: 19.0,
-                                color: Colors.teal[900],
-                              ),
+                            subtitle: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  prenom,
+                                  style: TextStyle(
+                                    fontFamily: 'Almarai',
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 19.0,
+                                    color: Colors.teal[900],
+                                  ),
+                                ),
+                                Text(
+                                  'عدد الدواوين: $deewanCount',
+                                  style: TextStyle(
+                                    fontFamily: 'Amiri',
+                                    fontSize: 16.0,
+                                    color: Colors.teal[700],
+                                  ),
+                                ),
+                                Text(
+                                  'عدد القصائد: $poemCount',
+                                  style: TextStyle(
+                                    fontFamily: 'Amiri',
+                                    fontSize: 16.0,
+                                    color: Colors.teal[700],
+                                  ),
+                                ),
+                              ],
                             ),
                             leading: Row(
                               mainAxisSize: MainAxisSize.min,
@@ -244,8 +262,7 @@ class _PoetPageState extends State<PoetPage> {
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                        builder: (context) =>
-                                            PoetDetails(poetName: nom),
+                                        builder: (context) => PoetDetails(poetName: nom),
                                       ),
                                     );
                                   },
@@ -260,12 +277,8 @@ class _PoetPageState extends State<PoetPage> {
                                     toggleFavorite(authorId);
                                   },
                                   icon: Icon(
-                                    isFavorite
-                                        ? Icons.favorite
-                                        : Icons.favorite_border,
-                                    color: isFavorite
-                                        ? Colors.red
-                                        : Colors.teal[900],
+                                    isFavorite ? Icons.favorite : Icons.favorite_border,
+                                    color: isFavorite ? Colors.red : Colors.teal[900],
                                   ),
                                 ),
                               ],
@@ -285,7 +298,6 @@ class _PoetPageState extends State<PoetPage> {
   }
 
   bool _searchInPoet(Map<String, dynamic> poet, String searchText) {
-    return poet.values
-        .any((value) => value.toString().toLowerCase().contains(searchText));
+    return poet.values.any((value) => value.toString().toLowerCase().contains(searchText));
   }
 }
