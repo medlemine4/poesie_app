@@ -192,6 +192,7 @@ class _PoemListScreenState extends State<PoemListScreen> {
                       String contenu = poem['Contenue'] ?? '';
                       String alBaher = poem['AlBaher'] ?? '';
                       String rawy = poem['Rawy'] ?? '';
+                      int numberOfLines = computeLineCount(contenu);
                       bool isFavorite =
                           favoritePoems.any((poem) => poem.poemId == poemId);
                       return Padding(
@@ -281,6 +282,14 @@ class _PoemListScreenState extends State<PoemListScreen> {
                                               color: Colors.teal[900],
                                             ),
                                           ),
+                                          Text(
+                                            'عدد الأبيات: $numberOfLines',
+                                            style: TextStyle(
+                                              fontSize: 16,
+                                              fontFamily: 'Almarai',
+                                              color: Colors.teal[900],
+                                            ),
+                                          ),
                                         ],
                                       ),
                                     ],
@@ -304,5 +313,17 @@ class _PoemListScreenState extends State<PoemListScreen> {
         ],
       ),
     );
+  }
+
+  int computeLineCount(String content) {
+    // Séparez le contenu en lignes
+    List<String> lines = content.split('\n');
+
+    // Filtrez les lignes vides
+    List<String> nonEmptyLines =
+        lines.where((line) => line.trim().isNotEmpty).toList();
+
+    // Retournez la moitié du nombre de lignes non vides
+    return (nonEmptyLines.length ~/ 2); // Utilisez la division entière
   }
 }
