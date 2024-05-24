@@ -15,11 +15,13 @@ class _PoetPageState extends State<PoetPage> {
   late TextEditingController _searchController = TextEditingController();
   String _searchText = '';
   List<String> favoriteAuthors = [];
+  List<Map<String, dynamic>> poetsList = [];
 
   @override
   void initState() {
     super.initState();
     loadFavoriteAuthors();
+    loadPoetDetails();
   }
 
   void loadFavoriteAuthors() async {
@@ -45,6 +47,13 @@ class _PoetPageState extends State<PoetPage> {
         favoriteAuthors.add(authorId);
       }
       saveFavoriteAuthors();
+    });
+  }
+
+  void loadPoetDetails() async {
+    List<Map<String, dynamic>> data = await MongoDataBase.getPoetDetailsList();
+    setState(() {
+      poetsList = data;
     });
   }
 
@@ -108,7 +117,6 @@ class _PoetPageState extends State<PoetPage> {
                     borderRadius: BorderRadius.circular(30.0),
                     borderSide: BorderSide.none,
                   ),
-                  // prefixIcon: Icon(Icons.search, color: Colors.grey),
                   suffixIcon: IconButton(
                     onPressed: () {
                       _searchController.clear();
@@ -140,24 +148,12 @@ class _PoetPageState extends State<PoetPage> {
             ),
           ),
           Expanded(
-            child: FutureBuilder<List<Map<String, dynamic>>>(
-              future: MongoDataBase.getPoetDetailsList(),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Center(child: CircularProgressIndicator());
-                } else if (snapshot.hasError) {
-                  return Center(child: Text('Error: ${snapshot.error}'));
-                } else {
-                  List<Map<String, dynamic>>? poetsList = snapshot.data;
-                  List<Map<String, dynamic>> filteredPoetsList = _searchText.isEmpty
-                      ? poetsList!
-                      : poetsList!
-                          .where((poet) => _searchInPoet(poet, _searchText.toLowerCase()))
-                          .toList();
-                  return ListView.builder(
-                    itemCount: filteredPoetsList.length,
+            child: poetsList.isEmpty
+                ? Center(child: CircularProgressIndicator())
+                : ListView.builder(
+                    itemCount: _getFilteredPoets().length,
                     itemBuilder: (context, index) {
-                      Map<String, dynamic> poet = filteredPoetsList[index];
+                      Map<String, dynamic> poet = _getFilteredPoets()[index];
                       String nom = poet['nom'];
                       String prenom = poet['prenom'];
                       String authorId = poet['ID_Auteur'];
@@ -202,13 +198,13 @@ class _PoetPageState extends State<PoetPage> {
                                   MaterialPageRoute(
                                     builder: (context) => FullScreenImagePage(
                                       imageUrl: 'images/$nom.jpg',
-                                      tag: 'hero-$nom', // Pass the hero tag
+                                      tag: 'hero-$nom',
                                     ),
                                   ),
                                 );
                               },
                               child: Hero(
-                                tag: 'hero-$nom', // Unique tag for each poet
+                                tag: 'hero-$nom',
                                 child: CircleAvatar(
                                   backgroundImage: AssetImage('images/$nom.jpg'),
                                   radius: 30,
@@ -274,6 +270,9 @@ class _PoetPageState extends State<PoetPage> {
                                 SizedBox(width: 10),
                                 IconButton(
                                   onPressed: () {
+                                    setState(() {
+                                      isFavorite = !isFavorite;
+                                    });
                                     toggleFavorite(authorId);
                                   },
                                   icon: Icon(
@@ -287,14 +286,21 @@ class _PoetPageState extends State<PoetPage> {
                         ),
                       );
                     },
-                  );
-                }
-              },
-            ),
+                  ),
           ),
         ],
       ),
     );
+  }
+
+  List<Map<String, dynamic>> _getFilteredPoets() {
+    if (_searchText.isEmpty) {
+      return poetsList;
+    } else {
+      return poetsList
+          .where((poet) => _searchInPoet(poet, _searchText.toLowerCase()))
+          .toList();
+    }
   }
 
   bool _searchInPoet(Map<String, dynamic> poet, String searchText) {
