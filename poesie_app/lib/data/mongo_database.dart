@@ -72,35 +72,37 @@ class MongoDataBase {
   }
 
   static Future<List<Map<String, dynamic>>> getPoetDetailsList() async {
-    var db = await mongo.Db.create(MONGO_URL);
-    await db.open();
+  var db = await mongo.Db.create(MONGO_URL);
+  await db.open();
 
-    var authorCollection = db.collection(COLLECTION_NAME);
-    var deewanCollection = db.collection(COLLECTION_NAME2);
-    var poemCollection = db.collection(COLLECTION_NAME3);
+  var authorCollection = db.collection(COLLECTION_NAME);
+  var deewanCollection = db.collection(COLLECTION_NAME2);
+  var poemCollection = db.collection(COLLECTION_NAME3);
 
-    var authors = await authorCollection.find().toList();
+  var authors = await authorCollection.find().toList();
 
-    List<Map<String, dynamic>> poetsList = [];
+  List<Map<String, dynamic>> poetsList = [];
 
-    for (var author in authors) {
-      var authorId = author['ID_Auteur'];
+  for (var author in authors) {
+    var authorId = author['ID_Auteur'];
 
-      var deewanCount =
-          await deewanCollection.count(mongo.where.eq('ID_Auteur', int.parse(authorId)));
-      var poemCount =
-          await poemCollection.count(mongo.where.eq('ID_Auteur', authorId));
+    var deewanCount =
+        await deewanCollection.count(mongo.where.eq('ID_Auteur', int.parse(authorId)));
+    var poemCount =
+        await poemCollection.count(mongo.where.eq('ID_Auteur', authorId));
 
-      poetsList.add({
-        'ID_Auteur': authorId.toString(),
-        'nom': author['nom'],
-        'prenom': author['prenom'],
-        'deewanCount': deewanCount,
-        'poemCount': poemCount
-      });
-    }
-    return poetsList;
+    poetsList.add({
+      'ID_Auteur': authorId.toString(),
+      'nom': author['nom'],
+      'prenom': author['prenom'],
+      'deewanCount': deewanCount,
+      'poemCount': poemCount,
+      'date_naissance': int.parse(author['date_naissance'].toString()) // Ensure date_naissance is an integer
+    });
   }
+  return poetsList;
+}
+
 
   static Future<List<Map<String, dynamic>>> getDeewanByAuthorId(
       String authorId) async {
