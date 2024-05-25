@@ -4,6 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:poesie_app/models/favorite_author.dart';
 import 'package:poesie_app/screens/DeewanParAuteurPage.dart';
 import 'package:poesie_app/screens/PoetDetails.dart';
+import 'package:poesie_app/screens/full_screen_image_page.dart'; // Importez la nouvelle page ici
 import '../data/mongo_database.dart';
 
 class FavoriteAuthorsPage extends StatefulWidget {
@@ -90,12 +91,8 @@ class _FavoriteAuthorsPageState extends State<FavoriteAuthorsPage> {
       ),
       body: Column(
         children: [
-          // SizedBox(
-          //     height: screenHeight *
-          //         0.02), // Add space between AppBar and TextField
           Padding(
-            padding:
-                const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
+            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
             child: Container(
               decoration: BoxDecoration(
                 color: Colors.teal[300],
@@ -128,17 +125,14 @@ class _FavoriteAuthorsPageState extends State<FavoriteAuthorsPage> {
                     },
                     icon: Icon(Icons.clear, color: Colors.grey),
                   ),
-                  contentPadding:
-                      EdgeInsets.symmetric(vertical: 15.0, horizontal: 20.0),
+                  contentPadding: EdgeInsets.symmetric(vertical: 15.0, horizontal: 20.0),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(30.0),
-                    borderSide:
-                        BorderSide(color: Colors.grey.shade300, width: 1.5),
+                    borderSide: BorderSide(color: Colors.grey.shade300, width: 1.5),
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(30.0),
-                    borderSide:
-                        BorderSide(color: Colors.grey.shade600, width: 1.5),
+                    borderSide: BorderSide(color: Colors.grey.shade600, width: 1.5),
                   ),
                 ),
                 onChanged: (value) {
@@ -302,11 +296,45 @@ class AuthorListView extends StatelessWidget {
                               color: Colors.teal[900],
                             ),
                           ),
+                          Text(
+                            'عدد الدواوين: ${poet['deewanCount']}',
+                            style: TextStyle(
+                              fontFamily: 'Amiri',
+                              fontWeight: FontWeight.bold,
+                              fontSize: screenWidth * 0.04,
+                              color: Colors.teal[900],
+                            ),
+                          ),
+                          Text(
+                            'عدد القصائد: ${poet['poemCount']}',
+                            style: TextStyle(
+                              fontFamily: 'Amiri',
+                              fontWeight: FontWeight.bold,
+                              fontSize: screenWidth * 0.04,
+                              color: Colors.teal[900],
+                            ),
+                          ),
                         ],
                       ),
-                      CircleAvatar(
-                        backgroundImage: AssetImage('images/$nom.jpg'),
-                        radius: 30.0,
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => FullScreenImagePage(
+                                imageUrl: 'images/$nom.jpg',
+                                tag: 'hero-$nom',
+                              ),
+                            ),
+                          );
+                        },
+                        child: Hero(
+                          tag: 'hero-$nom',
+                          child: CircleAvatar(
+                            backgroundImage: AssetImage('images/$nom.jpg'),
+                            radius: 30.0,
+                          ),
+                        ),
                       ),
                     ],
                   ),

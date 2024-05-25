@@ -1,5 +1,3 @@
-// ignore_for_file: prefer_const_constructors, prefer_final_fields
-
 import 'package:flutter/material.dart';
 import 'package:poesie_app/screens/SearchPage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -14,7 +12,7 @@ class FavoritePoemsPage extends StatefulWidget {
 }
 
 class _FavoritePoemsPageState extends State<FavoritePoemsPage> {
-  List<FavoritePoem> favoritePoems = [];
+  late List<ValueNotifier<bool>> isFavoriteList = [];
   late TextEditingController _searchController = TextEditingController();
   String _searchText = '';
 
@@ -27,30 +25,26 @@ class _FavoritePoemsPageState extends State<FavoritePoemsPage> {
   void loadFavoritePoems() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     List<String>? favoritePoemIds = prefs.getStringList('favoritePoems');
+    List<ValueNotifier<bool>> favorites = [];
     if (favoritePoemIds != null) {
-      setState(() {
-        favoritePoems =
-            favoritePoemIds.map((id) => FavoritePoem(poemId: id)).toList();
-      });
+      favorites.addAll(favoritePoemIds.map((id) {
+        return ValueNotifier<bool>(true);
+      }));
     }
+    setState(() {
+      isFavoriteList = favorites;
+    });
   }
 
   void saveFavoritePoems() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    List<String> favoritePoemIds =
-        favoritePoems.map((poem) => poem.poemId).toList();
-    await prefs.setStringList('favoritePoems', favoritePoemIds);
-  }
-
-  void toggleFavorite(String poemId) {
-    setState(() {
-      if (favoritePoems.any((poem) => poem.poemId == poemId)) {
-        favoritePoems.removeWhere((poem) => poem.poemId == poemId);
-      } else {
-        favoritePoems.add(FavoritePoem(poemId: poemId));
+    List<String> favoritePoemIds = [];
+    isFavoriteList.asMap().forEach((index, notifier) {
+      if (notifier.value) {
+        favoritePoemIds.add(index.toString());
       }
-      saveFavoritePoems();
     });
+    await prefs.setStringList('favoritePoems', favoritePoemIds);
   }
 
   @override
@@ -169,8 +163,7 @@ class _FavoritePoemsPageState extends State<FavoritePoemsPage> {
                     String contenu = poem['Contenue'] ?? '';
                     String alBaher = poem['AlBaher'] ?? '';
                     String rawy = poem['Rawy'] ?? '';
-                    return favoritePoems
-                            .any((favorite) => favorite.poemId == poemId) &&
+                    return isFavoriteList.any((notifier) => notifier.value) &&
                         (titre
                                 .toLowerCase()
                                 .contains(_searchText.toLowerCase()) ||
@@ -194,106 +187,117 @@ class _FavoritePoemsPageState extends State<FavoritePoemsPage> {
                       String rawy = poem['Rawy'] ?? '';
                       String contenu = poem['Contenue'] ?? '';
                       int numberOfLines = computeLineCount(contenu);
-                      bool isFavorite =
-                          favoritePoems.any((poem) => poem.poemId == poemId);
-                      return Padding(
-                        padding: EdgeInsets.all(8.0),
-                        child: GestureDetector(
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => PoemContent(
-                                  poemContent: contenu,
-                                  poemTitle: titre,
-                                ),
-                              ),
-                            );
-                          },
-                          child: Card(
-                            elevation: 4,
-                            color: Colors.teal[50],
-                            child: Padding(
-                              padding: EdgeInsets.all(16.0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Row(
-                                        children: [
-                                          IconButton(
-                                            icon: Icon(Icons.info,
-                                                color: Colors.teal[900]),
-                                            onPressed: () {
-                                              Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      PoemDetails(
-                                                    poemeName: titre,
-                                                  ),
-                                                ),
-                                              );
-                                            },
-                                          ),
-                                          IconButton(
-                                            icon: Icon(
-                                              isFavorite
-                                                  ? Icons.favorite
-                                                  : Icons.favorite_border,
-                                              color: isFavorite
-                                                  ? Colors.red
-                                                  : Colors.teal[900],
-                                            ),
-                                            onPressed: () {
-                                              toggleFavorite(poemId);
-                                            },
-                                          ),
-                                        ],
-                                      ),
-                                      Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.end,
-                                        children: [
-                                          Text(
-                                            titre,
-                                            style: TextStyle(
-                                              fontSize: 20.0,
-                                              fontWeight: FontWeight.bold,
-                                              fontFamily: 'Almarai',
-                                              color: Colors.teal[900],
-                                            ),
-                                          ),
-                                          Text(
-                                            'البحر: $alBaher',
-                                            style: TextStyle(
-                                                fontSize: 16,
-                                                fontFamily: 'Almarai',
-                                                color: Colors.teal[900]),
-                                          ),
-                                          Text(
-                                            'الروي : $rawy',
-                                            style: TextStyle(
-                                                fontSize: 16,
-                                                fontFamily: 'Almarai',
-                                                color: Colors.teal[900]),
-                                          ),
-                                          Text(
-                                            'عدد الأبيات: $numberOfLines',
-                                            style: TextStyle(
-                                              fontSize: 16,
-                                              fontFamily: 'Almarai',
-                                              color: Colors.teal[900],
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ],
+                      return AnimatedOpacity(
+                        duration: Duration(milliseconds: 500),
+                        opacity: isFavoriteList[index]                            .value ? 1.0 : 0.0,
+                        child: Padding(
+                          padding: EdgeInsets.all(8.0),
+                          child: GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => PoemContent(
+                                    poemContent: contenu,
+                                    poemTitle: titre,
                                   ),
-                                ],
+                                ),
+                              );
+                            },
+                            child: Card(
+                              elevation: 4,
+                              color: Colors.teal[50],
+                              child: Padding(
+                                padding: EdgeInsets.all(16.0),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Row(
+                                          children: [
+                                            IconButton(
+                                              icon: Icon(Icons.info,
+                                                  color: Colors.teal[900]),
+                                              onPressed: () {
+                                                Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        PoemDetails(
+                                                      poemeName: titre,
+                                                    ),
+                                                  ),
+                                                );
+                                              },
+                                            ),
+                                            ValueListenableBuilder<bool>(
+                                              valueListenable:
+                                                  isFavoriteList[index],
+                                              builder: (context, isFavorite, child) {
+                                                return IconButton(
+                                                  icon: Icon(
+                                                    isFavorite
+                                                        ? Icons.favorite
+                                                        : Icons.favorite_border,
+                                                    color: isFavorite
+                                                        ? Colors.red
+                                                        : Colors.teal[900],
+                                                  ),
+                                                  onPressed: () {
+                                                    isFavoriteList[index].value = !isFavoriteList[index].value;
+                                                    saveFavoritePoems();
+                                                  },
+                                                );
+                                              },
+                                            ),
+                                          ],
+                                        ),
+                                        Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.end,
+                                          children: [
+                                            Text(
+                                              titre,
+                                              style: TextStyle(
+                                                fontSize: 20.0,
+                                                fontWeight: FontWeight.bold,
+                                                fontFamily: 'Almarai',
+                                                color: Colors.teal[900],
+                                              ),
+                                            ),
+                                            Text(
+                                              'البحر: $alBaher',
+                                              style: TextStyle(
+                                                fontSize: 16,
+                                                fontFamily: 'Almarai',
+                                                color: Colors.teal[900],
+                                              ),
+                                            ),
+                                            Text(
+                                              'الروي : $rawy',
+                                              style: TextStyle(
+                                                fontSize: 16,
+                                                fontFamily: 'Almarai',
+                                                color: Colors.teal[900],
+                                              ),
+                                            ),
+                                            Text(
+                                              'عدد الأبيات: $numberOfLines',
+                                              style: TextStyle(
+                                                fontSize: 16,
+                                                fontFamily: 'Almarai',
+                                                color: Colors.teal[900],
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
                           ),
@@ -309,6 +313,7 @@ class _FavoritePoemsPageState extends State<FavoritePoemsPage> {
       ),
     );
   }
+
   int computeLineCount(String content) {
     // Séparez le contenu en lignes
     List<String> lines = content.split('\n');
