@@ -19,6 +19,7 @@ class _PoetPageState extends State<PoetPage> {
   List<String> favoriteAuthors = [];
   List<Map<String, dynamic>> poetsList = [];
   String? _sortBy = 'name';
+  bool _isAscending = true; // Ajoutez cette ligne
 
   @override
   void initState() {
@@ -63,12 +64,21 @@ class _PoetPageState extends State<PoetPage> {
 
   void _sortPoets() {
     if (_sortBy == 'name') {
-      poetsList.sort((a, b) => a['nom'].compareTo(b['nom']));
+      if (_isAscending) {
+        poetsList.sort((a, b) => a['nom'].compareTo(b['nom']));
+      } else {
+        poetsList.sort((a, b) => b['nom'].compareTo(a['nom']));
+      }
     } else if (_sortBy == 'date_naissance') {
-      poetsList.sort((a, b) =>
-          (a['date_naissance'] as int).compareTo(b['date_naissance'] as int));
+      if (_isAscending) {
+        poetsList.sort((a, b) =>
+            (a['date_naissance'] as int).compareTo(b['date_naissance'] as int));
+      } else {
+        poetsList.sort((a, b) =>
+            (b['date_naissance'] as int).compareTo(a['date_naissance'] as int));
+      }
     } else {
-      // Reset the filter and reload the poet details
+      // Si aucun critère de tri n'est sélectionné, rechargez simplement les détails du poète
       loadPoetDetails();
     }
   }
@@ -225,10 +235,11 @@ class _PoetPageState extends State<PoetPage> {
                           onChanged: (String? newValue) {
                             setState(() {
                               if (newValue == "إلغاء التصفية") {
-                                _sortBy = null; // Reset the filter
+                                _sortBy = null; // Réinitialiser le filtre
                               } else {
                                 _sortBy = newValue!;
                               }
+                              _sortPoets(); // Triez les poètes en fonction de l'option sélectionnée
                             });
                           },
                           items: <String>[
@@ -281,6 +292,28 @@ class _PoetPageState extends State<PoetPage> {
                           }).toList(),
                         ),
                       ),
+                    ),
+                    SizedBox(width: 10),
+                    IconButton(
+                      icon: Icon(
+                        _isAscending
+                            ? Icons.arrow_upward
+                            : Icons.arrow_downward,
+                        color: Colors.black,
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          _isAscending = !_isAscending;
+                          if (_isAscending) {
+                            poetsList
+                                .sort((a, b) => a['nom'].compareTo(b['nom']));
+                          } else {
+                            poetsList
+                                .sort((a, b) => b['nom'].compareTo(a['nom']));
+                          }
+                          _sortPoets(); // Appel de la fonction pour trier la liste des poètes
+                        });
+                      },
                     ),
                   ],
                 ),
