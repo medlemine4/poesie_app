@@ -1,6 +1,7 @@
 // ignore_for_file: unnecessary_cast, constant_identifier_names
 
 import 'package:mongo_dart/mongo_dart.dart' as mongo;
+import 'package:mongo_dart/mongo_dart.dart';
 
 const MONGO_URL =
     "mongodb+srv://medleminehaj:22482188@maincluster.g7p5xjc.mongodb.net/poesie_DB?retryWrites=true&w=majority&appName=mainCluster";
@@ -102,7 +103,12 @@ class MongoDataBase {
   }
   return poetsList;
 }
-
+  static Future<Map<String, dynamic>> getPoemById(String id) async {
+    var db = await mongo.Db.create(MONGO_URL);
+    var collection = db.collection(COLLECTION_NAME3);
+    var poem = await collection.findOne(where.eq('ID_Poeme', id));
+    return poem ?? {};
+  }
 
   static Future<List<Map<String, dynamic>>> getDeewanByAuthorId(
       String authorId) async {

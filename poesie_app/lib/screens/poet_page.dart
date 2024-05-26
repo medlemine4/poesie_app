@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors
+// ignore_for_file: prefer_const_constructors, prefer_final_fields, library_private_types_in_public_api
 
 import 'package:flutter/material.dart';
 import 'package:poesie_app/screens/PoetDetails.dart';
@@ -386,17 +386,22 @@ class _PoetPageState extends State<PoetPage> {
                                 ),
                               ),
                             ),
-                            title: Text(
-                              nom,
-                              style: TextStyle(
-                                fontSize: 20.0,
-                                fontFamily: 'Almarai',
-                                fontWeight: FontWeight.bold,
-                                color: Colors.teal[900],
-                              ),
+                            title: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  nom,
+                                  style: TextStyle(
+                                    fontSize: 20.0,
+                                    fontFamily: 'Almarai',
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.teal[900],
+                                  ),
+                                ),
+                              ],
                             ),
                             subtitle: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
                                 Text(
                                   prenom,
