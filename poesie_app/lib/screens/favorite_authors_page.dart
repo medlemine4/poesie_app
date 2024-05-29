@@ -231,7 +231,7 @@ class _FavoriteAuthorsPageState extends State<FavoriteAuthorsPage>
                                     },
                                     icon: Icon(
                                       Icons.info,
-                                      color: Colors.black,
+                                      color: Colors.teal[900],
                                     ),
                                   ),
                                   SizedBox(width: 10),
@@ -253,39 +253,40 @@ class _FavoriteAuthorsPageState extends State<FavoriteAuthorsPage>
                               Column(
                                 children: [
                                   Text(
-                                    '$nom',
+                                    nom,
                                     style: TextStyle(
-                                      fontFamily: 'Amiri',
+                                      fontSize: 20.0,
+                                      fontFamily: 'Almarai',
                                       fontWeight: FontWeight.bold,
-                                      fontSize: screenWidth * 0.05,
                                       color: Colors.teal[900],
                                     ),
                                   ),
                                   Text(
-                                    '$prenom',
+                                    prenom,
                                     style: TextStyle(
-                                      fontFamily: 'Amiri',
+                                      fontSize: 18.0,
+                                      fontFamily: 'Almarai',
                                       fontWeight: FontWeight.bold,
-                                      fontSize: screenWidth * 0.05,
                                       color: Colors.teal[900],
                                     ),
                                   ),
+                                  SizedBox(height: 5.0),
                                   Text(
-                                    'عدد الدواوين: ${poet['deewanCount']}',
+                                    'الدواوين: ${poet['deewanCount']}',
                                     style: TextStyle(
-                                      fontFamily: 'Amiri',
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: screenWidth * 0.04,
-                                      color: Colors.teal[900],
+                                      fontSize: 16.0,
+                                      fontFamily: 'Almarai',
+                                      fontWeight: FontWeight.w400,
+                                      color: Colors.teal[700],
                                     ),
                                   ),
                                   Text(
-                                    'عدد القصائد: ${poet['poemCount']}',
+                                    'القصائد: ${poet['poemCount']}',
                                     style: TextStyle(
-                                      fontFamily: 'Amiri',
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: screenWidth * 0.04,
-                                      color: Colors.teal[900],
+                                      fontSize: 16.0,
+                                      fontFamily: 'Almarai',
+                                      fontWeight: FontWeight.w400,
+                                      color: Colors.teal[700],
                                     ),
                                   ),
                                 ],
