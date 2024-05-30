@@ -73,36 +73,38 @@ class MongoDataBase {
   }
 
   static Future<List<Map<String, dynamic>>> getPoetDetailsList() async {
-  var db = await mongo.Db.create(MONGO_URL);
-  await db.open();
+    var db = await mongo.Db.create(MONGO_URL);
+    await db.open();
 
-  var authorCollection = db.collection(COLLECTION_NAME);
-  var deewanCollection = db.collection(COLLECTION_NAME2);
-  var poemCollection = db.collection(COLLECTION_NAME3);
+    var authorCollection = db.collection(COLLECTION_NAME);
+    var deewanCollection = db.collection(COLLECTION_NAME2);
+    var poemCollection = db.collection(COLLECTION_NAME3);
 
-  var authors = await authorCollection.find().toList();
+    var authors = await authorCollection.find().toList();
 
-  List<Map<String, dynamic>> poetsList = [];
+    List<Map<String, dynamic>> poetsList = [];
 
-  for (var author in authors) {
-    var authorId = author['ID_Auteur'];
+    for (var author in authors) {
+      var authorId = author['ID_Auteur'];
 
-    var deewanCount =
-        await deewanCollection.count(mongo.where.eq('ID_Auteur', int.parse(authorId)));
-    var poemCount =
-        await poemCollection.count(mongo.where.eq('ID_Auteur', authorId));
+      var deewanCount = await deewanCollection
+          .count(mongo.where.eq('ID_Auteur', int.parse(authorId)));
+      var poemCount =
+          await poemCollection.count(mongo.where.eq('ID_Auteur', authorId));
 
-    poetsList.add({
-      'ID_Auteur': authorId.toString(),
-      'nom': author['nom'],
-      'prenom': author['prenom'],
-      'deewanCount': deewanCount,
-      'poemCount': poemCount,
-      'date_naissance': int.parse(author['date_naissance'].toString()) // Ensure date_naissance is an integer
-    });
+      poetsList.add({
+        'ID_Auteur': authorId.toString(),
+        'nom': author['nom'],
+        'prenom': author['prenom'],
+        'deewanCount': deewanCount,
+        'poemCount': poemCount,
+        'date_naissance': int.parse(author['date_naissance']
+            .toString()) // Ensure date_naissance is an integer
+      });
+    }
+    return poetsList;
   }
-  return poetsList;
-}
+
   static Future<Map<String, dynamic>> getPoemById(String id) async {
     var db = await mongo.Db.create(MONGO_URL);
     var collection = db.collection(COLLECTION_NAME3);
@@ -182,9 +184,43 @@ class MongoDataBase {
         }
       ]
     };
+
+    var poetResults = await poetCollection.find(poetQuery).toList();
+
+    for (var poet in poetResults) {
+      var deewanCount = await deewanCollection
+          .find(mongo.where.eq("ID_Auteur", int.parse(poet['ID_Auteur'])))
+          .length;
+
+      var deewanList = await deewanCollection
+          .find(mongo.where.eq("ID_Auteur", int.parse(poet['ID_Auteur'])))
+          .toList();
+
+      var poemCount = 0;
+      for (var deewan in deewanList) {
+        var count = await poemCollection
+            .find(mongo.where.eq("ID_Deewan", deewan['Id_Deewan'].toString()))
+            .length;
+        poemCount += count;
+      }
+
+      poet['deewanCount'] = deewanCount;
+      poet['poemCount'] = poemCount;
+    }
+
     var deewanQuery = {
       'nom': {'\$regex': searchText, '\$options': 'i'}
     };
+
+    var deewanResults = await deewanCollection.find(deewanQuery).toList();
+
+    for (var deewan in deewanResults) {
+      var poemCount = await poemCollection
+          .find(mongo.where.eq("ID_Deewan", deewan['Id_Deewan'].toString()))
+          .length;
+      deewan['poemCount'] = poemCount;
+    }
+
     var poemQuery = {
       '\$or': [
         {
@@ -195,16 +231,6 @@ class MongoDataBase {
         }
       ]
     };
-
-    var poetResults = await poetCollection.find(poetQuery).toList();
-    var deewanResults = await deewanCollection.find(deewanQuery).toList();
-
-    for (var deewan in deewanResults) {
-      var poemCount = await poemCollection
-          .find(mongo.where.eq("ID_Deewan", deewan['Id_Deewan'].toString()))
-          .length;
-      deewan['poemCount'] = poemCount;
-    }
 
     var poemResults = await poemCollection.find(poemQuery).toList();
 

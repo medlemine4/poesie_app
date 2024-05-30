@@ -219,12 +219,14 @@ class _SearchResultPageState extends State<SearchResultPage> {
                 String prenom = result['prenom'];
                 String lieuNaissance = result['lieu_naissance'] ?? '';
                 String authorId = result['ID_Auteur'];
+                int deewanCount = result['deewanCount'] ?? 0;
+                int poemCount = result['poemCount'] ?? 0;
 
                 bool isFavorite = favoriteAuthors
                     .any((author) => author.authorId == authorId);
 
-                return _buildAuthorCard(
-                    nom, prenom, lieuNaissance, authorId, isFavorite);
+                return _buildAuthorCard(nom, prenom, lieuNaissance, authorId,
+                    deewanCount, poemCount, isFavorite);
               } else if (result.containsKey('Id_Deewan')) {
                 String deewanId = result['Id_Deewan'].toString();
                 String nom = result['nom'].toString();
@@ -254,7 +256,7 @@ class _SearchResultPageState extends State<SearchResultPage> {
   }
 
   Widget _buildAuthorCard(String nom, String prenom, String lieuNaissance,
-      String authorId, bool isFavorite) {
+      String authorId, int deewanCount, int poemCount, bool isFavorite) {
     return Padding(
       padding: EdgeInsets.all(8.0),
       child: Material(
@@ -331,6 +333,22 @@ class _SearchResultPageState extends State<SearchResultPage> {
                         fontSize: 20.0,
                         fontWeight: FontWeight.bold,
                         color: Colors.teal[900],
+                      ),
+                    ),
+                    Text(
+                      'عدد الدواوين: $deewanCount',
+                      style: TextStyle(
+                        fontFamily: 'Almarai',
+                        fontSize: 16.0,
+                        color: Colors.teal[700],
+                      ),
+                    ),
+                    Text(
+                      'عدد القصائد: $poemCount',
+                      style: TextStyle(
+                        fontFamily: 'Almarai',
+                        fontSize: 16.0,
+                        color: Colors.teal[700],
                       ),
                     ),
                   ],
@@ -440,6 +458,7 @@ class _SearchResultPageState extends State<SearchResultPage> {
 
   Widget _buildPoemCard(String titre, String contenu, String alBaher,
       String rawy, String poemId, bool isFavorite) {
+    int numberOfLines = computeLineCount(contenu);
     return Padding(
       padding: EdgeInsets.all(8.0),
       child: GestureDetector(
@@ -471,7 +490,8 @@ class _SearchResultPageState extends State<SearchResultPage> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Row(
-                      children: [IconButton(
+                      children: [
+                        IconButton(
                           icon: Icon(Icons.info, color: Colors.teal[900]),
                           onPressed: () {
                             Navigator.push(
@@ -521,6 +541,14 @@ class _SearchResultPageState extends State<SearchResultPage> {
                               fontFamily: 'Almarai',
                               color: Colors.teal[900]),
                         ),
+                        Text(
+                          'عدد الأبيات: $numberOfLines',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontFamily: 'Almarai',
+                            color: Colors.teal[900],
+                          ),
+                        ),
                       ],
                     ),
                   ],
@@ -532,6 +560,18 @@ class _SearchResultPageState extends State<SearchResultPage> {
       ),
     );
   }
+}
+
+int computeLineCount(String content) {
+  // Séparez le contenu en lignes
+  List<String> lines = content.split('\n');
+
+  // Filtrez les lignes vides
+  List<String> nonEmptyLines =
+      lines.where((line) => line.trim().isNotEmpty).toList();
+
+  // Retournez la moitié du nombre de lignes non vides
+  return (nonEmptyLines.length ~/ 2); // Utilisez la division entière
 }
 
 class AuthorImagePage extends StatelessWidget {
