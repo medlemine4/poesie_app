@@ -1,3 +1,5 @@
+// ignore_for_file: file_names, non_constant_identifier_names, use_key_in_widget_constructors, prefer_const_constructors_in_immutables, unused_field, prefer_final_fields, invalid_use_of_visible_for_testing_member, invalid_use_of_protected_member
+
 import 'package:flutter/material.dart';
 import 'package:poesie_app/screens/SearchPage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
