@@ -69,12 +69,12 @@ class PoemContent extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                for (int i = 0; i < lines.length; i += 2)
+                for (int i = 0; i < lines.length; i += 1)
                   Container(
                     margin: const EdgeInsets.symmetric(vertical: 6.0),
                     padding: const EdgeInsets.all(12.0),
                     decoration: BoxDecoration(
-                      color: i % 2 == 0 ? Colors.white : Colors.teal[50],
+                      color: (i ~/ 2) % 2 == 0 ? Colors.white : Colors.teal[50],
                       borderRadius: BorderRadius.circular(8.0),
                       boxShadow: [
                         BoxShadow(
