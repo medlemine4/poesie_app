@@ -330,6 +330,7 @@ class _PoetPageState extends State<PoetPage> {
                       String nom = poet['nom'];
                       String prenom = poet['prenom'];
                       String authorId = poet['ID_Auteur'];
+                      int dateNaissance = poet['date_naissance'];
                       int deewanCount = poet['deewanCount'];
                       int poemCount = poet['poemCount'];
 
@@ -404,7 +405,7 @@ class _PoetPageState extends State<PoetPage> {
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
                                 Text(
-                                  prenom,
+                                  '$prenom $dateNaissance' ,
                                   style: TextStyle(
                                     fontSize: 18.0,
                                     fontFamily: 'Almarai',
