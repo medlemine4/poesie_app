@@ -60,13 +60,16 @@ class _PoemListScreenState extends State<PoemListScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          'قصائد  ${widget.deewan_name}',
-          style: TextStyle(
-              fontSize: 27.0,
-              fontFamily: 'Almarai',
-              fontWeight: FontWeight.bold,
-              color: Colors.white),
+        title: FittedBox(
+          fit: BoxFit.scaleDown,
+          child: Text(
+            'قصائد  ${widget.deewan_name}',
+            style: TextStyle(
+                fontSize: 27.0,
+                fontFamily: 'Almarai',
+                fontWeight: FontWeight.bold,
+                color: Colors.white),
+          ),
         ),
         iconTheme: IconThemeData(
           color: Colors.white,
