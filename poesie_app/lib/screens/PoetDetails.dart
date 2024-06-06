@@ -1,14 +1,14 @@
-// ignore_for_file: prefer_const_constructors
+// ignore_for_file: prefer_const_constructors, use_key_in_widget_constructors
 
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:poesie_app/screens/SearchPage.dart';
 import '../data/mongo_database.dart';
-import 'dart:io';
 
 class PoetDetails extends StatelessWidget {
   final String poetName;
-
-  PoetDetails({required this.poetName});
+  final String poetlastname;
+  PoetDetails({required this.poetName, required this.poetlastname});
 
   @override
   Widget build(BuildContext context) {
@@ -18,14 +18,27 @@ class PoetDetails extends StatelessWidget {
           SliverAppBar(
             expandedHeight: 400.0,
             pinned: true,
+            leading: IconButton(
+              icon: Icon(
+                Icons.arrow_back,
+                color: Colors.white70,
+              ),
+              onPressed: () {
+                Navigator.pop(
+                    context); // This will pop the current screen and return to the previous screen
+              },
+            ),
             flexibleSpace: FlexibleSpaceBar(
-              title: Text(
-                'تفاصيل الشاعر',
-                style: TextStyle(
-                  fontSize: 24.0,
-                  fontFamily: 'Almarai',
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
+              title: FittedBox(
+                fit: BoxFit.scaleDown,
+                child: Text(
+                  '$poetName $poetlastname',
+                  style: TextStyle(
+                    fontSize: 24.0,
+                    fontFamily: 'Almarai',
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
                 ),
               ),
               background: Stack(
@@ -114,29 +127,30 @@ class PoetDetails extends StatelessWidget {
 
   Widget _buildPoetImage(BuildContext context, String poetName) {
     String imagePath = 'images/$poetName.jpg';
-    bool imageExists = File(imagePath).existsSync();
 
-    return imageExists
-        ? Image.asset(
-            imagePath,
-            fit: BoxFit.cover,
-          )
-        : Container(
-            decoration: BoxDecoration(
-              color: Colors.grey,
-              borderRadius: BorderRadius.only(
-                bottomLeft: Radius.circular(30.0),
-                bottomRight: Radius.circular(30.0),
-              ),
+    return Image.asset(
+      imagePath,
+      fit: BoxFit.cover,
+      errorBuilder:
+          (BuildContext context, Object exception, StackTrace? stackTrace) {
+        return Container(
+          decoration: BoxDecoration(
+            color: Colors.grey,
+            borderRadius: BorderRadius.only(
+              bottomLeft: Radius.circular(30.0),
+              bottomRight: Radius.circular(30.0),
             ),
-            child: Center(
-              child: Icon(
-                Icons.person,
-                color: Colors.white,
-                size: 100.0,
-              ),
+          ),
+          child: Center(
+            child: Icon(
+              Icons.person,
+              color: Colors.white,
+              size: 100.0,
             ),
-          );
+          ),
+        );
+      },
+    );
   }
 
   Widget _buildSectionTitle(String title, Color? color) {
@@ -198,15 +212,17 @@ class PoetDetails extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              'وصف الشاعر',
-              style: TextStyle(
-                fontFamily: 'Amiri',
-                fontSize: 22.0,
-                fontWeight: FontWeight.bold,
-                color: Colors.teal[800],
+            Center(
+              child: Text(
+                'نبذة عن حياة الشاعر',
+                style: TextStyle(
+                  fontFamily: 'Amiri',
+                  fontSize: 22.0,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.teal[800],
+                ),
+                textDirection: TextDirection.rtl,
               ),
-              textDirection: TextDirection.rtl,
             ),
             SizedBox(height: 10),
             Text(

@@ -224,8 +224,10 @@ class _FavoriteAuthorsPageState extends State<FavoriteAuthorsPage>
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(
-                                          builder: (context) =>
-                                              PoetDetails(poetName: nom),
+                                          builder: (context) => PoetDetails(
+                                            poetName: nom,
+                                            poetlastname: prenom,
+                                          ),
                                         ),
                                       );
                                     },

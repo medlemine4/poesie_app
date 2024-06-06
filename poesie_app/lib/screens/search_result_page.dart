@@ -294,6 +294,7 @@ class _SearchResultPageState extends State<SearchResultPage> {
                           MaterialPageRoute(
                             builder: (context) => PoetDetails(
                               poetName: nom,
+                              poetlastname: prenom,
                             ),
                           ),
                         );

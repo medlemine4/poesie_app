@@ -34,7 +34,11 @@ class _PoemContentState extends State<PoemContent> {
         secondary: Colors.teal[200]!,
       ),
       textTheme: TextTheme(
-        bodyLarge: TextStyle(fontSize: _fontSize, fontFamily: 'Almarai'),
+        bodyLarge: TextStyle(
+          fontSize: _fontSize,
+          fontFamily: 'Almarai',
+          color: Colors.black, // Set text color to black
+        ),
       ),
     );
   }
@@ -48,7 +52,11 @@ class _PoemContentState extends State<PoemContent> {
         secondary: Colors.teal[600]!,
       ),
       textTheme: TextTheme(
-        bodyLarge: TextStyle(fontSize: _fontSize, fontFamily: 'Almarai'),
+        bodyLarge: TextStyle(
+          fontSize: _fontSize,
+          fontFamily: 'Almarai',
+          color: Colors.white, // Set text color to white
+        ),
       ),
     );
   }
@@ -64,7 +72,7 @@ class _PoemContentState extends State<PoemContent> {
         "${widget.poemTitle.isEmpty ? 'Untitled Poem' : widget.poemTitle}\n\n${widget.poemContent}";
     Clipboard.setData(ClipboardData(text: contentToCopy));
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Poem copied to clipboard')),
+      SnackBar(content: Text('تم نسخ القصيدة إلى الحافظة')),
     );
   }
 
@@ -194,7 +202,6 @@ class _PoemContentState extends State<PoemContent> {
                                     1.5, // Improved line height for better readability
                                 letterSpacing:
                                     0.5, // Slight letter spacing for clarity
-                                color: _themeData.primaryColorDark,
                               ),
                               textDirection: i % 2 == 0
                                   ? TextDirection.rtl
@@ -227,7 +234,7 @@ class _PoemContentState extends State<PoemContent> {
                   icon: Icon(Icons.zoom_out),
                   onPressed: () {
                     setState(() {
-                      if (_fontSize > 12.0) _fontSize -= 2.0;
+                      if (_fontSize > 15.0) _fontSize -= 2.0;
                     });
                   },
                 ),
@@ -235,7 +242,7 @@ class _PoemContentState extends State<PoemContent> {
                   icon: Icon(Icons.zoom_in),
                   onPressed: () {
                     setState(() {
-                      if (_fontSize < 36.0) _fontSize += 2.0;
+                      if (_fontSize < 27.0) _fontSize += 2.0;
                     });
                   },
                 ),
