@@ -84,7 +84,7 @@ class _PoetPageState extends State<PoetPage>
   void loadPoetDetails(BuildContext scaffoldContext) async {
     try {
       List<Map<String, dynamic>> data = await MongoDataBase.getPoetDetailsList()
-          .timeout(Duration(seconds: 3), onTimeout: () {
+          .timeout(Duration(seconds: 30), onTimeout: () {
         showSnackbar(
           '!تحقق من اتصالك بالإنترنت',
           scaffoldContext,
