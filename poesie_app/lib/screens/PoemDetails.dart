@@ -42,7 +42,16 @@ class PoemDetails extends StatelessWidget {
         ],
       ),
       body: FutureBuilder<Map<String, dynamic>>(
-        future: MongoDataBase.getPoemDetails(poemeName),
+        future: MongoDataBase.getPoemDetails(poemeName).timeout(
+          Duration(seconds: 30),
+          onTimeout: () {
+            showSnackbar(
+              '!تحقق من اتصالك بالإنترنت',
+              context,
+            );
+            return {};
+          },
+        ),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(child: CircularProgressIndicator());
@@ -101,6 +110,89 @@ class PoemDetailItem extends StatelessWidget {
         ),
         SizedBox(height: 20),
       ],
+    );
+  }
+}
+
+void showSnackbar(String message, BuildContext context) {
+  final overlay = Overlay.of(context);
+  OverlayEntry? overlayEntry;
+
+  overlayEntry = OverlayEntry(
+    builder: (context) => Positioned(
+      top: 0,
+      left: 0,
+      right: 0,
+      child: TopSnackBar(
+        message: message,
+        onClose: () {
+          overlayEntry?.remove();
+        },
+      ),
+    ),
+  );
+
+  overlay?.insert(overlayEntry);
+
+  Future.delayed(Duration(seconds: 5), () {
+    overlayEntry?.remove();
+  });
+}
+
+class TopSnackBar extends StatelessWidget {
+  final String message;
+  final VoidCallback onClose;
+
+  TopSnackBar({required this.message, required this.onClose});
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: Colors.transparent,
+      child: Container(
+        margin: EdgeInsets.all(16.0),
+        padding: EdgeInsets.all(16.0),
+        decoration: BoxDecoration(
+          color: Colors.redAccent,
+          borderRadius: BorderRadius.circular(10.0),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black26,
+              spreadRadius: 3,
+              blurRadius: 5,
+              offset: Offset(0, 3),
+            ),
+          ],
+        ),
+        child: Row(
+          children: [
+            Icon(Icons.error_outline, color: Colors.white),
+            SizedBox(width: 10),
+            Expanded(
+              child: Text(
+                message,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 16.0,
+                  fontWeight: FontWeight.bold,
+                  fontFamily: 'Almarai',
+                ),
+              ),
+            ),
+            GestureDetector(
+              onTap: onClose,
+              child: Container(
+                padding: EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Colors.white,
+                ),
+                child: Icon(Icons.close, color: Colors.redAccent),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

@@ -1,4 +1,4 @@
-// ignore_for_file: file_names, non_constant_identifier_names, use_key_in_widget_constructors, prefer_const_constructors_in_immutables, unused_field, prefer_final_fields, invalid_use_of_visible_for_testing_member, invalid_use_of_protected_member
+// ignore_for_file: file_names, non_constant_identifier_names, use_key_in_widget_constructors, prefer_const_constructors_in_immutables, unused_field, prefer_final_fields, invalid_use_of_visible_for_testing_member, invalid_use_of_protected_member, prefer_const_constructors
 
 import 'package:flutter/material.dart';
 import 'package:poesie_app/screens/SearchPage.dart';
@@ -24,7 +24,8 @@ class PoemListScreen extends StatefulWidget {
 class _PoemListScreenState extends State<PoemListScreen> {
   late TextEditingController _searchController = TextEditingController();
   String _searchText = '';
-  ValueNotifier<List<FavoritePoem>> favoritePoems = ValueNotifier<List<FavoritePoem>>([]);
+  ValueNotifier<List<FavoritePoem>> favoritePoems =
+      ValueNotifier<List<FavoritePoem>>([]);
 
   @override
   void initState() {
@@ -36,21 +37,27 @@ class _PoemListScreenState extends State<PoemListScreen> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     List<String>? favoritePoemIds = prefs.getStringList('favoritePoems');
     if (favoritePoemIds != null) {
-      favoritePoems.value = favoritePoemIds.map((id) => FavoritePoem(poemId: id)).toList();
+      favoritePoems.value =
+          favoritePoemIds.map((id) => FavoritePoem(poemId: id)).toList();
     }
   }
 
   void saveFavoritePoems() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    List<String> favoritePoemIds = favoritePoems.value.map((poem) => poem.poemId).toList();
+    List<String> favoritePoemIds =
+        favoritePoems.value.map((poem) => poem.poemId).toList();
     await prefs.setStringList('favoritePoems', favoritePoemIds);
   }
 
   void toggleFavorite(String poemId) {
     if (favoritePoems.value.any((poem) => poem.poemId == poemId)) {
-      favoritePoems.value = favoritePoems.value.where((poem) => poem.poemId != poemId).toList();
+      favoritePoems.value =
+          favoritePoems.value.where((poem) => poem.poemId != poemId).toList();
     } else {
-      favoritePoems.value = [...favoritePoems.value, FavoritePoem(poemId: poemId)];
+      favoritePoems.value = [
+        ...favoritePoems.value,
+        FavoritePoem(poemId: poemId)
+      ];
     }
     saveFavoritePoems();
     favoritePoems.notifyListeners();
@@ -165,7 +172,16 @@ class _PoemListScreenState extends State<PoemListScreen> {
           ),
           Expanded(
             child: FutureBuilder<List<Map<String, dynamic>>>(
-              future: MongoDataBase.getPoemsByDeewanId(widget.deewanId),
+              future: MongoDataBase.getPoemsByDeewanId(widget.deewanId).timeout(
+                Duration(seconds: 30),
+                onTimeout: () {
+                  showSnackbar(
+                    '!تحقق من اتصالك بالإنترنت',
+                    context,
+                  );
+                  return [];
+                },
+              ),
               builder: (context,
                   AsyncSnapshot<List<Map<String, dynamic>>> snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
@@ -326,5 +342,88 @@ class _PoemListScreenState extends State<PoemListScreen> {
 
     // Retournez la moitié du nombre de lignes non vides
     return (nonEmptyLines.length ~/ 2); // Utilisez la division entière
+  }
+}
+
+void showSnackbar(String message, BuildContext context) {
+  final overlay = Overlay.of(context);
+  OverlayEntry? overlayEntry;
+
+  overlayEntry = OverlayEntry(
+    builder: (context) => Positioned(
+      top: 0,
+      left: 0,
+      right: 0,
+      child: TopSnackBar(
+        message: message,
+        onClose: () {
+          overlayEntry?.remove();
+        },
+      ),
+    ),
+  );
+
+  overlay?.insert(overlayEntry);
+
+  Future.delayed(Duration(seconds: 5), () {
+    overlayEntry?.remove();
+  });
+}
+
+class TopSnackBar extends StatelessWidget {
+  final String message;
+  final VoidCallback onClose;
+
+  TopSnackBar({required this.message, required this.onClose});
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: Colors.transparent,
+      child: Container(
+        margin: EdgeInsets.all(16.0),
+        padding: EdgeInsets.all(16.0),
+        decoration: BoxDecoration(
+          color: Colors.redAccent,
+          borderRadius: BorderRadius.circular(10.0),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black26,
+              spreadRadius: 3,
+              blurRadius: 5,
+              offset: Offset(0, 3),
+            ),
+          ],
+        ),
+        child: Row(
+          children: [
+            Icon(Icons.error_outline, color: Colors.white),
+            SizedBox(width: 10),
+            Expanded(
+              child: Text(
+                message,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 16.0,
+                  fontWeight: FontWeight.bold,
+                  fontFamily: 'Almarai',
+                ),
+              ),
+            ),
+            GestureDetector(
+              onTap: onClose,
+              child: Container(
+                padding: EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Colors.white,
+                ),
+                child: Icon(Icons.close, color: Colors.redAccent),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }
