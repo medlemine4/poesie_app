@@ -405,7 +405,7 @@ class _PoetPageState extends State<PoetPage> {
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
                                 Text(
-                                  '$prenom $dateNaissance' ,
+                                  '$prenom $dateNaissance',
                                   style: TextStyle(
                                     fontSize: 18.0,
                                     fontFamily: 'Almarai',
@@ -442,8 +442,10 @@ class _PoetPageState extends State<PoetPage> {
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                        builder: (context) =>
-                                            PoetDetails(poetName: nom),
+                                        builder: (context) => PoetDetails(
+                                          poetName: nom,
+                                          poetlastname: prenom,
+                                        ),
                                       ),
                                     );
                                   },
