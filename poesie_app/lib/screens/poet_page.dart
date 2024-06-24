@@ -1,5 +1,6 @@
-// ignore_for_file: prefer_const_constructors, prefer_final_fields, library_private_types_in_public_api
+// ignore_for_file: prefer_const_constructors, unused_import, use_build_context_synchronously, avoid_print
 
+import 'dart:async'; // Import the async library
 import 'package:flutter/material.dart';
 import 'package:poesie_app/screens/PoetDetails.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -13,19 +14,45 @@ class PoetPage extends StatefulWidget {
   _PoetPageState createState() => _PoetPageState();
 }
 
-class _PoetPageState extends State<PoetPage> {
+class _PoetPageState extends State<PoetPage>
+    with SingleTickerProviderStateMixin {
   late TextEditingController _searchController = TextEditingController();
   String _searchText = '';
   List<String> favoriteAuthors = [];
   List<Map<String, dynamic>> poetsList = [];
   String? _sortBy = 'name';
-  bool _isAscending = true; // Ajoutez cette ligne
+  bool _isAscending = true;
 
   @override
   void initState() {
     super.initState();
     loadFavoriteAuthors();
-    loadPoetDetails();
+    loadPoetDetails(context);
+  }
+
+  void showSnackbar(String message, BuildContext context) {
+    final overlay = Overlay.of(context);
+    OverlayEntry? overlayEntry;
+
+    overlayEntry = OverlayEntry(
+      builder: (context) => Positioned(
+        top: 0,
+        left: 0,
+        right: 0,
+        child: TopSnackBar(
+          message: message,
+          onClose: () {
+            overlayEntry?.remove();
+          },
+        ),
+      ),
+    );
+
+    overlay?.insert(overlayEntry);
+
+    Future.delayed(Duration(seconds: 5), () {
+      overlayEntry?.remove();
+    });
   }
 
   void loadFavoriteAuthors() async {
@@ -54,12 +81,27 @@ class _PoetPageState extends State<PoetPage> {
     });
   }
 
-  void loadPoetDetails() async {
-    List<Map<String, dynamic>> data = await MongoDataBase.getPoetDetailsList();
-    setState(() {
-      poetsList = data;
-      _sortPoets();
-    });
+  void loadPoetDetails(BuildContext scaffoldContext) async {
+    try {
+      List<Map<String, dynamic>> data = await MongoDataBase.getPoetDetailsList()
+          .timeout(Duration(seconds: 30), onTimeout: () {
+        showSnackbar(
+          '!تحقق من اتصالك بالإنترنت',
+          scaffoldContext,
+        );
+        return [];
+      });
+      setState(() {
+        poetsList = data;
+        _sortPoets();
+      });
+    } catch (e) {
+      print('Error loading poet details: $e');
+      showSnackbar(
+        'Error loading poet details',
+        scaffoldContext,
+      );
+    }
   }
 
   void _sortPoets() {
@@ -78,8 +120,7 @@ class _PoetPageState extends State<PoetPage> {
             (b['date_naissance'] as int).compareTo(a['date_naissance'] as int));
       }
     } else {
-      // Si aucun critère de tri n'est sélectionné, rechargez simplement les détails du poète
-      loadPoetDetails();
+      loadPoetDetails(context);
     }
   }
 
@@ -239,15 +280,14 @@ class _PoetPageState extends State<PoetPage> {
                               } else {
                                 _sortBy = newValue!;
                               }
-                              _sortPoets(); // Triez les poètes en fonction de l'option sélectionnée
+                              _sortPoets();
                             });
                           },
                           items: <String>[
                             'إلغاء التصفية',
                             'name',
                             'date_naissance'
-                          ] // Add Cancel Filter option
-                              .map<DropdownMenuItem<String>>((String value) {
+                          ].map<DropdownMenuItem<String>>((String value) {
                             return DropdownMenuItem<String>(
                               value: value,
                               child: MouseRegion(
@@ -311,7 +351,7 @@ class _PoetPageState extends State<PoetPage> {
                             poetsList
                                 .sort((a, b) => b['nom'].compareTo(a['nom']));
                           }
-                          _sortPoets(); // Appel de la fonction pour trier la liste des poètes
+                          _sortPoets();
                         });
                       },
                     ),
@@ -496,5 +536,66 @@ class _PoetPageState extends State<PoetPage> {
   bool _searchInPoet(Map<String, dynamic> poet, String searchText) {
     return poet['nom'].toLowerCase().contains(searchText) ||
         poet['prenom'].toLowerCase().contains(searchText);
+  }
+}
+
+class TopSnackBar extends StatelessWidget {
+  final String message;
+  final VoidCallback onClose;
+
+  const TopSnackBar({
+    Key? key,
+    required this.message,
+    required this.onClose,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: Colors.transparent,
+      child: Container(
+        margin: EdgeInsets.fromLTRB(10, 60, 10, 0),
+        padding: EdgeInsets.all(16.0),
+        decoration: BoxDecoration(
+          color: Colors.redAccent,
+          borderRadius: BorderRadius.circular(10.0),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black26,
+              blurRadius: 10.0,
+              offset: Offset(0, 10),
+            ),
+          ],
+        ),
+        child: Row(
+          children: [
+            Icon(Icons.error_outline, color: Colors.white),
+            SizedBox(width: 10),
+            Expanded(
+              child: Text(
+                message,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 16.0,
+                  fontWeight: FontWeight.bold,
+                  fontFamily: 'Almarai',
+                ),
+              ),
+            ),
+            GestureDetector(
+              onTap: onClose,
+              child: Container(
+                padding: EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Colors.white,
+                ),
+                child: Icon(Icons.close, color: Colors.redAccent),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }
